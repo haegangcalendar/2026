@@ -56,6 +56,15 @@
     .btn.good{border-color: rgba(22,163,74,.35)}
     .btn.bad{border-color: rgba(220,38,38,.35)}
     .btn.small{padding:8px 10px; border-radius:10px; font-size:13px}
+    .btn.link{
+      border:0;
+      background: transparent;
+      box-shadow:none;
+      padding:0;
+      color: var(--accent);
+      font-size:12px;
+    }
+    .btn.link:hover{box-shadow:none; text-decoration: underline}
 
     .input, select, textarea{
       border:1px solid var(--line);
@@ -193,6 +202,7 @@
       border-top:1px solid var(--line);
       background: #fafbff;
       flex-wrap:wrap;
+      align-items:center;
     }
 
     @media print{
@@ -276,7 +286,7 @@
   </div>
 </div>
 
-<!-- 로그인 모달 (로그인만) -->
+<!-- 로그인 모달 -->
 <div class="modal-backdrop" id="loginModal">
   <div class="modal">
     <header>
@@ -288,19 +298,73 @@
     <div class="content">
       <div>
         <div style="margin-bottom:8px; color:var(--muted); font-size:12px;">비밀번호</div>
-        <input id="pwInput" class="input" type="password" placeholder="기본: admin1234" />
+        <!-- 기본 비밀번호 문구/노출 없음 -->
+        <input id="pwInput" class="input" type="password" placeholder="비밀번호 입력" autocomplete="current-password" />
       </div>
+
+      <div style="margin-top:10px; display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap;">
+        <div class="note">로그인이 필요한 기능: 일정 추가/수정/삭제</div>
+        <button class="btn link" id="forgotBtn" type="button">비밀번호를 잊어버리셨나요?</button>
+      </div>
+
       <div class="note" style="margin-top:10px;">
-        • 서버 없는 단일 파일이라 “계정 시스템”이 아니라 브라우저 저장 비밀번호로 보호됩니다.<br/>
+        • 서버 없는 단일 파일이라 브라우저 저장 비밀번호로 보호됩니다.<br/>
         • 보안이 중요하면 서버 로그인 방식으로 전환 권장.
       </div>
     </div>
+
     <div class="footerbar">
-      <!-- 로그인 전에는 전체 삭제 버튼 안 보이게 -->
+      <!-- 관리자 로그인 후에만 표시 (요구사항 유지) -->
       <button class="btn bad" id="resetBtn" style="display:none;" onclick="DATA.resetAll()">초기화(전체 삭제)</button>
+
       <div style="display:flex; gap:10px; flex-wrap:wrap;">
         <button class="btn" onclick="UI.closeModal('loginModal')">취소</button>
         <button class="btn primary" id="doLoginBtn">로그인</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 비밀번호 찾기/재설정 모달 -->
+<div class="modal-backdrop" id="recoverModal">
+  <div class="modal">
+    <header>
+      <div class="monthbar">
+        <div class="m">비밀번호 재설정</div>
+        <button class="btn small" onclick="UI.closeModal('recoverModal')">✕ 닫기</button>
+      </div>
+    </header>
+
+    <div class="content">
+      <div>
+        <div style="margin-bottom:8px; color:var(--muted); font-size:12px;">질문</div>
+        <div style="font-weight:700; margin-bottom:10px;">1학년때 학번은 뭐냐?</div>
+        <input id="recoverAnswer" class="input" inputmode="numeric" placeholder="학번 입력" />
+        <div class="note" style="margin-top:8px;">정답을 입력하면 아래에서 새 비밀번호를 설정할 수 있습니다.</div>
+      </div>
+
+      <div id="recoverFields" style="display:none; margin-top:14px;">
+        <div class="row">
+          <div>
+            <div style="margin-bottom:8px; color:var(--muted); font-size:12px;">새 비밀번호</div>
+            <input id="recoverNewPw" class="input" type="password" placeholder="새 비밀번호 입력" autocomplete="new-password" />
+          </div>
+          <div>
+            <div style="margin-bottom:8px; color:var(--muted); font-size:12px;">새 비밀번호 확인</div>
+            <input id="recoverNewPw2" class="input" type="password" placeholder="한 번 더 입력" autocomplete="new-password" />
+          </div>
+        </div>
+        <div class="note" style="margin-top:10px;">
+          • 재설정 후에는 다시 로그인해 주세요.
+        </div>
+      </div>
+    </div>
+
+    <div class="footerbar">
+      <button class="btn" onclick="UI.closeModal('recoverModal')">취소</button>
+      <div style="display:flex; gap:10px; flex-wrap:wrap;">
+        <button class="btn" id="recoverCheckBtn">정답 확인</button>
+        <button class="btn primary" id="recoverSaveBtn" style="display:none;">비밀번호 변경</button>
       </div>
     </div>
   </div>
@@ -319,16 +383,15 @@
       <div class="row">
         <div>
           <div style="margin-bottom:8px; color:var(--muted); font-size:12px;">현재 비밀번호</div>
-          <input id="pwCur2" class="input" type="password" placeholder="현재 비밀번호" />
+          <input id="pwCur2" class="input" type="password" placeholder="현재 비밀번호" autocomplete="current-password" />
         </div>
         <div>
           <div style="margin-bottom:8px; color:var(--muted); font-size:12px;">새 비밀번호</div>
-          <input id="pwNew2" class="input" type="password" placeholder="6자 이상 권장" />
+          <input id="pwNew2" class="input" type="password" placeholder="새 비밀번호" autocomplete="new-password" />
         </div>
       </div>
       <div class="note" style="margin-top:10px;">
-        • 변경 즉시 이 브라우저에 저장됩니다.<br/>
-        • 다른 PC/폰과는 자동 동기화되지 않습니다.
+        • 변경 즉시 이 브라우저에 저장됩니다.
       </div>
     </div>
     <div class="footerbar">
@@ -409,6 +472,12 @@ const DEFAULT_EVENTS = [
 const START_MONTH = "2026-03-01";
 const END_MONTH   = "2027-02-01";
 
+/** 요구사항: 기본 비밀번호 */
+const DEFAULT_ADMIN_PW = "120725";
+
+/** 요구사항: 비밀번호 찾기 정답 */
+const RECOVERY_ANSWER = "10929";
+
 /** ==========================================================
  *  DATA 모듈 (LocalStorage CRUD)
  * ========================================================== */
@@ -420,8 +489,9 @@ const DATA = {
     if(!localStorage.getItem(LS.EVENTS)){
       localStorage.setItem(LS.EVENTS, JSON.stringify(DEFAULT_EVENTS));
     }
+    // 기본 비밀번호를 120725로 설정 (최초 1회)
     if(!localStorage.getItem(LS.ADMIN_PW)){
-      localStorage.setItem(LS.ADMIN_PW, this.hash("admin1234"));
+      localStorage.setItem(LS.ADMIN_PW, this.hash(DEFAULT_ADMIN_PW));
     }
     if(!localStorage.getItem(LS.ADMIN_ON)){
       localStorage.setItem(LS.ADMIN_ON, "0");
@@ -517,6 +587,15 @@ const els = {
   pwInput: document.getElementById("pwInput"),
   doLoginBtn: document.getElementById("doLoginBtn"),
   resetBtn: document.getElementById("resetBtn"),
+  forgotBtn: document.getElementById("forgotBtn"),
+
+  recoverModal: document.getElementById("recoverModal"),
+  recoverAnswer: document.getElementById("recoverAnswer"),
+  recoverFields: document.getElementById("recoverFields"),
+  recoverNewPw: document.getElementById("recoverNewPw"),
+  recoverNewPw2: document.getElementById("recoverNewPw2"),
+  recoverCheckBtn: document.getElementById("recoverCheckBtn"),
+  recoverSaveBtn: document.getElementById("recoverSaveBtn"),
 
   pwChangeOpenBtn: document.getElementById("pwChangeOpenBtn"),
   pwModal: document.getElementById("pwModal"),
@@ -724,10 +803,10 @@ function updateAdminUI(){
   els.logoutBtn.style.display = on ? "" : "none";
   els.addBtn.style.display = on ? "" : "none";
 
-  // 요구사항 1) 전체 삭제 버튼: 관리자 로그인 후에만 표시
+  // 전체 삭제 버튼: 관리자 로그인 후에만 표시
   if(els.resetBtn) els.resetBtn.style.display = on ? "" : "none";
 
-  // 요구사항 2) 비밀번호 변경 버튼: 관리자 로그인 후에만 표시
+  // 비밀번호 변경 버튼: 관리자 로그인 후에만 표시
   els.pwChangeOpenBtn.style.display = on ? "" : "none";
 }
 
@@ -776,6 +855,17 @@ const UI = {
     els.pwInput.value="";
     this.openModal("loginModal");
     setTimeout(()=>els.pwInput.focus(), 30);
+  },
+
+  openRecover(){
+    // reset UI state
+    els.recoverAnswer.value="";
+    els.recoverFields.style.display="none";
+    els.recoverSaveBtn.style.display="none";
+    els.recoverNewPw.value="";
+    els.recoverNewPw2.value="";
+    this.openModal("recoverModal");
+    setTimeout(()=>els.recoverAnswer.focus(), 30);
   },
 
   openPwChange(){
@@ -851,6 +941,49 @@ els.doLoginBtn.addEventListener("click", ()=>{
   render();
 });
 
+els.forgotBtn.addEventListener("click", ()=>{
+  UI.closeModal("loginModal");
+  UI.openRecover();
+});
+
+els.recoverCheckBtn.addEventListener("click", ()=>{
+  const ans = (els.recoverAnswer.value || "").trim();
+  if(ans !== RECOVERY_ANSWER){
+    alert("정답이 아닙니다.");
+    els.recoverFields.style.display = "none";
+    els.recoverSaveBtn.style.display = "none";
+    return;
+  }
+  els.recoverFields.style.display = "";
+  els.recoverSaveBtn.style.display = "";
+  els.recoverNewPw.focus();
+});
+
+els.recoverSaveBtn.addEventListener("click", ()=>{
+  const ans = (els.recoverAnswer.value || "").trim();
+  if(ans !== RECOVERY_ANSWER){
+    alert("정답 확인을 먼저 해주세요.");
+    return;
+  }
+  const npw1 = (els.recoverNewPw.value || "").trim();
+  const npw2 = (els.recoverNewPw2.value || "").trim();
+
+  if(npw1.length < 4){
+    alert("새 비밀번호는 4자 이상을 권장합니다.");
+    return;
+  }
+  if(npw1 !== npw2){
+    alert("새 비밀번호 확인이 일치하지 않습니다.");
+    return;
+  }
+
+  DATA.setPw(npw1);
+  DATA.setAdmin(false); // 재설정 후에는 다시 로그인하도록
+  UI.closeModal("recoverModal");
+  alert("비밀번호가 변경되었습니다. 새 비밀번호로 로그인해 주세요.");
+  render();
+});
+
 els.pwChangeOpenBtn.addEventListener("click", ()=>UI.openPwChange());
 
 els.pwSaveBtn.addEventListener("click", ()=>{
@@ -865,8 +998,8 @@ els.pwSaveBtn.addEventListener("click", ()=>{
     alert("현재 비밀번호가 틀렸습니다.");
     return;
   }
-  if(nw.length < 6){
-    alert("새 비밀번호는 6자 이상을 권장합니다.");
+  if(nw.length < 4){
+    alert("새 비밀번호는 4자 이상을 권장합니다.");
     return;
   }
   DATA.setPw(nw);
@@ -900,10 +1033,12 @@ window.addEventListener("keydown", (e)=>{
   if(els.editModal.style.display==="flex") return;
   if(els.loginModal.style.display==="flex") return;
   if(els.pwModal.style.display==="flex") return;
+  if(els.recoverModal.style.display==="flex") return;
   if(e.key==="ArrowLeft") moveMonth(-1);
   if(e.key==="ArrowRight") moveMonth(+1);
 });
 
+// 초기 렌더
 render();
 </script>
 </body>
