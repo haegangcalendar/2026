@@ -14,7 +14,6 @@
       --fs-body:14px; --fs-h1:18px; --fs-ui:12px;
       --fs-dow:12px; --fs-day:11px; --fs-bar:11px; --fs-mini:11px;
 
-      /* ✅ '접속한 날짜(오늘)' 칸 색 */
       --today:#BDC0C0;
     }
 
@@ -28,7 +27,7 @@
     }
 
     header{
-      position: static; /* ✅ 모바일에서 상단 고정 없음 */
+      position: static;
       background: var(--bg);
       border-bottom:1px solid var(--line);
     }
@@ -126,18 +125,26 @@
       border:1px solid var(--line); border-top:0;
       border-radius:0 0 14px 14px; overflow:hidden;
     }
+
+    /* ✅ 주(week) 단위로 리본 줄 수에 따라 셀 높이를 자동 확보 */
     .week{
       position:relative;
       display:grid; grid-template-columns: repeat(7, 1fr);
       border-top:1px solid var(--line);
       background: var(--cellBg);
+      --bar-rows: 0;
+      --bar-row-h: 30px;   /* 24px + gap(6px) */
+      --bar-top: 34px;     /* bars top */
+      --cell-base-pad: 10px;
     }
     .week:first-child{border-top:0}
 
     .cell{
       position:relative;
       min-height:112px;
-      padding:10px;
+      padding: var(--cell-base-pad);
+      /* ✅ 리본이 몇 줄이든, 그 아래로 내용이 내려가게 해서 "겹침" 제거 */
+      padding-top: calc(var(--cell-base-pad) + 22px + (var(--bar-rows) * var(--bar-row-h)));
       border-right:1px solid var(--line);
       background: var(--cellBg);
       overflow:hidden;
@@ -146,15 +153,20 @@
     .cell:last-child{border-right:0}
     .cell.muted{opacity:.45}
 
-    /* ✅ 확실히 보이게: class + inline style 둘 다 지원 */
+    /* ✅ 접속한 날짜(오늘) 칸 */
     .cell.today{
       background: var(--today) !important;
       box-shadow: inset 0 0 0 2px rgba(17,24,39,.25);
     }
 
     .cellTop{
+      position:absolute; /* ✅ 리본/내용과 분리해서 위에 고정 */
+      top: 8px;
+      left: 10px;
+      right: 10px;
       display:flex; justify-content:space-between; align-items:center; gap:10px;
-      font-size: var(--fs-day); color:var(--muted); margin-bottom:8px;
+      font-size: var(--fs-day); color:var(--muted);
+      pointer-events:none;
     }
     .cellTop .dayNum{font-weight:800; color:#111827;}
     .cell.muted .cellTop .dayNum{color:#6b7280;}
@@ -175,10 +187,11 @@
       color:var(--text); font-weight:600;
     }
 
+    /* ✅ 기간 일정 리본(띠) */
     .bars{
       position:absolute;
       left:0; right:0;
-      top:34px;
+      top: var(--bar-top);
       padding:0 10px;
       display:grid;
       grid-template-columns: repeat(7, 1fr);
@@ -243,7 +256,6 @@
     <div class="toolbar">
       <div class="controls">
         <button class="btn small" id="prevBtn" title="이전 달 (←)">◀︎ <span>이전</span></button>
-        <!-- ✅ 모바일에서도 되게: 월 select 옆에 '오늘' 버튼 유지 -->
         <button class="btn small" id="todayBtn" title="오늘로 이동">◎ <span id="todayLabel">오늘</span></button>
         <button class="btn small" id="nextBtn" title="다음 달 (→)"><span>다음</span> ▶︎</button>
 
@@ -251,8 +263,6 @@
         <select id="catSelect" title="분류 필터"><option value="ALL">전체 분류</option></select>
 
         <input id="q" class="input" placeholder="검색: 예) 6월 15일 | 일정명 / 설명" />
-
-        <!-- ✅ 요청: 학년 구분 없앰 -->
       </div>
 
       <div class="controls">
@@ -290,7 +300,6 @@
 </main>
 
 <script>
-/** 단일일: { date, title, category, note? } / 기간: { start, end, title, category, note? } */
 const EVENTS = [
   { date:"2026-03-02", title:"1학기 개강(예시)", category:"학사", note:"학교 공지 기준으로 수정" },
   { date:"2026-04-20", title:"중간고사(예시)", category:"시험", note:"학교별 일정 상이" },
@@ -359,11 +368,9 @@ const els = {
   catSelect: document.getElementById("catSelect"),
   q: document.getElementById("q"),
   summaryChips: document.getElementById("summaryChips"),
-  todayBtn: document.getElementById("todayBtn"),
   todayLabel: document.getElementById("todayLabel"),
 };
 
-/* ✅ 접속 시점의 '오늘'을 1번만 고정: 이 날짜 셀 1개만 하이라이트 */
 const VISIT_TODAY_ISO = toISODate(new Date());
 
 function buildMonthOptions(){
@@ -448,6 +455,7 @@ function renderSummaryChips(){
   });
 }
 
+/* ====== 겹침 방지 핵심: 리본은 "절대 겹치지 않게" 행(row)을 무제한으로 늘려 배치 ====== */
 function splitRangeToWeekSegment(e, weekStartDate){
   const ws = new Date(weekStartDate); ws.setHours(0,0,0,0);
   const we = addDays(ws, 6);
@@ -458,31 +466,36 @@ function splitRangeToWeekSegment(e, weekStartDate){
   if(segStart > segEnd) return null;
   return { colStart: segStart.getDay(), colEnd: segEnd.getDay() };
 }
+
 function layoutBarsForWeek(rangeEvents, weekStartDate){
   const segs = [];
   for(const e of rangeEvents){
     const seg = splitRangeToWeekSegment(e, weekStartDate);
     if(seg) segs.push({ ...seg, e });
   }
+
+  // start 먼저, 길이 긴 것 우선
   segs.sort((x,y)=>{
     if(x.colStart !== y.colStart) return x.colStart - y.colStart;
     return (y.colEnd - y.colStart) - (x.colEnd - x.colStart);
   });
+
   const rowsEnd = [];
   const placed = [];
+
   for(const s of segs){
     let rowIndex = -1;
     for(let r=0;r<rowsEnd.length;r++){
       if(s.colStart > rowsEnd[r]){ rowIndex = r; break; }
     }
     if(rowIndex === -1){
-      if(rowsEnd.length >= 3) continue;
-      rowsEnd.push(-1);
+      rowsEnd.push(-1);              // ✅ 제한 없음(필요하면 계속 줄 추가)
       rowIndex = rowsEnd.length-1;
     }
     rowsEnd[rowIndex] = s.colEnd;
     placed.push({ rowIndex, seg: s });
   }
+
   return { rowsCount: rowsEnd.length, placed };
 }
 
@@ -512,6 +525,7 @@ function renderCalendar(){
     const ws = addDays(gridStart, w*7);
     const { rowsCount, placed } = layoutBarsForWeek(rangeEvents, ws);
 
+    // ✅ 이 주에 리본 줄 수(rowsCount)를 CSS 변수로 주입 → 셀 내용이 아래로 내려가서 겹침 제거
     let barsHtml = `<div class="bars" style="grid-template-rows: repeat(${Math.max(rowsCount,0)}, 24px);">`;
     for(const p of placed){
       const s = p.seg;
@@ -538,31 +552,29 @@ function renderCalendar(){
       const inMonth = d.getMonth() === cur.getMonth();
       const singles = singleEventsOnDate(iso);
 
-      const miniItems = singles.slice(0,2).map(ev => `
+      const miniItems = singles.slice(0,3).map(ev => `
         <div class="mini cat-${escapeHtml(ev.category)}" title="${escapeHtml(ev.title)}${ev.note ? ' - '+escapeHtml(ev.note) : ''}">
           <span class="dot"></span>
           <span class="t">${escapeHtml(ev.title)}</span>
         </div>
       `).join("");
 
-      /* ✅ 여기: 접속한 날짜와 완전 일치하는 칸 1개만 색 */
       const isVisitToday = (iso === VISIT_TODAY_ISO);
 
-      /* ✅ 더 확실히: today class + inline background 둘 다 적용 */
-      const inlineBg = isVisitToday ? `style="background: var(--today) !important;"` : "";
-
       cellsHtml += `
-        <div class="cell ${inMonth ? "" : "muted"} ${isVisitToday ? "today" : ""}" data-date="${iso}" ${inlineBg}>
+        <div class="cell ${inMonth ? "" : "muted"} ${isVisitToday ? "today" : ""}" data-date="${iso}">
           <div class="cellTop">
             <span class="dayNum">${d.getDate()}</span>
-            <span class="cnt">${singles.length ? singles.length+"건" : ""}</span>
+            <span class="cnt"></span>
           </div>
           <div class="cellList">${miniItems}</div>
         </div>
       `;
     }
 
-    weeksHtml.push(`<div class="week">${barsHtml}${cellsHtml}</div>`);
+    weeksHtml.push(
+      `<div class="week" style="--bar-rows:${rowsCount};">${barsHtml}${cellsHtml}</div>`
+    );
   }
 
   els.weeks.innerHTML = weeksHtml.join("");
@@ -633,11 +645,8 @@ function exportCSV(){
 /* init */
 renderDOW();
 buildMonthOptions();
-
-/* 버튼 라벨: 접속한 오늘 날짜 */
 els.todayLabel.textContent = VISIT_TODAY_ISO;
 
-/* 초기: 접속한 날짜가 학년도 범위 밖이면 START_MONTH로 보정 */
 state.cursor = clampDateToRange(new Date());
 state.month = ymKey(state.cursor);
 els.monthSelect.value = state.month;
@@ -645,13 +654,11 @@ els.monthSelect.value = state.month;
 /* bind */
 document.getElementById("prevBtn").addEventListener("click", ()=>moveMonth(-1));
 document.getElementById("nextBtn").addEventListener("click", ()=>moveMonth(+1));
-
 document.getElementById("todayBtn").addEventListener("click", ()=>{
   state.cursor = clampDateToRange(new Date());
   if(state.month !== "ALL") state.month = ymKey(state.cursor);
   render();
 });
-
 els.monthSelect.addEventListener("change", (e)=>{
   state.month = e.target.value;
   if(state.month !== "ALL"){
