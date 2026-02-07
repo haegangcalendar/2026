@@ -5,197 +5,342 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>2026학년도 학사일정</title>
   <style>
-    /* =========================
-       THEME (Light / Dark)
-       ========================= */
+    /* =========================================================
+       THEME
+       - Dark: 100% black (no vignette / no radial light)
+       ========================================================= */
     :root{
-      --bg:#0b0f14; --card:#121826; --muted:#9aa4b2; --text:#e6edf3;
-      --line:#243044; --accent:#4ea1ff; --accent2:#7ee787; --warn:#ffcc66; --bad:#ff7b72;
-      --chip:#1a2333;
-      --shadow: 0 10px 30px rgba(0,0,0,.25);
-      --header: rgba(11,15,20,.65);
-      --headerLine: rgba(36,48,68,.6);
-      --dayBg: rgba(12,16,24,.35);
-      --pillBg: rgba(26,35,51,.70);
-      --pillLine: rgba(36,48,68,.65);
-      --btnBg: rgba(18,24,38,.70);
-      --btnLine: rgba(36,48,68,.90);
-      --kbdBg: rgba(18,24,38,.60);
+      --bg:#000000;
+      --panel:#000000;
+      --text:#f3f4f6;
+      --muted:#9ca3af;
+      --line:#1f2937;
+
+      --accent:#60a5fa;
+      --accent2:#34d399;
+      --warn:#fbbf24;
+      --bad:#fb7185;
+
+      --chipBg:#0b1220;
+      --cellBg:#000000;
+      --cellAlt:#020202;
+      --barBg:#0b1220;
+
+      --shadow:none;
     }
     html[data-theme="light"]{
-      --bg:#f6f8fb; --card:#ffffff; --muted:#5b677a; --text:#111827;
-      --line:#d8dee9; --accent:#2563eb; --accent2:#16a34a; --warn:#d97706; --bad:#dc2626;
-      --chip:#f1f5f9;
+      --bg:#ffffff;
+      --panel:#ffffff;
+      --text:#111827;
+      --muted:#6b7280;
+      --line:#d1d5db;
+
+      --accent:#2563eb;
+      --accent2:#16a34a;
+      --warn:#d97706;
+      --bad:#dc2626;
+
+      --chipBg:#f1f5f9;
+      --cellBg:#ffffff;
+      --cellAlt:#fafafa;
+      --barBg:#eef2ff;
+
       --shadow: 0 10px 30px rgba(15,23,42,.08);
-      --header: rgba(246,248,251,.85);
-      --headerLine: var(--line);
-      --dayBg:#ffffff;
-      --pillBg:#f8fafc;
-      --pillLine: var(--line);
-      --btnBg: rgba(255,255,255,.9);
-      --btnLine: var(--line);
-      --kbdBg: #ffffff;
     }
 
     *{box-sizing:border-box}
     body{
       margin:0;
       font-family: system-ui, -apple-system, Segoe UI, Roboto, Noto Sans KR, Arial, sans-serif;
-      background: radial-gradient(1200px 800px at 15% 10%, rgba(255,255,255,.06) 0%, var(--bg) 60%);
-      color:var(--text);
+      background: var(--bg); /* ✅ 다크모드 100% 블랙 */
+      color: var(--text);
     }
+
     header{
       position:sticky; top:0; z-index:10;
-      backdrop-filter: blur(10px);
-      background: var(--header);
-      border-bottom:1px solid var(--headerLine);
+      background: var(--bg);
+      border-bottom:1px solid var(--line);
     }
-    .wrap{max-width:1150px; margin:0 auto; padding:16px;}
-    .title{
-      display:flex; align-items:flex-end; justify-content:space-between; gap:12px; flex-wrap:wrap;
-    }
+
+    .wrap{max-width:1200px; margin:0 auto; padding:16px;}
+    .title{display:flex; justify-content:space-between; align-items:flex-end; gap:12px; flex-wrap:wrap;}
     h1{margin:0; font-size:20px; letter-spacing:-.3px;}
     .sub{margin:0; color:var(--muted); font-size:13px}
 
-    .toolbar{
-      display:flex; gap:10px; flex-wrap:wrap; margin-top:12px;
-      align-items:center; justify-content:space-between;
-    }
+    .toolbar{display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap; margin-top:12px;}
     .controls{display:flex; gap:10px; flex-wrap:wrap; align-items:center}
 
     .btn{
-      border:1px solid var(--btnLine);
-      background: var(--btnBg);
+      border:1px solid var(--line);
+      background: transparent;
       color:var(--text);
-      padding:10px 12px; border-radius:12px; cursor:pointer;
-      display:inline-flex; gap:8px; align-items:center;
-      transition:.15s transform, .15s opacity;
+      padding:10px 12px;
+      border-radius:12px;
+      cursor:pointer;
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
       user-select:none;
     }
     .btn:hover{opacity:.92}
     .btn:active{transform: translateY(1px)}
-    .btn.primary{border-color: rgba(78,161,255,.9); box-shadow: 0 0 0 3px rgba(78,161,255,.12) inset;}
-    html[data-theme="light"] .btn.primary{border-color: rgba(37,99,235,.35); box-shadow: 0 0 0 3px rgba(37,99,235,.12) inset;}
     .btn.small{padding:8px 10px; border-radius:10px; font-size:13px}
+    .btn.primary{
+      border-color: color-mix(in oklab, var(--accent) 70%, var(--line));
+      box-shadow: 0 0 0 3px color-mix(in oklab, var(--accent) 20%, transparent) inset;
+    }
 
     .input, select{
-      border:1px solid var(--btnLine);
-      background: var(--btnBg);
+      border:1px solid var(--line);
+      background: transparent;
       color:var(--text);
-      padding:10px 12px; border-radius:12px;
+      padding:10px 12px;
+      border-radius:12px;
       outline:none;
     }
-    .input::placeholder{color: color-mix(in oklab, var(--muted) 70%, transparent);}
+    .input::placeholder{color:var(--muted)}
+    option{color:#111827} /* light dropdown text in some browsers */
 
     main .grid{
-      display:grid; grid-template-columns: 1.15fr .85fr; gap:14px; padding:16px;
+      display:grid;
+      grid-template-columns: 1.2fr .8fr;
+      gap:14px;
+      padding:16px;
     }
-    @media (max-width: 980px){
-      main .grid{grid-template-columns:1fr}
-    }
+    @media (max-width: 980px){ main .grid{grid-template-columns:1fr} }
+
     .card{
-      background: color-mix(in oklab, var(--card) 92%, transparent);
-      border:1px solid color-mix(in oklab, var(--line) 70%, transparent);
+      background: var(--panel);
+      border:1px solid var(--line);
       border-radius:18px;
-      overflow:hidden;
+      overflow: visible; /* ✅ 잘림 방지 */
       box-shadow: var(--shadow);
     }
-    .card h2{
-      margin:0; font-size:15px; padding:14px 14px 0 14px;
-      letter-spacing:-.2px;
-    }
-    .card .hint{padding:6px 14px 12px 14px; margin:0; color:var(--muted); font-size:12px}
 
     .monthbar{
-      display:flex; justify-content:space-between; align-items:center; gap:10px; padding:12px 14px;
-      border-bottom:1px solid color-mix(in oklab, var(--line) 65%, transparent);
-      background: color-mix(in oklab, var(--bg) 85%, transparent);
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:12px;
+      padding:12px 14px;
+      border-bottom:1px solid var(--line);
+      flex-wrap:wrap;
     }
-    .monthbar .m{font-weight:700; letter-spacing:-.2px}
+    .monthbar .m{font-weight:800; letter-spacing:-.3px}
 
-    .chips{display:flex; gap:8px; flex-wrap:wrap; padding:0 14px 14px}
+    .chips{display:flex; gap:8px; flex-wrap:wrap; padding:12px 14px 0 14px}
     .chip{
       display:inline-flex; align-items:center; gap:8px;
-      background: color-mix(in oklab, var(--chip) 85%, transparent);
-      border:1px solid color-mix(in oklab, var(--line) 65%, transparent);
-      color: var(--muted);
-      padding:8px 10px; border-radius:999px; font-size:12px;
-      cursor:pointer;
-    }
-    .chip.active{color:var(--text); border-color: color-mix(in oklab, var(--accent) 55%, transparent); background: color-mix(in oklab, var(--accent) 18%, transparent)}
-    .chip b{color:var(--text); font-weight:600}
-
-    .calendar{padding:14px}
-    .cal-head{
-      display:grid; grid-template-columns: repeat(7, 1fr);
-      gap:8px; padding:0 0 10px 0;
-      color:var(--muted); font-size:12px;
-    }
-    .cal-grid{
-      display:grid; grid-template-columns: repeat(7, 1fr);
-      gap:8px;
-    }
-    .day{
-      min-height:92px;
-      border:1px solid color-mix(in oklab, var(--line) 55%, transparent);
-      border-radius:14px;
-      padding:10px;
-      background: var(--dayBg);
-      display:flex; flex-direction:column; gap:8px;
-    }
-    .day.muted{opacity:.45}
-    .dnum{font-size:12px; color:var(--muted); display:flex; justify-content:space-between; gap:8px}
-
-    .pill{
-      display:inline-flex; align-items:center; gap:6px;
-      font-size:11px;
-      padding:6px 8px;
+      padding:8px 10px;
       border-radius:999px;
-      border:1px solid var(--pillLine);
-      background: var(--pillBg);
-      color: var(--text);
-      overflow:hidden; white-space:nowrap; text-overflow:ellipsis;
+      border:1px solid var(--line);
+      background: color-mix(in oklab, var(--chipBg) 65%, transparent);
+      color: var(--muted);
+      font-size:12px;
+      cursor:pointer;
+      white-space:nowrap;
     }
-    .pill .dot{width:8px; height:8px; border-radius:50%}
-    .pill.cat-학사 .dot{background: var(--accent)}
-    .pill.cat-수업 .dot{background: var(--accent2)}
-    .pill.cat-시험 .dot{background: var(--warn)}
-    .pill.cat-휴일 .dot{background: var(--bad)}
+    .chip b{color:var(--text); font-weight:700}
+    .chip.active{
+      color:var(--text);
+      border-color: color-mix(in oklab, var(--accent) 60%, var(--line));
+      background: color-mix(in oklab, var(--accent) 18%, transparent);
+    }
 
+    .calendar{
+      padding:14px;
+    }
+
+    /* =========================================================
+       TABLE-LIKE CALENDAR (긴 네모 칸 느낌)
+       + Multi-day event ribbon(띠) across days
+       ========================================================= */
+    .dow{
+      display:grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap:0;
+      border:1px solid var(--line);
+      border-bottom:0;
+      border-radius:14px 14px 0 0;
+      overflow:hidden;
+    }
+    .dow div{
+      padding:10px 10px;
+      font-size:12px;
+      color:var(--muted);
+      border-right:1px solid var(--line);
+      background: color-mix(in oklab, var(--cellAlt) 70%, transparent);
+    }
+    .dow div:last-child{border-right:0}
+
+    .weeks{
+      border:1px solid var(--line);
+      border-top:0;
+      border-radius:0 0 14px 14px;
+      overflow:hidden;
+    }
+
+    .week{
+      position:relative;
+      display:grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap:0;
+      border-top:1px solid var(--line);
+      background: var(--cellBg);
+    }
+    .week:first-child{border-top:0}
+
+    .cell{
+      position:relative;
+      min-height:118px;
+      padding:10px 10px 10px 10px;
+      border-right:1px solid var(--line);
+      background: var(--cellBg);
+    }
+    .cell:nth-child(odd){background: color-mix(in oklab, var(--cellAlt) 22%, var(--cellBg))}
+    .cell:last-child{border-right:0}
+
+    .cell.muted{opacity:.45}
+
+    .cellTop{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:10px;
+      font-size:12px;
+      color:var(--muted);
+      margin-bottom:8px;
+    }
+    .cellTop .dayNum{
+      font-weight:800;
+      color: color-mix(in oklab, var(--text) 70%, var(--muted));
+    }
+    .cellTop .cnt{
+      font-weight:700;
+      color: color-mix(in oklab, var(--text) 85%, var(--muted));
+    }
+
+    /* single-day items inside a cell */
+    .cellList{
+      display:flex;
+      flex-direction:column;
+      gap:6px;
+      min-width:0;
+    }
+    .mini{
+      display:flex;
+      align-items:center;
+      gap:8px;
+      min-width:0;
+      padding:6px 8px;
+      border-radius:10px;
+      border:1px solid color-mix(in oklab, var(--line) 75%, transparent);
+      background: color-mix(in oklab, var(--barBg) 70%, transparent);
+      font-size:12px;
+      overflow:hidden; /* ✅ 잘림 방지: 내부 텍스트는 ... 처리 */
+    }
+    .mini .dot{width:8px; height:8px; border-radius:50%}
+    .mini .t{
+      min-width:0;
+      overflow:hidden;
+      text-overflow:ellipsis;
+      white-space:nowrap;
+      color:var(--text);
+      font-weight:600;
+    }
+
+    /* Multi-day ribbon layer: stacked bars */
+    .bars{
+      position:absolute;
+      left:0;
+      right:0;
+      top:34px;         /* day header 아래부터 */
+      padding:0 6px;    /* week 내부 좌우 여백 */
+      pointer-events:none;
+    }
+    .barRow{
+      position:relative;
+      height:24px;
+      margin-bottom:6px;
+    }
+    .bar{
+      position:absolute;
+      height:24px;
+      border-radius:12px;
+      border:1px solid color-mix(in oklab, var(--line) 70%, transparent);
+      background: color-mix(in oklab, var(--barBg) 70%, transparent);
+      display:flex;
+      align-items:center;
+      gap:8px;
+      padding:0 10px;
+      min-width:0;
+      overflow:hidden;
+      pointer-events:auto; /* hover title 가능 */
+    }
+    .bar .dot{width:9px; height:9px; border-radius:50%}
+    .bar .txt{
+      min-width:0;
+      overflow:hidden;
+      text-overflow:ellipsis;
+      white-space:nowrap;
+      font-size:12px;
+      font-weight:700;
+      color:var(--text);
+    }
+
+    /* category colors */
+    .cat-학사 .dot{background: var(--accent)}
+    .cat-수업 .dot{background: var(--accent2)}
+    .cat-시험 .dot{background: var(--warn)}
+    .cat-휴일 .dot{background: var(--bad)}
+
+    /* Right list */
+    .side h2{margin:0; font-size:15px; padding:14px 14px 0 14px; letter-spacing:-.2px;}
+    .side .hint{padding:6px 14px 12px 14px; margin:0; color:var(--muted); font-size:12px}
     .list{padding:14px; display:flex; flex-direction:column; gap:10px}
     .item{
-      border:1px solid color-mix(in oklab, var(--line) 60%, transparent);
+      border:1px solid var(--line);
       border-radius:16px;
       padding:12px;
-      background: color-mix(in oklab, var(--dayBg) 88%, transparent);
-      display:flex; gap:12px; align-items:flex-start; justify-content:space-between;
+      background: color-mix(in oklab, var(--cellAlt) 15%, transparent);
+      display:flex;
+      justify-content:space-between;
+      gap:12px;
+      align-items:flex-start;
     }
     .item .left{min-width:0}
-    .item .date{font-weight:700; letter-spacing:-.2px}
+    .item .date{font-weight:800; letter-spacing:-.2px}
     .item .meta{color:var(--muted); font-size:12px; margin-top:4px}
-    .item .tag{
-      font-size:12px; color:var(--text);
-      padding:8px 10px; border-radius:999px;
-      border:1px solid color-mix(in oklab, var(--line) 60%, transparent);
-      background: var(--pillBg);
+    .tag{
+      font-size:12px;
+      border:1px solid var(--line);
+      background: color-mix(in oklab, var(--barBg) 60%, transparent);
+      padding:8px 10px;
+      border-radius:999px;
       white-space:nowrap;
+      height:fit-content;
+    }
+
+    .kbd{
+      border:1px solid var(--line);
+      padding:2px 6px;
+      border-radius:6px;
+      background: transparent;
+      color:var(--text);
     }
 
     .footer{
-      max-width:1150px; margin:0 auto; padding:0 16px 24px; color:var(--muted); font-size:12px;
-    }
-    .kbd{
-      border:1px solid color-mix(in oklab, var(--line) 80%, transparent);
-      padding:2px 6px; border-radius:6px;
-      background: var(--kbdBg);
-      color:var(--text);
+      max-width:1200px; margin:0 auto;
+      padding:0 16px 24px;
+      color:var(--muted);
+      font-size:12px;
     }
 
     @media print{
       header, .toolbar, .chips {display:none !important}
       body{background:#fff; color:#000}
       .card{box-shadow:none; background:#fff; border:1px solid #ddd}
-      .day, .item{background:#fff}
+      .week,.cell{background:#fff}
     }
   </style>
 </head>
@@ -205,7 +350,7 @@
     <div class="title">
       <div>
         <h1>2026학년도 학사일정</h1>
-        <p class="sub">월별 캘린더 + 일정 리스트 · 검색/필터 · 다크/라이트 모드</p>
+        <p class="sub">표 형태 달력 + 기간 일정은 “띠(리본)”로 표시 · 다크/라이트 전환</p>
       </div>
       <div class="controls">
         <button class="btn small" id="themeBtn" title="다크/라이트 전환">🌓 테마</button>
@@ -224,7 +369,7 @@
           <option value="ALL">전체 분류</option>
         </select>
 
-        <input id="q" class="input" placeholder="검색: 예) 수강, 중간, 종강, 휴강…" />
+        <input id="q" class="input" placeholder="검색: 예) 체험학습, 중간, 종강…" />
       </div>
 
       <div class="controls">
@@ -245,14 +390,16 @@
             단축키: <span class="kbd">←</span> <span class="kbd">→</span>
           </div>
         </div>
+
         <div class="chips" id="summaryChips"></div>
+
         <div class="calendar">
-          <div class="cal-head" id="dow"></div>
-          <div class="cal-grid" id="cal"></div>
+          <div class="dow" id="dow"></div>
+          <div class="weeks" id="weeks"></div>
         </div>
       </section>
 
-      <aside class="card">
+      <aside class="card side">
         <h2>선택 월 일정</h2>
         <p class="hint">현재 월 + 필터/검색 조건에 맞는 일정만 표시됩니다.</p>
         <div class="list" id="list"></div>
@@ -263,13 +410,13 @@
 
 <div class="footer">
   <div class="wrap">
-    <div>※ 이 버전은 “관리자/로그인/웹편집” 기능이 없습니다. 변경은 코드에서 일정 데이터만 수정하면 됩니다.</div>
+    <div>※ 이 버전은 “관리자/로그인/웹편집” 기능이 없습니다. 변경은 아래 <b>EVENTS</b> 배열만 수정하면 됩니다.</div>
   </div>
 </div>
 
 <script>
 /** =========================
- *  1) 일정 데이터
+ *  일정 데이터
  *  - 단일일: { date:"YYYY-MM-DD", title, category, note? }
  *  - 기간일정: { start:"YYYY-MM-DD", end:"YYYY-MM-DD", title, category, note? }
  * ========================= */
@@ -294,12 +441,10 @@ const START_MONTH = "2026-03-01";
 const END_MONTH   = "2027-02-01";
 
 /** =========================
- *  2) 테마(다크/라이트) 저장
+ *  테마 저장
  * ========================= */
-const THEME_KEY = "acad_theme_v1";
-function getTheme(){
-  return localStorage.getItem(THEME_KEY) || "dark";
-}
+const THEME_KEY = "acad_theme_v2";
+function getTheme(){ return localStorage.getItem(THEME_KEY) || "dark"; }
 function setTheme(t){
   document.documentElement.setAttribute("data-theme", t);
   localStorage.setItem(THEME_KEY, t);
@@ -307,7 +452,7 @@ function setTheme(t){
 setTheme(getTheme());
 
 /** =========================
- *  3) UI 로직
+ *  유틸
  * ========================= */
 const DOW = ["일","월","화","수","목","금","토"];
 
@@ -320,7 +465,7 @@ let state = {
 const els = {
   monthTitle: document.getElementById("monthTitle"),
   dow: document.getElementById("dow"),
-  cal: document.getElementById("cal"),
+  weeks: document.getElementById("weeks"),
   list: document.getElementById("list"),
   monthSelect: document.getElementById("monthSelect"),
   catSelect: document.getElementById("catSelect"),
@@ -344,9 +489,7 @@ function formatDateK(iso){
   const [y,m,d]=iso.split("-").map(Number);
   return `${y}.${pad2(m)}.${pad2(d)}`;
 }
-function formatRangeK(s,e){
-  return `${formatDateK(s)}~${formatDateK(e)}`;
-}
+function formatRangeK(s,e){ return `${formatDateK(s)}~${formatDateK(e)}`; }
 function normalized(s){ return (s||"").toLowerCase().trim(); }
 function escapeHtml(s){
   return String(s||"").replace(/[&<>"']/g, (m)=>({
@@ -359,8 +502,8 @@ function clampCursor(){
   if(state.cursor < min) state.cursor = min;
   if(state.cursor > max) state.cursor = max;
 }
-
 function isRange(e){ return !!(e.start && e.end); }
+
 function rangeCoversDate(e, iso){
   const t = parseISO(iso).getTime();
   const a = parseISO(e.start).getTime();
@@ -369,15 +512,29 @@ function rangeCoversDate(e, iso){
 }
 function rangeOverlapsMonth(e, monthDate){
   const ms = new Date(monthDate.getFullYear(), monthDate.getMonth(), 1);
-  const me = new Date(monthDate.getFullYear(), monthDate.getMonth()+1, 0); // last day
+  const me = new Date(monthDate.getFullYear(), monthDate.getMonth()+1, 0);
   const a = parseISO(e.start).getTime();
   const b = parseISO(e.end).getTime();
   return a <= me.getTime() && b >= ms.getTime();
 }
+function weekStartOf(dateObj){
+  const d = new Date(dateObj);
+  const dow = d.getDay();
+  d.setDate(d.getDate() - dow); // Sunday start
+  d.setHours(0,0,0,0);
+  return d;
+}
+function addDays(dateObj, n){
+  const d = new Date(dateObj);
+  d.setDate(d.getDate()+n);
+  return d;
+}
 
+/** =========================
+ *  필터/검색
+ * ========================= */
 function getCategories(){
-  const cats = Array.from(new Set(EVENTS.map(e=>e.category))).sort((a,b)=>a.localeCompare(b,"ko"));
-  return cats;
+  return Array.from(new Set(EVENTS.map(e=>e.category))).sort((a,b)=>a.localeCompare(b,"ko"));
 }
 
 function getFilteredEvents(){
@@ -400,29 +557,27 @@ function getFilteredEvents(){
     });
 }
 
-/* 달력 셀(날짜별)에서 보여줄 이벤트: 단일일 or 기간일정이 해당 날짜를 포함 */
-function eventsOnDate(iso){
-  const list = getFilteredEvents();
-  return list.filter(e=>{
-    if(isRange(e)) return rangeCoversDate(e, iso);
-    return e.date === iso;
-  });
+function singleEventsOnDate(iso){
+  // ✅ 기간일정은 "띠"로만 표시(셀 안 미니표시는 단일일만)
+  return getFilteredEvents().filter(e => !isRange(e) && e.date === iso);
 }
-
-/* 우측 리스트(월별)에서 보여줄 이벤트: 단일일이 그 달에 있거나, 기간일정이 그 달과 겹치면 1회 표시 */
+function rangeEventsOverlappingMonth(monthDate){
+  return getFilteredEvents().filter(e => isRange(e) && rangeOverlapsMonth(e, monthDate));
+}
 function eventsForMonthList(monthDate){
   const key = ymKey(monthDate);
-  const list = getFilteredEvents();
-  return list.filter(e=>{
+  return getFilteredEvents().filter(e=>{
     if(isRange(e)) return rangeOverlapsMonth(e, monthDate);
     return (e.date || "").startsWith(key);
   });
 }
 
+/** =========================
+ *  UI: 옵션 빌드
+ * ========================= */
 function renderDOW(){
   els.dow.innerHTML = DOW.map(x=>`<div>${x}</div>`).join("");
 }
-
 function buildMonthOptions(){
   const start = new Date(START_MONTH);
   const end = new Date(END_MONTH);
@@ -435,12 +590,15 @@ function buildMonthOptions(){
   }
   els.monthSelect.innerHTML = opts.map(o => `<option value="${o.value}">${o.label}</option>`).join("");
 }
-
 function buildCategoryOptions(){
   const cats = getCategories();
-  els.catSelect.innerHTML = `<option value="ALL">전체 분류</option>` + cats.map(c=>`<option value="${c}">${c}</option>`).join("");
+  els.catSelect.innerHTML =
+    `<option value="ALL">전체 분류</option>` + cats.map(c=>`<option value="${c}">${c}</option>`).join("");
 }
 
+/** =========================
+ *  Chips
+ * ========================= */
 function renderSummaryChips(monthDate){
   const monthList = eventsForMonthList(monthDate);
   const byCat = {};
@@ -455,7 +613,6 @@ function renderSummaryChips(monthDate){
       <b>${escapeHtml(label)}</b> ${count}건
     </div>
   `;
-
   const chips = [];
   chips.push(makeChip("전체", total, state.cat==="ALL", "ALL"));
   for(const c of cats){
@@ -472,56 +629,161 @@ function renderSummaryChips(monthDate){
   });
 }
 
+/** =========================
+ *  Multi-day ribbon layout
+ *  - split each range event into week segments
+ *  - stack segments into up to 3 rows per week
+ * ========================= */
+function splitRangeToWeekSegment(e, weekStartDate){
+  const ws = new Date(weekStartDate); ws.setHours(0,0,0,0);
+  const we = addDays(ws, 6);
+
+  const a = parseISO(e.start);
+  const b = parseISO(e.end);
+
+  const segStart = (a > ws) ? a : ws;
+  const segEnd   = (b < we) ? b : we;
+
+  if(segStart > segEnd) return null;
+
+  const colStart = segStart.getDay(); // 0..6
+  const colEnd   = segEnd.getDay();   // 0..6
+  return { colStart, colEnd, segStartISO: toISODate(segStart), segEndISO: toISODate(segEnd) };
+}
+
+function layoutBarsForWeek(rangeEvents, weekStartDate){
+  // collect segments
+  const segs = [];
+  for(const e of rangeEvents){
+    const seg = splitRangeToWeekSegment(e, weekStartDate);
+    if(seg){
+      segs.push({ ...seg, e });
+    }
+  }
+
+  // sort by start col then longer first
+  segs.sort((x,y)=>{
+    if(x.colStart !== y.colStart) return x.colStart - y.colStart;
+    return (y.colEnd - y.colStart) - (x.colEnd - x.colStart);
+  });
+
+  // greedy stack into rows (no overlap in same row)
+  const rows = []; // each row holds lastEndCol
+  const placed = []; // {rowIndex, seg}
+  for(const s of segs){
+    let rowIndex = -1;
+    for(let r=0;r<rows.length;r++){
+      if(s.colStart > rows[r]){ rowIndex = r; break; }
+    }
+    if(rowIndex === -1){
+      if(rows.length >= 3) continue; // 최대 3줄만 표시
+      rows.push(-1);
+      rowIndex = rows.length-1;
+    }
+    rows[rowIndex] = s.colEnd;
+    placed.push({ rowIndex, seg: s });
+  }
+  return { rowsCount: rows.length, placed };
+}
+
+/** =========================
+ *  Render calendar
+ * ========================= */
 function renderCalendar(){
   clampCursor();
   const cur = new Date(state.cursor);
   cur.setDate(1);
+
   els.monthTitle.textContent = formatYM(cur);
   els.monthSelect.value = ymKey(cur);
 
   renderSummaryChips(cur);
 
+  // month grid start from the week containing the 1st
   const firstDay = new Date(cur);
-  const startDow = firstDay.getDay();
-  const startCell = new Date(firstDay);
-  startCell.setDate(startCell.getDate() - startDow);
+  const gridStart = weekStartOf(firstDay);
 
-  const cells = [];
-  for(let i=0;i<42;i++){
-    const d = new Date(startCell);
-    d.setDate(startCell.getDate()+i);
-    const iso = toISODate(d);
-    const inMonth = d.getMonth()===cur.getMonth();
-    const dayEvents = eventsOnDate(iso);
+  // for ribbon bars we need range events overlapping this month
+  const monthRanges = rangeEventsOverlappingMonth(cur);
 
-    const pills = dayEvents.slice(0,3).map(e => `
-      <div class="pill cat-${escapeHtml(e.category)}" title="${escapeHtml(e.title)}${e.note ? ' - '+escapeHtml(e.note) : ''}">
-        <span class="dot"></span>
-        <span style="min-width:0; overflow:hidden; text-overflow:ellipsis;">${escapeHtml(e.title)}</span>
-      </div>
-    `).join("");
+  // build 6 weeks
+  const weeksHtml = [];
+  for(let w=0; w<6; w++){
+    const ws = addDays(gridStart, w*7);
+    const { rowsCount, placed } = layoutBarsForWeek(monthRanges, ws);
 
-    const more = dayEvents.length>3 ? `<div class="pill" style="opacity:.75;">+${dayEvents.length-3} 더보기</div>` : "";
+    // ribbon layer html
+    let barsHtml = `<div class="bars">`;
+    for(let r=0; r<Math.max(rowsCount, 0); r++){
+      barsHtml += `<div class="barRow">`;
+      for(const p of placed.filter(x=>x.rowIndex===r)){
+        const s = p.seg;
+        const e = s.e;
+        const leftPct = (s.colStart / 7) * 100;
+        const widthPct = ((s.colEnd - s.colStart + 1) / 7) * 100;
+        const title = `${e.title} (${formatRangeK(e.start, e.end)})${e.note? " - "+e.note:""}`;
+        barsHtml += `
+          <div class="bar cat-${escapeHtml(e.category)}"
+               style="left: calc(${leftPct}% + 6px); width: calc(${widthPct}% - 12px);"
+               title="${escapeHtml(title)}">
+            <span class="dot"></span>
+            <span class="txt">${escapeHtml(e.title)}</span>
+          </div>
+        `;
+      }
+      barsHtml += `</div>`;
+    }
+    barsHtml += `</div>`;
 
-    cells.push(`
-      <div class="day ${inMonth ? "" : "muted"}" data-date="${iso}">
-        <div class="dnum"><span>${d.getDate()}</span><span style="color:${dayEvents.length? 'var(--text)':'var(--muted)'}">${dayEvents.length? dayEvents.length+'건':''}</span></div>
-        ${pills}${more}
-      </div>
-    `);
+    // cells html
+    let cellsHtml = ``;
+    for(let c=0;c<7;c++){
+      const d = addDays(ws, c);
+      const iso = toISODate(d);
+      const inMonth = d.getMonth() === cur.getMonth();
+      const singles = singleEventsOnDate(iso);
+
+      const miniItems = singles.slice(0,2).map(ev => `
+        <div class="mini cat-${escapeHtml(ev.category)}" title="${escapeHtml(ev.title)}${ev.note ? ' - '+escapeHtml(ev.note) : ''}">
+          <span class="dot"></span>
+          <span class="t">${escapeHtml(ev.title)}</span>
+        </div>
+      `).join("");
+
+      const more = singles.length>2 ? `<div style="color:var(--muted); font-size:12px; padding-left:2px;">+${singles.length-2} 더보기</div>` : "";
+
+      const cnt = singles.length; // ✅ 셀 카운트는 단일일 기준(기간은 띠로)
+      cellsHtml += `
+        <div class="cell ${inMonth ? "" : "muted"}" data-date="${iso}">
+          <div class="cellTop">
+            <span class="dayNum">${d.getDate()}</span>
+            <span class="cnt">${cnt ? cnt+"건" : ""}</span>
+          </div>
+          <div class="cellList">
+            ${miniItems}${more}
+          </div>
+        </div>
+      `;
+    }
+
+    weeksHtml.push(`<div class="week">${barsHtml}${cellsHtml}</div>`);
   }
-  els.cal.innerHTML = cells.join("");
 
-  // 클릭하면 우측 리스트에서 해당 날짜(단일일)로 스크롤
-  els.cal.querySelectorAll(".day").forEach(dayEl => {
-    dayEl.addEventListener("click", () => {
-      const iso = dayEl.dataset.date;
+  els.weeks.innerHTML = weeksHtml.join("");
+
+  // click day -> scroll list to that day anchor if exists
+  els.weeks.querySelectorAll(".cell").forEach(cell=>{
+    cell.addEventListener("click", ()=>{
+      const iso = cell.dataset.date;
       const target = document.querySelector(`[data-item-anchor="${iso}"]`);
       if(target) target.scrollIntoView({behavior:"smooth", block:"center"});
     });
   });
 }
 
+/** =========================
+ *  Right list
+ * ========================= */
 function renderSideList(){
   const cur = new Date(state.cursor);
   cur.setDate(1);
@@ -532,9 +794,9 @@ function renderSideList(){
     return;
   }
 
-  els.list.innerHTML = monthEvents.map(e => {
+  els.list.innerHTML = monthEvents.map(e=>{
     const labelDate = isRange(e) ? formatRangeK(e.start, e.end) : formatDateK(e.date);
-    const anchor = isRange(e) ? e.start : e.date; // 스크롤 기준
+    const anchor = isRange(e) ? e.start : e.date;
     return `
       <div class="item" data-item-anchor="${escapeHtml(anchor)}">
         <div class="left">
@@ -547,6 +809,9 @@ function renderSideList(){
   }).join("");
 }
 
+/** =========================
+ *  Render + controls
+ * ========================= */
 function render(){
   buildCategoryOptions();
   renderCalendar();
@@ -581,12 +846,11 @@ function exportCSV(){
   URL.revokeObjectURL(url);
 }
 
-/** =========================
- *  4) 이벤트 바인딩
- * ========================= */
-buildMonthOptions();
+/** init */
 renderDOW();
+buildMonthOptions();
 
+/** bind */
 document.getElementById("prevBtn").addEventListener("click", ()=>moveMonth(-1));
 document.getElementById("nextBtn").addEventListener("click", ()=>moveMonth(+1));
 document.getElementById("startBtn").addEventListener("click", ()=>{
@@ -613,8 +877,7 @@ document.getElementById("printBtn").addEventListener("click", ()=>window.print()
 
 els.themeBtn.addEventListener("click", ()=>{
   const cur = getTheme();
-  const next = (cur === "dark") ? "light" : "dark";
-  setTheme(next);
+  setTheme(cur === "dark" ? "light" : "dark");
 });
 
 window.addEventListener("keydown", (e)=>{
@@ -622,7 +885,7 @@ window.addEventListener("keydown", (e)=>{
   if(e.key==="ArrowRight") moveMonth(+1);
 });
 
-// 초기 렌더
+/** first render */
 render();
 </script>
 </body>
