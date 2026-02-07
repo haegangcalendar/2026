@@ -94,20 +94,6 @@
     }
     .monthbar .m{font-weight:800; letter-spacing:-.3px}
 
-    .chips{display:flex; gap:8px; flex-wrap:wrap; padding:12px 14px 0 14px}
-    .chip{
-      display:inline-flex; align-items:center; gap:8px;
-      padding:7px 10px; border-radius:999px; border:1px solid var(--line);
-      background: color-mix(in oklab, var(--chipBg) 85%, transparent);
-      color: var(--muted); font-size: var(--fs-ui); cursor:pointer; white-space:nowrap;
-    }
-    .chip b{color:var(--text); font-weight:700}
-    .chip.active{
-      color:var(--text);
-      border-color: color-mix(in oklab, var(--accent) 60%, var(--line));
-      background: color-mix(in oklab, var(--accent) 14%, transparent);
-    }
-
     .calendar{padding:14px;}
 
     .dow{
@@ -126,15 +112,14 @@
       border-radius:0 0 14px 14px; overflow:hidden;
     }
 
-    /* ✅ 주(week) 단위로 리본 줄 수에 따라 셀 높이를 자동 확보 */
     .week{
       position:relative;
       display:grid; grid-template-columns: repeat(7, 1fr);
       border-top:1px solid var(--line);
       background: var(--cellBg);
       --bar-rows: 0;
-      --bar-row-h: 30px;   /* 24px + gap(6px) */
-      --bar-top: 34px;     /* bars top */
+      --bar-row-h: 30px;
+      --bar-top: 34px;
       --cell-base-pad: 10px;
     }
     .week:first-child{border-top:0}
@@ -143,7 +128,6 @@
       position:relative;
       min-height:112px;
       padding: var(--cell-base-pad);
-      /* ✅ 리본이 몇 줄이든, 그 아래로 내용이 내려가게 해서 "겹침" 제거 */
       padding-top: calc(var(--cell-base-pad) + 22px + (var(--bar-rows) * var(--bar-row-h)));
       border-right:1px solid var(--line);
       background: var(--cellBg);
@@ -153,14 +137,13 @@
     .cell:last-child{border-right:0}
     .cell.muted{opacity:.45}
 
-    /* ✅ 접속한 날짜(오늘) 칸 */
     .cell.today{
       background: var(--today) !important;
       box-shadow: inset 0 0 0 2px rgba(17,24,39,.25);
     }
 
     .cellTop{
-      position:absolute; /* ✅ 리본/내용과 분리해서 위에 고정 */
+      position:absolute;
       top: 8px;
       left: 10px;
       right: 10px;
@@ -187,7 +170,6 @@
       color:var(--text); font-weight:600;
     }
 
-    /* ✅ 기간 일정 리본(띠) */
     .bars{
       position:absolute;
       left:0; right:0;
@@ -221,10 +203,8 @@
       color:var(--text);
     }
 
-    .cat-학사 .dot{background: var(--accent)}
-    .cat-수업 .dot{background: var(--accent2)}
-    .cat-시험 .dot{background: var(--warn)}
-    .cat-휴일 .dot{background: var(--bad)}
+    /* ✅ 분류색 통일(분류 UI 제거했으므로 전부 같은 색) */
+    .dot{background: var(--accent);}
 
     .side h2{margin:0; font-size:15px; padding:14px 14px 0 14px; letter-spacing:-.2px;}
     .side .hint{padding:6px 14px 12px 14px; margin:0; color:var(--muted); font-size:12px}
@@ -243,7 +223,7 @@
     .item .row1{font-weight:800; letter-spacing:-.2px; word-break:keep-all;}
     .item .row2{color:var(--muted); font-size:12px; margin-top:4px; word-break:break-word;}
 
-    @media print{ header, .toolbar, .chips {display:none !important} }
+    @media print{ header, .toolbar {display:none !important} }
   </style>
 </head>
 <body>
@@ -260,13 +240,11 @@
         <button class="btn small" id="nextBtn" title="다음 달 (→)"><span>다음</span> ▶︎</button>
 
         <select id="monthSelect" title="월 선택"></select>
-        <select id="catSelect" title="분류 필터"><option value="ALL">전체 분류</option></select>
-
         <input id="q" class="input" placeholder="검색: 예) 6월 15일 | 일정명 / 설명" />
       </div>
 
       <div class="controls">
-        <button class="btn" id="exportBtn" title="현재 필터 결과를 CSV로 저장">⤓ CSV</button>
+        <!-- ✅ CSV 버튼 삭제 -->
         <button class="btn primary" id="printBtn" title="인쇄/저장">🖨 인쇄</button>
       </div>
     </div>
@@ -281,8 +259,6 @@
           <div class="m" id="monthTitle">2026.03</div>
           <div style="color:var(--muted); font-size:12px;">단축키: ← →</div>
         </div>
-
-        <div class="chips" id="summaryChips"></div>
 
         <div class="calendar">
           <div class="dow" id="dow"></div>
@@ -301,19 +277,19 @@
 
 <script>
 const EVENTS = [
-  { date:"2026-03-02", title:"1학기 개강(예시)", category:"학사", note:"학교 공지 기준으로 수정" },
-  { date:"2026-04-20", title:"중간고사(예시)", category:"시험", note:"학교별 일정 상이" },
-  { date:"2026-06-15", title:"기말고사(예시)", category:"시험", note:"학교별 일정 상이" },
-  { date:"2026-06-26", title:"1학기 종강(예시)", category:"학사", note:"" },
+  { date:"2026-03-02", title:"1학기 개강(예시)", note:"학교 공지 기준으로 수정" },
+  { date:"2026-04-20", title:"중간고사(예시)", note:"학교별 일정 상이" },
+  { date:"2026-06-15", title:"기말고사(예시)", note:"학교별 일정 상이" },
+  { date:"2026-06-26", title:"1학기 종강(예시)", note:"" },
 
-  { date:"2026-09-01", title:"2학기 개강(예시)", category:"학사", note:"" },
-  { date:"2026-10-19", title:"중간고사(예시)", category:"시험", note:"" },
-  { date:"2026-12-14", title:"기말고사(예시)", category:"시험", note:"" },
-  { date:"2026-12-23", title:"2학기 종강(예시)", category:"학사", note:"" },
+  { date:"2026-09-01", title:"2학기 개강(예시)", note:"" },
+  { date:"2026-10-19", title:"중간고사(예시)", note:"" },
+  { date:"2026-12-14", title:"기말고사(예시)", note:"" },
+  { date:"2026-12-23", title:"2학기 종강(예시)", note:"" },
 
-  { date:"2026-05-05", title:"어린이날(예시)", category:"휴일", note:"" },
+  { date:"2026-05-05", title:"어린이날(예시)", note:"" },
 
-  { start:"2026-06-01", end:"2026-07-14", title:"3학년 체험학습", category:"학사", note:"기간 일정" },
+  { start:"2026-06-01", end:"2026-07-14", title:"3학년 체험학습", note:"기간 일정" },
 ];
 
 const START_MONTH = "2026-03-01";
@@ -354,7 +330,6 @@ function rangeOverlapsMonth(e, monthDate){
 
 let state = {
   cursor: new Date(START_MONTH),
-  cat: "ALL",
   q: "",
   month: ymKey(new Date(START_MONTH)),
 };
@@ -365,9 +340,7 @@ const els = {
   weeks: document.getElementById("weeks"),
   list: document.getElementById("list"),
   monthSelect: document.getElementById("monthSelect"),
-  catSelect: document.getElementById("catSelect"),
   q: document.getElementById("q"),
-  summaryChips: document.getElementById("summaryChips"),
   todayLabel: document.getElementById("todayLabel"),
 };
 
@@ -384,13 +357,6 @@ function buildMonthOptions(){
   }
   els.monthSelect.innerHTML = opts.map(o=>`<option value="${o.value}">${o.label}</option>`).join("");
 }
-function getCategories(){
-  return Array.from(new Set(EVENTS.map(e=>e.category))).sort((a,b)=>a.localeCompare(b,"ko"));
-}
-function buildCategoryOptions(){
-  const cats = getCategories();
-  els.catSelect.innerHTML = `<option value="ALL">전체 분류</option>` + cats.map(c=>`<option value="${c}">${c}</option>`).join("");
-}
 
 function getFilteredEvents(){
   const q = normalized(state.q);
@@ -400,12 +366,12 @@ function getFilteredEvents(){
       const db = isRange(b) ? b.start : b.date;
       return da.localeCompare(db);
     })
-    .filter(e => state.cat==="ALL" ? true : e.category===state.cat)
     .filter(e => {
       if(!q) return true;
       const datePart = isRange(e) ? `${e.start} ${e.end}` : e.date;
-      const pretty = isRange(e) ? formatRangeK(e.start,e.end) : formatDateK(e.date);
-      const hay = [datePart, pretty, e.title, e.note, e.category].join(" ").toLowerCase();
+      const pretty = isRange(e) ? `${formatRangeK(e.start,e.end)} ${formatDateKFull(e.start)} ${formatDateKFull(e.end)}`
+                               : `${formatDateK(e.date)} ${formatDateKFull(e.date)}`;
+      const hay = [datePart, pretty, e.title, e.note].join(" ").toLowerCase();
       return hay.includes(q);
     });
 }
@@ -431,31 +397,7 @@ function rangeEventsForCalendarMonth(monthDate){
   return all.filter(e => isRange(e) && rangeOverlapsMonth(e, monthDate));
 }
 
-function renderSummaryChips(){
-  const list = eventsForList();
-  const byCat = {};
-  for(const e of list) byCat[e.category] = (byCat[e.category]||0)+1;
-  const cats = Object.keys(byCat).sort((a,b)=>a.localeCompare(b,"ko"));
-  const total = list.length;
-
-  const makeChip = (label, count, active, value) => `
-    <div class="chip ${active?'active':''}" data-cat="${escapeHtml(value)}">
-      <b>${escapeHtml(label)}</b> ${count}건
-    </div>
-  `;
-  const chips = [makeChip("전체", total, state.cat==="ALL", "ALL")];
-  for(const c of cats) chips.push(makeChip(c, byCat[c], state.cat===c, c));
-  els.summaryChips.innerHTML = chips.join("");
-  els.summaryChips.querySelectorAll(".chip").forEach(ch=>{
-    ch.addEventListener("click", ()=>{
-      state.cat = ch.dataset.cat;
-      els.catSelect.value = state.cat;
-      render();
-    });
-  });
-}
-
-/* ====== 겹침 방지 핵심: 리본은 "절대 겹치지 않게" 행(row)을 무제한으로 늘려 배치 ====== */
+/* 겹침 방지: 리본 줄 무제한 추가 */
 function splitRangeToWeekSegment(e, weekStartDate){
   const ws = new Date(weekStartDate); ws.setHours(0,0,0,0);
   const we = addDays(ws, 6);
@@ -466,15 +408,12 @@ function splitRangeToWeekSegment(e, weekStartDate){
   if(segStart > segEnd) return null;
   return { colStart: segStart.getDay(), colEnd: segEnd.getDay() };
 }
-
 function layoutBarsForWeek(rangeEvents, weekStartDate){
   const segs = [];
   for(const e of rangeEvents){
     const seg = splitRangeToWeekSegment(e, weekStartDate);
     if(seg) segs.push({ ...seg, e });
   }
-
-  // start 먼저, 길이 긴 것 우선
   segs.sort((x,y)=>{
     if(x.colStart !== y.colStart) return x.colStart - y.colStart;
     return (y.colEnd - y.colStart) - (x.colEnd - x.colStart);
@@ -482,20 +421,18 @@ function layoutBarsForWeek(rangeEvents, weekStartDate){
 
   const rowsEnd = [];
   const placed = [];
-
   for(const s of segs){
     let rowIndex = -1;
     for(let r=0;r<rowsEnd.length;r++){
       if(s.colStart > rowsEnd[r]){ rowIndex = r; break; }
     }
     if(rowIndex === -1){
-      rowsEnd.push(-1);              // ✅ 제한 없음(필요하면 계속 줄 추가)
+      rowsEnd.push(-1);
       rowIndex = rowsEnd.length-1;
     }
     rowsEnd[rowIndex] = s.colEnd;
     placed.push({ rowIndex, seg: s });
   }
-
   return { rowsCount: rowsEnd.length, placed };
 }
 
@@ -515,8 +452,6 @@ function renderCalendar(){
 
   els.monthSelect.value = state.month;
 
-  renderSummaryChips();
-
   const gridStart = weekStartOf(new Date(cur));
   const rangeEvents = rangeEventsForCalendarMonth(cur);
 
@@ -525,7 +460,6 @@ function renderCalendar(){
     const ws = addDays(gridStart, w*7);
     const { rowsCount, placed } = layoutBarsForWeek(rangeEvents, ws);
 
-    // ✅ 이 주에 리본 줄 수(rowsCount)를 CSS 변수로 주입 → 셀 내용이 아래로 내려가서 겹침 제거
     let barsHtml = `<div class="bars" style="grid-template-rows: repeat(${Math.max(rowsCount,0)}, 24px);">`;
     for(const p of placed){
       const s = p.seg;
@@ -535,9 +469,7 @@ function renderCalendar(){
       const gcEnd = s.colEnd + 2;
       const gr = p.rowIndex + 1;
       barsHtml += `
-        <div class="bar cat-${escapeHtml(e.category)}"
-             style="grid-column:${gcStart} / ${gcEnd}; grid-row:${gr};"
-             title="${escapeHtml(title)}">
+        <div class="bar" style="grid-column:${gcStart} / ${gcEnd}; grid-row:${gr};" title="${escapeHtml(title)}">
           <span class="dot"></span>
           <span class="txt">${escapeHtml(e.title)}</span>
         </div>
@@ -551,9 +483,8 @@ function renderCalendar(){
       const iso = toISODate(d);
       const inMonth = d.getMonth() === cur.getMonth();
       const singles = singleEventsOnDate(iso);
-
       const miniItems = singles.slice(0,3).map(ev => `
-        <div class="mini cat-${escapeHtml(ev.category)}" title="${escapeHtml(ev.title)}${ev.note ? ' - '+escapeHtml(ev.note) : ''}">
+        <div class="mini" title="${escapeHtml(ev.title)}${ev.note ? ' - '+escapeHtml(ev.note) : ''}">
           <span class="dot"></span>
           <span class="t">${escapeHtml(ev.title)}</span>
         </div>
@@ -572,9 +503,7 @@ function renderCalendar(){
       `;
     }
 
-    weeksHtml.push(
-      `<div class="week" style="--bar-rows:${rowsCount};">${barsHtml}${cellsHtml}</div>`
-    );
+    weeksHtml.push(`<div class="week" style="--bar-rows:${rowsCount};">${barsHtml}${cellsHtml}</div>`);
   }
 
   els.weeks.innerHTML = weeksHtml.join("");
@@ -594,7 +523,7 @@ function renderList(){
       <div class="item">
         <div class="left">
           <div class="row1">${escapeHtml(datePart)} | ${escapeHtml(line)}</div>
-          <div class="row2">${escapeHtml(e.category)}</div>
+          <div class="row2"></div>
         </div>
       </div>
     `;
@@ -606,7 +535,6 @@ function renderDOW(){
 }
 
 function render(){
-  buildCategoryOptions();
   renderCalendar();
   renderList();
 }
@@ -621,25 +549,6 @@ function moveMonth(delta){
     els.monthSelect.value = state.month;
   }
   render();
-}
-
-function exportCSV(){
-  const rows = [["date_or_range","category","title","note"]];
-  const data = eventsForList();
-  for(const e of data){
-    const d = isRange(e) ? `${e.start}~${e.end}` : e.date;
-    rows.push([d, e.category, e.title, e.note||""]);
-  }
-  const csv = rows.map(r => r.map(v => `"${String(v).replace(/"/g,'""')}"`).join(",")).join("\n");
-  const blob = new Blob([csv], {type:"text/csv;charset=utf-8;"});
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = `academic_calendar_2026.csv`;
-  document.body.appendChild(a);
-  a.click();
-  a.remove();
-  URL.revokeObjectURL(url);
 }
 
 /* init */
@@ -667,10 +576,8 @@ els.monthSelect.addEventListener("change", (e)=>{
   }
   render();
 });
-els.catSelect.addEventListener("change", (e)=>{ state.cat = e.target.value; render(); });
 els.q.addEventListener("input", (e)=>{ state.q = e.target.value; render(); });
 
-document.getElementById("exportBtn").addEventListener("click", exportCSV);
 document.getElementById("printBtn").addEventListener("click", ()=>window.print());
 
 window.addEventListener("keydown", (e)=>{
