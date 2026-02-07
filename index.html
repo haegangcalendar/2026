@@ -6,36 +6,15 @@
   <title>2026학년도 학사일정</title>
   <style>
     :root{
-      /* Light only */
-      --bg:#ffffff;
-      --panel:#ffffff;
-      --text:#111827;
-      --muted:#6b7280;
-      --line:#d1d5db;
-
-      --accent:#2563eb;
-      --accent2:#16a34a;
-      --warn:#d97706;
-      --bad:#dc2626;
-
-      --chipBg:#f1f5f9;
-      --cellBg:#ffffff;
-      --cellAlt:#fafafa;
-      --barBg:#eef2ff;
-
+      --bg:#ffffff; --panel:#ffffff; --text:#111827; --muted:#6b7280; --line:#d1d5db;
+      --accent:#2563eb; --accent2:#16a34a; --warn:#d97706; --bad:#dc2626;
+      --chipBg:#f1f5f9; --cellBg:#ffffff; --cellAlt:#fafafa; --barBg:#eef2ff;
       --shadow: 0 10px 30px rgba(15,23,42,.08);
 
-      /* compact fonts */
-      --fs-body:14px;
-      --fs-h1:18px;
-      --fs-sub:12px;
-      --fs-ui:12px;
-      --fs-dow:12px;
-      --fs-day:11px;
-      --fs-bar:11px;
-      --fs-mini:11px;
+      --fs-body:14px; --fs-h1:18px; --fs-sub:12px; --fs-ui:12px;
+      --fs-dow:12px; --fs-day:11px; --fs-bar:11px; --fs-mini:11px;
 
-      /* today highlight */
+      /* ✅ 접속한 날짜 하이라이트 */
       --today:#BDC0C0;
     }
 
@@ -48,14 +27,12 @@
       font-size: var(--fs-body);
     }
 
-    /* Mobile: not sticky (scrolls away) */
     header{
       position: static;
       background: var(--bg);
       border-bottom:1px solid var(--line);
       z-index:10;
     }
-    /* Desktop: sticky */
     @media (min-width: 980px){
       header{ position: sticky; top:0; }
     }
@@ -120,27 +97,17 @@
     }
 
     .monthbar{
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      gap:12px;
-      padding:12px 14px;
-      border-bottom:1px solid var(--line);
-      flex-wrap:wrap;
+      display:flex; justify-content:space-between; align-items:center; gap:12px;
+      padding:12px 14px; border-bottom:1px solid var(--line); flex-wrap:wrap;
     }
     .monthbar .m{font-weight:800; letter-spacing:-.3px}
 
     .chips{display:flex; gap:8px; flex-wrap:wrap; padding:12px 14px 0 14px}
     .chip{
       display:inline-flex; align-items:center; gap:8px;
-      padding:7px 10px;
-      border-radius:999px;
-      border:1px solid var(--line);
+      padding:7px 10px; border-radius:999px; border:1px solid var(--line);
       background: color-mix(in oklab, var(--chipBg) 85%, transparent);
-      color: var(--muted);
-      font-size: var(--fs-ui);
-      cursor:pointer;
-      white-space:nowrap;
+      color: var(--muted); font-size: var(--fs-ui); cursor:pointer; white-space:nowrap;
     }
     .chip b{color:var(--text); font-weight:700}
     .chip.active{
@@ -151,37 +118,24 @@
 
     .calendar{padding:14px;}
 
-    /* Table-like calendar */
     .dow{
-      display:grid;
-      grid-template-columns: repeat(7, 1fr);
-      gap:0;
-      border:1px solid var(--line);
-      border-bottom:0;
-      border-radius:14px 14px 0 0;
-      overflow:hidden;
+      display:grid; grid-template-columns: repeat(7, 1fr);
+      border:1px solid var(--line); border-bottom:0;
+      border-radius:14px 14px 0 0; overflow:hidden;
     }
     .dow div{
-      padding:10px 10px;
-      font-size: var(--fs-dow);
-      color:var(--muted);
-      border-right:1px solid var(--line);
-      background: var(--cellAlt);
+      padding:10px 10px; font-size: var(--fs-dow); color:var(--muted);
+      border-right:1px solid var(--line); background: var(--cellAlt);
     }
     .dow div:last-child{border-right:0}
 
     .weeks{
-      border:1px solid var(--line);
-      border-top:0;
-      border-radius:0 0 14px 14px;
-      overflow:hidden;
+      border:1px solid var(--line); border-top:0;
+      border-radius:0 0 14px 14px; overflow:hidden;
     }
-
     .week{
       position:relative;
-      display:grid;
-      grid-template-columns: repeat(7, 1fr);
-      gap:0;
+      display:grid; grid-template-columns: repeat(7, 1fr);
       border-top:1px solid var(--line);
       background: var(--cellBg);
     }
@@ -199,55 +153,32 @@
     .cell:last-child{border-right:0}
     .cell.muted{opacity:.45}
 
-    /* ✅ 오늘 날짜 칸 */
-    .cell.today{
-      background: var(--today) !important;
-    }
+    /* ✅ 접속한 날짜(=오늘) '해당 칸'만 색칠 */
+    .cell.today{ background: var(--today) !important; }
 
     .cellTop{
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      gap:10px;
-      font-size: var(--fs-day);
-      color:var(--muted);
-      margin-bottom:8px;
+      display:flex; justify-content:space-between; align-items:center; gap:10px;
+      font-size: var(--fs-day); color:var(--muted); margin-bottom:8px;
     }
-    .cellTop .dayNum{font-weight:800; color: #111827;}
-    .cell.muted .cellTop .dayNum{color: #6b7280;}
+    .cellTop .dayNum{font-weight:800; color:#111827;}
+    .cell.muted .cellTop .dayNum{color:#6b7280;}
 
-    .cellList{
-      display:flex;
-      flex-direction:column;
-      gap:6px;
-      min-width:0;
-    }
+    .cellList{display:flex; flex-direction:column; gap:6px; min-width:0}
 
-    /* Single-day in-cell */
     .mini{
-      display:flex;
-      align-items:center;
-      gap:8px;
-      min-width:0;
-      padding:6px 8px;
-      border-radius:10px;
+      display:flex; align-items:center; gap:8px; min-width:0;
+      padding:6px 8px; border-radius:10px;
       border:1px solid color-mix(in oklab, var(--line) 70%, transparent);
       background: color-mix(in oklab, var(--barBg) 55%, transparent);
       font-size: var(--fs-mini);
-      overflow:hidden;
-      white-space:nowrap;
+      overflow:hidden; white-space:nowrap;
     }
     .mini .dot{width:8px; height:8px; border-radius:50%}
     .mini .t{
-      min-width:0;
-      overflow:hidden;
-      text-overflow:ellipsis;
-      white-space:nowrap;
-      color:var(--text);
-      font-weight:600;
+      min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
+      color:var(--text); font-weight:600;
     }
 
-    /* ✅ Ribbon grid overlay */
     .bars{
       position:absolute;
       left:0; right:0;
@@ -265,12 +196,9 @@
       border-radius:12px;
       border:1px solid color-mix(in oklab, var(--line) 70%, transparent);
       background: color-mix(in oklab, var(--barBg) 60%, transparent);
-      display:flex;
-      align-items:center;
-      gap:8px;
+      display:flex; align-items:center; gap:8px;
       padding:0 10px;
-      overflow:hidden;
-      white-space:nowrap;
+      overflow:hidden; white-space:nowrap;
       pointer-events:auto;
       z-index:3;
       min-width:0;
@@ -278,22 +206,17 @@
     }
     .bar .dot{width:9px; height:9px; border-radius:50%}
     .bar .txt{
-      min-width:0;
-      overflow:hidden;
-      text-overflow:ellipsis;
-      white-space:nowrap;
+      min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
       font-size: var(--fs-bar);
       font-weight:800;
       color:var(--text);
     }
 
-    /* category colors */
     .cat-학사 .dot{background: var(--accent)}
     .cat-수업 .dot{background: var(--accent2)}
     .cat-시험 .dot{background: var(--warn)}
     .cat-휴일 .dot{background: var(--bad)}
 
-    /* Side list */
     .side h2{margin:0; font-size:15px; padding:14px 14px 0 14px; letter-spacing:-.2px;}
     .side .hint{padding:6px 14px 12px 14px; margin:0; color:var(--muted); font-size:12px}
     .list{padding:14px; display:flex; flex-direction:column; gap:10px}
@@ -309,30 +232,11 @@
       align-items:flex-start;
     }
     .item .left{min-width:0}
-    .item .row1{
-      font-weight:800;
-      letter-spacing:-.2px;
-      word-break:keep-all;
-    }
-    .item .row2{
-      color:var(--muted);
-      font-size:12px;
-      margin-top:4px;
-      word-break:break-word;
-    }
-
-    .footer{
-      max-width:1200px; margin:0 auto;
-      padding:0 16px 24px;
-      color:var(--muted);
-      font-size:12px;
-    }
+    .item .row1{font-weight:800; letter-spacing:-.2px; word-break:keep-all;}
+    .item .row2{color:var(--muted); font-size:12px; margin-top:4px; word-break:break-word;}
 
     @media print{
       header, .toolbar, .chips {display:none !important}
-      body{background:#fff; color:#000}
-      .card{box-shadow:none; background:#fff; border:1px solid #ddd}
-      .week,.cell{background:#fff}
     }
   </style>
 </head>
@@ -342,7 +246,6 @@
     <div class="title">
       <div>
         <h1>2026학년도 학사일정</h1>
-        <!-- ✅ 문구 제거됨 (sub는 간단히) -->
         <p class="sub"></p>
       </div>
     </div>
@@ -350,18 +253,12 @@
     <div class="toolbar">
       <div class="controls">
         <button class="btn small" id="prevBtn" title="이전 달 (←)">◀︎ <span>이전</span></button>
-        <!-- ✅ '2026 시작' → 실제 오늘 날짜 버튼 -->
         <button class="btn small" id="todayBtn" title="오늘로 이동">◎ <span id="todayLabel">오늘</span></button>
         <button class="btn small" id="nextBtn" title="다음 달 (→)"><span>다음</span> ▶︎</button>
 
-        <!-- ✅ 월 선택: '전체' 포함 -->
         <select id="monthSelect" title="월 선택"></select>
+        <select id="catSelect" title="분류 필터"><option value="ALL">전체 분류</option></select>
 
-        <select id="catSelect" title="분류 필터">
-          <option value="ALL">전체 분류</option>
-        </select>
-
-        <!-- ✅ 검색 + 학년 필터(옆) -->
         <input id="q" class="input" placeholder="검색: 예) 6월 15일 | 일정명 / 설명" />
         <select id="gradeSelect" title="학년 필터">
           <option value="ALL">전체</option>
@@ -385,9 +282,7 @@
       <section class="card">
         <div class="monthbar">
           <div class="m" id="monthTitle">2026.03</div>
-          <div style="color:var(--muted); font-size:12px;">
-            단축키: ← →
-          </div>
+          <div style="color:var(--muted); font-size:12px;">단축키: ← →</div>
         </div>
 
         <div class="chips" id="summaryChips"></div>
@@ -400,73 +295,41 @@
 
       <aside class="card side">
         <h2>일정 목록</h2>
-        <p class="hint">표시 형식: <b>몇월 몇일 | 이름 / 설명</b></p>
+        <p class="hint">표시 형식: <b>몇월 몇일 | 이름/설명</b></p>
         <div class="list" id="list"></div>
       </aside>
     </div>
   </div>
 </main>
 
-<!-- ✅ 하단 안내문 제거 -->
 <script>
-/** =========================================================
- *  EVENTS 데이터
- *  - 단일일: { date:"YYYY-MM-DD", title, category, note?, grade? }
- *  - 기간일정: { start:"YYYY-MM-DD", end:"YYYY-MM-DD", title, category, note?, grade? }
- *
- *  grade:
- *    - "1" | "2" | "3" (학년별 일정)
- *    - 생략 또는 "ALL" (전체 공통)
- * ========================================================= */
+/** EVENTS: grade "1"/"2"/"3"/"ALL"(또는 생략) */
 const EVENTS = [
   { date:"2026-03-02", title:"1학기 개강(예시)", category:"학사", note:"학교 공지 기준으로 수정", grade:"ALL" },
   { date:"2026-04-20", title:"중간고사(예시)", category:"시험", note:"학교별 일정 상이", grade:"ALL" },
   { date:"2026-06-15", title:"기말고사(예시)", category:"시험", note:"학교별 일정 상이", grade:"ALL" },
   { date:"2026-06-26", title:"1학기 종강(예시)", category:"학사", note:"", grade:"ALL" },
-
   { date:"2026-09-01", title:"2학기 개강(예시)", category:"학사", note:"", grade:"ALL" },
   { date:"2026-10-19", title:"중간고사(예시)", category:"시험", note:"", grade:"ALL" },
   { date:"2026-12-14", title:"기말고사(예시)", category:"시험", note:"", grade:"ALL" },
   { date:"2026-12-23", title:"2학기 종강(예시)", category:"학사", note:"", grade:"ALL" },
-
   { date:"2026-05-05", title:"어린이날(예시)", category:"휴일", note:"", grade:"ALL" },
 
-  /* ✅ 요청: 6/1~7/14 3학년 체험학습 (학년=3) */
   { start:"2026-06-01", end:"2026-07-14", title:"3학년 체험학습", category:"학사", note:"기간 일정", grade:"3" },
 ];
 
-/** =========================================================
- *  범위: 2026학년도(필요 시 조정)
- * ========================================================= */
 const START_MONTH = "2026-03-01";
 const END_MONTH   = "2027-02-01";
 
-/** =========================================================
- *  Util
- * ========================================================= */
 const DOW = ["일","월","화","수","목","금","토"];
 function pad2(n){ return String(n).padStart(2,"0"); }
-function toISODate(d){
-  const y=d.getFullYear(), m=pad2(d.getMonth()+1), day=pad2(d.getDate());
-  return `${y}-${m}-${day}`;
-}
-function parseISO(iso){
-  const [y,m,d]=iso.split("-").map(Number);
-  return new Date(y, m-1, d);
-}
+function toISODate(d){ return `${d.getFullYear()}-${pad2(d.getMonth()+1)}-${pad2(d.getDate())}`; }
+function parseISO(iso){ const [y,m,d]=iso.split("-").map(Number); return new Date(y, m-1, d); }
 function ymKey(d){ return `${d.getFullYear()}-${pad2(d.getMonth()+1)}`; }
 function formatYM(d){ return `${d.getFullYear()}.${pad2(d.getMonth()+1)}`; }
-function formatDateK(iso){
-  const [y,m,d]=iso.split("-").map(Number);
-  return `${m}월 ${d}일`;
-}
-function formatDateKFull(iso){
-  const [y,m,d]=iso.split("-").map(Number);
-  return `${y}.${pad2(m)}.${pad2(d)}`;
-}
-function formatRangeK(s,e){
-  return `${formatDateK(s)} ~ ${formatDateK(e)}`;
-}
+function formatDateK(iso){ const [_,m,d]=iso.split("-").map(Number); return `${m}월 ${d}일`; }
+function formatDateKFull(iso){ const [y,m,d]=iso.split("-").map(Number); return `${y}.${pad2(m)}.${pad2(d)}`; }
+function formatRangeK(s,e){ return `${formatDateK(s)} ~ ${formatDateK(e)}`; }
 function normalized(s){ return (s||"").toLowerCase().trim(); }
 function escapeHtml(s){
   return String(s||"").replace(/[&<>"']/g, (m)=>({
@@ -481,18 +344,8 @@ function clampDateToRange(d){
   return d;
 }
 function isRange(e){ return !!(e.start && e.end); }
-function addDays(dateObj, n){
-  const d = new Date(dateObj);
-  d.setDate(d.getDate()+n);
-  return d;
-}
-function weekStartOf(dateObj){
-  const d = new Date(dateObj);
-  const dow = d.getDay();
-  d.setDate(d.getDate() - dow);
-  d.setHours(0,0,0,0);
-  return d;
-}
+function addDays(dateObj, n){ const d=new Date(dateObj); d.setDate(d.getDate()+n); return d; }
+function weekStartOf(dateObj){ const d=new Date(dateObj); const dow=d.getDay(); d.setDate(d.getDate()-dow); d.setHours(0,0,0,0); return d; }
 function rangeOverlapsMonth(e, monthDate){
   const ms = new Date(monthDate.getFullYear(), monthDate.getMonth(), 1);
   const me = new Date(monthDate.getFullYear(), monthDate.getMonth()+1, 0);
@@ -501,15 +354,12 @@ function rangeOverlapsMonth(e, monthDate){
   return a <= me.getTime() && b >= ms.getTime();
 }
 
-/** =========================================================
- *  State
- * ========================================================= */
 let state = {
   cursor: new Date(START_MONTH),
   cat: "ALL",
   q: "",
   month: ymKey(new Date(START_MONTH)),
-  grade: "ALL", // 1 / 2 / 3 / ALL
+  grade: "ALL",
 };
 
 const els = {
@@ -526,48 +376,35 @@ const els = {
   todayLabel: document.getElementById("todayLabel"),
 };
 
-/** =========================================================
- *  MonthSelect: includes "ALL"
- * ========================================================= */
+/* ✅ 접속한 오늘 날짜(ISO) 고정: 그 칸만 칠함 */
+const VISIT_TODAY_ISO = toISODate(new Date());
+
 function buildMonthOptions(){
   const start = new Date(START_MONTH);
   const end = new Date(END_MONTH);
-  const opts = [];
-  opts.push({ value: "ALL", label: "전체" });
-
-  const d = new Date(start);
-  d.setDate(1);
+  const opts = [{value:"ALL", label:"전체"}];
+  const d = new Date(start); d.setDate(1);
   while(d <= end){
     opts.push({ value: ymKey(d), label: formatYM(d) });
     d.setMonth(d.getMonth()+1);
   }
   els.monthSelect.innerHTML = opts.map(o=>`<option value="${o.value}">${o.label}</option>`).join("");
 }
-
-/** =========================================================
- *  Categories
- * ========================================================= */
 function getCategories(){
   return Array.from(new Set(EVENTS.map(e=>e.category))).sort((a,b)=>a.localeCompare(b,"ko"));
 }
 function buildCategoryOptions(){
   const cats = getCategories();
-  els.catSelect.innerHTML =
-    `<option value="ALL">전체 분류</option>` + cats.map(c=>`<option value="${c}">${c}</option>`).join("");
+  els.catSelect.innerHTML = `<option value="ALL">전체 분류</option>` + cats.map(c=>`<option value="${c}">${c}</option>`).join("");
 }
 
-/** =========================================================
- *  Filtering
- * ========================================================= */
 function matchesGrade(e){
   const g = (e.grade || "ALL").toString();
   return state.grade === "ALL" || g === "ALL" || g === state.grade;
 }
 function getFilteredEvents(){
   const q = normalized(state.q);
-
-  return EVENTS
-    .slice()
+  return EVENTS.slice()
     .sort((a,b)=>{
       const da = isRange(a) ? a.start : a.date;
       const db = isRange(b) ? b.start : b.date;
@@ -579,24 +416,14 @@ function getFilteredEvents(){
       if(!q) return true;
       const datePart = isRange(e) ? `${e.start} ${e.end}` : e.date;
       const pretty = isRange(e) ? formatRangeK(e.start,e.end) : formatDateK(e.date);
-      const hay = [
-        datePart, pretty,
-        e.title, e.note, e.category,
-      ].join(" ").toLowerCase();
+      const hay = [datePart, pretty, e.title, e.note, e.category].join(" ").toLowerCase();
       return hay.includes(q);
     });
 }
 
-/** =========================================================
- *  Month / ALL selection logic
- * ========================================================= */
 function eventsForList(){
   const all = getFilteredEvents();
-
-  if(state.month === "ALL"){
-    return all;
-  }
-  // month-specific
+  if(state.month === "ALL") return all;
   const [y,m] = state.month.split("-").map(Number);
   const monthDate = new Date(y, m-1, 1);
   return all.filter(e=>{
@@ -606,7 +433,6 @@ function eventsForList(){
 }
 
 function singleEventsOnDate(iso){
-  // periods are shown as ribbons, not minis
   const all = getFilteredEvents();
   if(state.month !== "ALL" && !iso.startsWith(state.month)) return [];
   return all.filter(e=> !isRange(e) && e.date === iso);
@@ -616,15 +442,10 @@ function rangeEventsForCalendarMonth(monthDate){
   return all.filter(e => isRange(e) && rangeOverlapsMonth(e, monthDate));
 }
 
-/** =========================================================
- *  Chips summary (based on current selection month or ALL)
- * ========================================================= */
 function renderSummaryChips(){
   const list = eventsForList();
   const byCat = {};
-  for(const e of list){
-    byCat[e.category] = (byCat[e.category]||0)+1;
-  }
+  for(const e of list) byCat[e.category] = (byCat[e.category]||0)+1;
   const cats = Object.keys(byCat).sort((a,b)=>a.localeCompare(b,"ko"));
   const total = list.length;
 
@@ -633,13 +454,9 @@ function renderSummaryChips(){
       <b>${escapeHtml(label)}</b> ${count}건
     </div>
   `;
-  const chips = [];
-  chips.push(makeChip("전체", total, state.cat==="ALL", "ALL"));
-  for(const c of cats){
-    chips.push(makeChip(c, byCat[c], state.cat===c, c));
-  }
+  const chips = [makeChip("전체", total, state.cat==="ALL", "ALL")];
+  for(const c of cats) chips.push(makeChip(c, byCat[c], state.cat===c, c));
   els.summaryChips.innerHTML = chips.join("");
-
   els.summaryChips.querySelectorAll(".chip").forEach(ch=>{
     ch.addEventListener("click", ()=>{
       state.cat = ch.dataset.cat;
@@ -649,40 +466,28 @@ function renderSummaryChips(){
   });
 }
 
-/** =========================================================
- *  Ribbon layout (grid-column)
- * ========================================================= */
 function splitRangeToWeekSegment(e, weekStartDate){
   const ws = new Date(weekStartDate); ws.setHours(0,0,0,0);
   const we = addDays(ws, 6);
-
   const a = parseISO(e.start);
   const b = parseISO(e.end);
-
   const segStart = (a > ws) ? a : ws;
   const segEnd   = (b < we) ? b : we;
   if(segStart > segEnd) return null;
-
-  const colStart = segStart.getDay();
-  const colEnd   = segEnd.getDay();
-  return { colStart, colEnd };
+  return { colStart: segStart.getDay(), colEnd: segEnd.getDay() };
 }
-
 function layoutBarsForWeek(rangeEvents, weekStartDate){
   const segs = [];
   for(const e of rangeEvents){
     const seg = splitRangeToWeekSegment(e, weekStartDate);
     if(seg) segs.push({ ...seg, e });
   }
-
   segs.sort((x,y)=>{
     if(x.colStart !== y.colStart) return x.colStart - y.colStart;
     return (y.colEnd - y.colStart) - (x.colEnd - x.colStart);
   });
-
   const rowsEnd = [];
   const placed = [];
-
   for(const s of segs){
     let rowIndex = -1;
     for(let r=0;r<rowsEnd.length;r++){
@@ -696,21 +501,13 @@ function layoutBarsForWeek(rangeEvents, weekStartDate){
     rowsEnd[rowIndex] = s.colEnd;
     placed.push({ rowIndex, seg: s });
   }
-
   return { rowsCount: rowsEnd.length, placed };
 }
 
-/** =========================================================
- *  Calendar render
- *  - If monthSelect = ALL, calendar shows current cursor month
- *    (list shows all)
- * ========================================================= */
 function renderCalendar(){
-  // cursor month for calendar view
   let cur;
   if(state.month === "ALL"){
-    cur = new Date(state.cursor);
-    cur.setDate(1);
+    cur = new Date(state.cursor); cur.setDate(1);
   } else {
     const [y,m] = state.month.split("-").map(Number);
     cur = new Date(y, m-1, 1);
@@ -727,8 +524,6 @@ function renderCalendar(){
 
   const gridStart = weekStartOf(new Date(cur));
   const rangeEvents = rangeEventsForCalendarMonth(cur);
-
-  const todayISO = toISODate(new Date());
 
   const weeksHtml = [];
   for(let w=0; w<6; w++){
@@ -768,17 +563,16 @@ function renderCalendar(){
         </div>
       `).join("");
 
-      const isToday = (iso === todayISO);
+      /* ✅ 핵심: '접속한 오늘 날짜'와 iso가 정확히 같은 셀 1개만 today */
+      const isVisitToday = (iso === VISIT_TODAY_ISO);
 
       cellsHtml += `
-        <div class="cell ${inMonth ? "" : "muted"} ${isToday ? "today" : ""}" data-date="${iso}">
+        <div class="cell ${inMonth ? "" : "muted"} ${isVisitToday ? "today" : ""}" data-date="${iso}">
           <div class="cellTop">
             <span class="dayNum">${d.getDate()}</span>
             <span class="cnt">${singles.length ? singles.length+"건" : ""}</span>
           </div>
-          <div class="cellList">
-            ${miniItems}
-          </div>
+          <div class="cellList">${miniItems}</div>
         </div>
       `;
     }
@@ -788,7 +582,6 @@ function renderCalendar(){
 
   els.weeks.innerHTML = weeksHtml.join("");
 
-  // click day -> scroll list to that day (only works if list contains that day anchor)
   els.weeks.querySelectorAll(".cell").forEach(cell=>{
     cell.addEventListener("click", ()=>{
       const iso = cell.dataset.date;
@@ -798,63 +591,44 @@ function renderCalendar(){
   });
 }
 
-/** =========================================================
- *  List render format: "몇월 몇일 | 이름/설명"
- *  - month=ALL: show everything sorted
- *  - month=YYYY-MM: show that month
- * ========================================================= */
 function renderList(){
   const list = eventsForList();
   if(list.length === 0){
     els.list.innerHTML = `<div style="color:var(--muted); padding:10px 2px;">표시할 일정이 없습니다.</div>`;
     return;
   }
-
   els.list.innerHTML = list.map(e=>{
     const anchor = isRange(e) ? e.start : e.date;
-    const datePart = isRange(e)
-      ? formatRangeK(e.start, e.end)
-      : formatDateK(e.date);
-
+    const datePart = isRange(e) ? formatRangeK(e.start, e.end) : formatDateK(e.date);
     const desc = (e.note||"").trim();
     const line = desc ? `${e.title} / ${desc}` : `${e.title}`;
-
+    const gradeText = ((e.grade||"ALL")==="ALL") ? "전체" : (e.grade+"학년");
     return `
       <div class="item" data-item-anchor="${escapeHtml(anchor)}">
         <div class="left">
           <div class="row1">${escapeHtml(datePart)} | ${escapeHtml(line)}</div>
-          <div class="row2">${escapeHtml(e.category)} · ${escapeHtml((e.grade||"ALL")==="ALL" ? "전체" : e.grade+"학년")}</div>
+          <div class="row2">${escapeHtml(e.category)} · ${escapeHtml(gradeText)}</div>
         </div>
       </div>
     `;
   }).join("");
 }
 
-/** =========================================================
- *  DOW + options
- * ========================================================= */
 function renderDOW(){
   els.dow.innerHTML = DOW.map(x=>`<div>${x}</div>`).join("");
 }
 
-/** =========================================================
- *  Render all
- * ========================================================= */
 function render(){
   buildCategoryOptions();
   renderCalendar();
   renderList();
 }
 
-/** =========================================================
- *  Navigation
- * ========================================================= */
 function moveMonth(delta){
   const d = new Date(state.cursor);
   d.setMonth(d.getMonth()+delta);
   d.setDate(1);
   state.cursor = clampDateToRange(d);
-  // if currently selecting a specific month, update monthSelect too
   if(state.month !== "ALL"){
     state.month = ymKey(state.cursor);
     els.monthSelect.value = state.month;
@@ -862,9 +636,6 @@ function moveMonth(delta){
   render();
 }
 
-/** =========================================================
- *  CSV export (list based on current filters + monthSelect)
- * ========================================================= */
 function exportCSV(){
   const rows = [["date_or_range","grade","category","title","note"]];
   const data = eventsForList();
@@ -884,20 +655,19 @@ function exportCSV(){
   URL.revokeObjectURL(url);
 }
 
-/** =========================================================
- *  Init
- * ========================================================= */
+/* init */
 renderDOW();
 buildMonthOptions();
 
-const today = new Date();
-const todayISO = toISODate(today);
-els.todayLabel.textContent = todayISO; // 버튼 라벨: YYYY-MM-DD
-// 초기 접속 시: 2026학년도 범위 밖이면 START_MONTH로 보정
-state.cursor = clampDateToRange(today);
+/* today button label is today's date */
+els.todayLabel.textContent = VISIT_TODAY_ISO;
+
+/* initial state cursor: clamp today into range */
+state.cursor = clampDateToRange(new Date());
 state.month = ymKey(state.cursor);
 els.monthSelect.value = state.month;
 
+/* bind */
 document.getElementById("prevBtn").addEventListener("click", ()=>moveMonth(-1));
 document.getElementById("nextBtn").addEventListener("click", ()=>moveMonth(+1));
 document.getElementById("todayBtn").addEventListener("click", ()=>{
@@ -905,7 +675,6 @@ document.getElementById("todayBtn").addEventListener("click", ()=>{
   if(state.month !== "ALL") state.month = ymKey(state.cursor);
   render();
 });
-
 els.monthSelect.addEventListener("change", (e)=>{
   state.month = e.target.value;
   if(state.month !== "ALL"){
@@ -914,19 +683,9 @@ els.monthSelect.addEventListener("change", (e)=>{
   }
   render();
 });
-
-els.catSelect.addEventListener("change", (e)=>{
-  state.cat = e.target.value;
-  render();
-});
-els.gradeSelect.addEventListener("change", (e)=>{
-  state.grade = e.target.value;
-  render();
-});
-els.q.addEventListener("input", (e)=>{
-  state.q = e.target.value;
-  render();
-});
+els.catSelect.addEventListener("change", (e)=>{ state.cat = e.target.value; render(); });
+els.gradeSelect.addEventListener("change", (e)=>{ state.grade = e.target.value; render(); });
+els.q.addEventListener("input", (e)=>{ state.q = e.target.value; render(); });
 
 document.getElementById("exportBtn").addEventListener("click", exportCSV);
 document.getElementById("printBtn").addEventListener("click", ()=>window.print());
@@ -936,7 +695,7 @@ window.addEventListener("keydown", (e)=>{
   if(e.key==="ArrowRight") moveMonth(+1);
 });
 
-/** first render */
+/* first render */
 render();
 </script>
 </body>
