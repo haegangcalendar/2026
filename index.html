@@ -11,10 +11,10 @@
       --chipBg:#f1f5f9; --cellBg:#ffffff; --cellAlt:#fafafa; --barBg:#eef2ff;
       --shadow: 0 10px 30px rgba(15,23,42,.08);
 
-      --fs-body:14px; --fs-h1:18px; --fs-sub:12px; --fs-ui:12px;
+      --fs-body:14px; --fs-h1:18px; --fs-ui:12px;
       --fs-dow:12px; --fs-day:11px; --fs-bar:11px; --fs-mini:11px;
 
-      /* ✅ 접속한 날짜 하이라이트 */
+      /* ✅ '접속한 날짜(오늘)' 칸 색 */
       --today:#BDC0C0;
     }
 
@@ -28,19 +28,14 @@
     }
 
     header{
-      position: static;
+      position: static; /* ✅ 모바일에서 상단 고정 없음 */
       background: var(--bg);
       border-bottom:1px solid var(--line);
-      z-index:10;
-    }
-    @media (min-width: 980px){
-      header{ position: sticky; top:0; }
     }
 
     .wrap{max-width:1200px; margin:0 auto; padding:14px;}
     .title{display:flex; justify-content:space-between; align-items:flex-end; gap:12px; flex-wrap:wrap;}
     h1{margin:0; font-size:var(--fs-h1); letter-spacing:-.3px;}
-    .sub{margin:0; color:var(--muted); font-size:var(--fs-sub)}
 
     .toolbar{display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap; margin-top:10px;}
     .controls{display:flex; gap:10px; flex-wrap:wrap; align-items:center}
@@ -59,9 +54,7 @@
       font-size: var(--fs-ui);
       white-space:nowrap;
     }
-    .btn:hover{opacity:.92}
     .btn:active{transform: translateY(1px)}
-    .btn.small{padding:7px 9px; border-radius:10px; font-size: var(--fs-ui)}
     .btn.primary{
       border-color: color-mix(in oklab, var(--accent) 55%, var(--line));
       box-shadow: 0 0 0 3px color-mix(in oklab, var(--accent) 12%, transparent) inset;
@@ -153,8 +146,11 @@
     .cell:last-child{border-right:0}
     .cell.muted{opacity:.45}
 
-    /* ✅ 접속한 날짜(=오늘) '해당 칸'만 색칠 */
-    .cell.today{ background: var(--today) !important; }
+    /* ✅ 확실히 보이게: class + inline style 둘 다 지원 */
+    .cell.today{
+      background: var(--today) !important;
+      box-shadow: inset 0 0 0 2px rgba(17,24,39,.25);
+    }
 
     .cellTop{
       display:flex; justify-content:space-between; align-items:center; gap:10px;
@@ -227,7 +223,6 @@
       padding:12px;
       background: var(--cellAlt);
       display:flex;
-      justify-content:space-between;
       gap:12px;
       align-items:flex-start;
     }
@@ -235,24 +230,20 @@
     .item .row1{font-weight:800; letter-spacing:-.2px; word-break:keep-all;}
     .item .row2{color:var(--muted); font-size:12px; margin-top:4px; word-break:break-word;}
 
-    @media print{
-      header, .toolbar, .chips {display:none !important}
-    }
+    @media print{ header, .toolbar, .chips {display:none !important} }
   </style>
 </head>
 <body>
 <header>
   <div class="wrap">
     <div class="title">
-      <div>
-        <h1>2026학년도 학사일정</h1>
-        <p class="sub"></p>
-      </div>
+      <div><h1>2026학년도 학사일정</h1></div>
     </div>
 
     <div class="toolbar">
       <div class="controls">
         <button class="btn small" id="prevBtn" title="이전 달 (←)">◀︎ <span>이전</span></button>
+        <!-- ✅ 모바일에서도 되게: 월 select 옆에 '오늘' 버튼 유지 -->
         <button class="btn small" id="todayBtn" title="오늘로 이동">◎ <span id="todayLabel">오늘</span></button>
         <button class="btn small" id="nextBtn" title="다음 달 (→)"><span>다음</span> ▶︎</button>
 
@@ -260,17 +251,13 @@
         <select id="catSelect" title="분류 필터"><option value="ALL">전체 분류</option></select>
 
         <input id="q" class="input" placeholder="검색: 예) 6월 15일 | 일정명 / 설명" />
-        <select id="gradeSelect" title="학년 필터">
-          <option value="ALL">전체</option>
-          <option value="1">1학년</option>
-          <option value="2">2학년</option>
-          <option value="3">3학년</option>
-        </select>
+
+        <!-- ✅ 요청: 학년 구분 없앰 -->
       </div>
 
       <div class="controls">
         <button class="btn" id="exportBtn" title="현재 필터 결과를 CSV로 저장">⤓ CSV</button>
-        <button class="btn primary" id="printBtn" title="인쇄/저장 (Ctrl+P)">🖨 인쇄</button>
+        <button class="btn primary" id="printBtn" title="인쇄/저장">🖨 인쇄</button>
       </div>
     </div>
   </div>
@@ -303,19 +290,21 @@
 </main>
 
 <script>
-/** EVENTS: grade "1"/"2"/"3"/"ALL"(또는 생략) */
+/** 단일일: { date, title, category, note? } / 기간: { start, end, title, category, note? } */
 const EVENTS = [
-  { date:"2026-03-02", title:"1학기 개강(예시)", category:"학사", note:"학교 공지 기준으로 수정", grade:"ALL" },
-  { date:"2026-04-20", title:"중간고사(예시)", category:"시험", note:"학교별 일정 상이", grade:"ALL" },
-  { date:"2026-06-15", title:"기말고사(예시)", category:"시험", note:"학교별 일정 상이", grade:"ALL" },
-  { date:"2026-06-26", title:"1학기 종강(예시)", category:"학사", note:"", grade:"ALL" },
-  { date:"2026-09-01", title:"2학기 개강(예시)", category:"학사", note:"", grade:"ALL" },
-  { date:"2026-10-19", title:"중간고사(예시)", category:"시험", note:"", grade:"ALL" },
-  { date:"2026-12-14", title:"기말고사(예시)", category:"시험", note:"", grade:"ALL" },
-  { date:"2026-12-23", title:"2학기 종강(예시)", category:"학사", note:"", grade:"ALL" },
-  { date:"2026-05-05", title:"어린이날(예시)", category:"휴일", note:"", grade:"ALL" },
+  { date:"2026-03-02", title:"1학기 개강(예시)", category:"학사", note:"학교 공지 기준으로 수정" },
+  { date:"2026-04-20", title:"중간고사(예시)", category:"시험", note:"학교별 일정 상이" },
+  { date:"2026-06-15", title:"기말고사(예시)", category:"시험", note:"학교별 일정 상이" },
+  { date:"2026-06-26", title:"1학기 종강(예시)", category:"학사", note:"" },
 
-  { start:"2026-06-01", end:"2026-07-14", title:"3학년 체험학습", category:"학사", note:"기간 일정", grade:"3" },
+  { date:"2026-09-01", title:"2학기 개강(예시)", category:"학사", note:"" },
+  { date:"2026-10-19", title:"중간고사(예시)", category:"시험", note:"" },
+  { date:"2026-12-14", title:"기말고사(예시)", category:"시험", note:"" },
+  { date:"2026-12-23", title:"2학기 종강(예시)", category:"학사", note:"" },
+
+  { date:"2026-05-05", title:"어린이날(예시)", category:"휴일", note:"" },
+
+  { start:"2026-06-01", end:"2026-07-14", title:"3학년 체험학습", category:"학사", note:"기간 일정" },
 ];
 
 const START_MONTH = "2026-03-01";
@@ -359,7 +348,6 @@ let state = {
   cat: "ALL",
   q: "",
   month: ymKey(new Date(START_MONTH)),
-  grade: "ALL",
 };
 
 const els = {
@@ -370,13 +358,12 @@ const els = {
   monthSelect: document.getElementById("monthSelect"),
   catSelect: document.getElementById("catSelect"),
   q: document.getElementById("q"),
-  gradeSelect: document.getElementById("gradeSelect"),
   summaryChips: document.getElementById("summaryChips"),
   todayBtn: document.getElementById("todayBtn"),
   todayLabel: document.getElementById("todayLabel"),
 };
 
-/* ✅ 접속한 오늘 날짜(ISO) 고정: 그 칸만 칠함 */
+/* ✅ 접속 시점의 '오늘'을 1번만 고정: 이 날짜 셀 1개만 하이라이트 */
 const VISIT_TODAY_ISO = toISODate(new Date());
 
 function buildMonthOptions(){
@@ -398,10 +385,6 @@ function buildCategoryOptions(){
   els.catSelect.innerHTML = `<option value="ALL">전체 분류</option>` + cats.map(c=>`<option value="${c}">${c}</option>`).join("");
 }
 
-function matchesGrade(e){
-  const g = (e.grade || "ALL").toString();
-  return state.grade === "ALL" || g === "ALL" || g === state.grade;
-}
 function getFilteredEvents(){
   const q = normalized(state.q);
   return EVENTS.slice()
@@ -410,7 +393,6 @@ function getFilteredEvents(){
       const db = isRange(b) ? b.start : b.date;
       return da.localeCompare(db);
     })
-    .filter(matchesGrade)
     .filter(e => state.cat==="ALL" ? true : e.category===state.cat)
     .filter(e => {
       if(!q) return true;
@@ -563,11 +545,14 @@ function renderCalendar(){
         </div>
       `).join("");
 
-      /* ✅ 핵심: '접속한 오늘 날짜'와 iso가 정확히 같은 셀 1개만 today */
+      /* ✅ 여기: 접속한 날짜와 완전 일치하는 칸 1개만 색 */
       const isVisitToday = (iso === VISIT_TODAY_ISO);
 
+      /* ✅ 더 확실히: today class + inline background 둘 다 적용 */
+      const inlineBg = isVisitToday ? `style="background: var(--today) !important;"` : "";
+
       cellsHtml += `
-        <div class="cell ${inMonth ? "" : "muted"} ${isVisitToday ? "today" : ""}" data-date="${iso}">
+        <div class="cell ${inMonth ? "" : "muted"} ${isVisitToday ? "today" : ""}" data-date="${iso}" ${inlineBg}>
           <div class="cellTop">
             <span class="dayNum">${d.getDate()}</span>
             <span class="cnt">${singles.length ? singles.length+"건" : ""}</span>
@@ -581,14 +566,6 @@ function renderCalendar(){
   }
 
   els.weeks.innerHTML = weeksHtml.join("");
-
-  els.weeks.querySelectorAll(".cell").forEach(cell=>{
-    cell.addEventListener("click", ()=>{
-      const iso = cell.dataset.date;
-      const target = document.querySelector(`[data-item-anchor="${iso}"]`);
-      if(target) target.scrollIntoView({behavior:"smooth", block:"center"});
-    });
-  });
 }
 
 function renderList(){
@@ -598,16 +575,14 @@ function renderList(){
     return;
   }
   els.list.innerHTML = list.map(e=>{
-    const anchor = isRange(e) ? e.start : e.date;
     const datePart = isRange(e) ? formatRangeK(e.start, e.end) : formatDateK(e.date);
     const desc = (e.note||"").trim();
     const line = desc ? `${e.title} / ${desc}` : `${e.title}`;
-    const gradeText = ((e.grade||"ALL")==="ALL") ? "전체" : (e.grade+"학년");
     return `
-      <div class="item" data-item-anchor="${escapeHtml(anchor)}">
+      <div class="item">
         <div class="left">
           <div class="row1">${escapeHtml(datePart)} | ${escapeHtml(line)}</div>
-          <div class="row2">${escapeHtml(e.category)} · ${escapeHtml(gradeText)}</div>
+          <div class="row2">${escapeHtml(e.category)}</div>
         </div>
       </div>
     `;
@@ -637,11 +612,11 @@ function moveMonth(delta){
 }
 
 function exportCSV(){
-  const rows = [["date_or_range","grade","category","title","note"]];
+  const rows = [["date_or_range","category","title","note"]];
   const data = eventsForList();
   for(const e of data){
     const d = isRange(e) ? `${e.start}~${e.end}` : e.date;
-    rows.push([d, (e.grade||"ALL"), e.category, e.title, e.note||""]);
+    rows.push([d, e.category, e.title, e.note||""]);
   }
   const csv = rows.map(r => r.map(v => `"${String(v).replace(/"/g,'""')}"`).join(",")).join("\n");
   const blob = new Blob([csv], {type:"text/csv;charset=utf-8;"});
@@ -659,10 +634,10 @@ function exportCSV(){
 renderDOW();
 buildMonthOptions();
 
-/* today button label is today's date */
+/* 버튼 라벨: 접속한 오늘 날짜 */
 els.todayLabel.textContent = VISIT_TODAY_ISO;
 
-/* initial state cursor: clamp today into range */
+/* 초기: 접속한 날짜가 학년도 범위 밖이면 START_MONTH로 보정 */
 state.cursor = clampDateToRange(new Date());
 state.month = ymKey(state.cursor);
 els.monthSelect.value = state.month;
@@ -670,11 +645,13 @@ els.monthSelect.value = state.month;
 /* bind */
 document.getElementById("prevBtn").addEventListener("click", ()=>moveMonth(-1));
 document.getElementById("nextBtn").addEventListener("click", ()=>moveMonth(+1));
+
 document.getElementById("todayBtn").addEventListener("click", ()=>{
   state.cursor = clampDateToRange(new Date());
   if(state.month !== "ALL") state.month = ymKey(state.cursor);
   render();
 });
+
 els.monthSelect.addEventListener("change", (e)=>{
   state.month = e.target.value;
   if(state.month !== "ALL"){
@@ -684,7 +661,6 @@ els.monthSelect.addEventListener("change", (e)=>{
   render();
 });
 els.catSelect.addEventListener("change", (e)=>{ state.cat = e.target.value; render(); });
-els.gradeSelect.addEventListener("change", (e)=>{ state.grade = e.target.value; render(); });
 els.q.addEventListener("input", (e)=>{ state.q = e.target.value; render(); });
 
 document.getElementById("exportBtn").addEventListener("click", exportCSV);
