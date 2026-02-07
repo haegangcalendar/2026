@@ -1,124 +1,146 @@
 <!doctype html>
-<html lang="ko">
+<html lang="ko" data-theme="dark">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>2026학년도 학사일정</title>
   <style>
+    /* =========================
+       THEME (Light / Dark)
+       ========================= */
     :root{
-      /* White mode */
-      --bg:#f6f8fb;
-      --card:#ffffff;
-      --muted:#5b677a;
-      --text:#111827;
-      --line:#d8dee9;
-      --accent:#2563eb;
-      --accent2:#16a34a;
-      --warn:#d97706;
-      --bad:#dc2626;
-      --chip:#f1f5f9;
-      --shadow: 0 10px 30px rgba(15, 23, 42, .08);
+      --bg:#0b0f14; --card:#121826; --muted:#9aa4b2; --text:#e6edf3;
+      --line:#243044; --accent:#4ea1ff; --accent2:#7ee787; --warn:#ffcc66; --bad:#ff7b72;
+      --chip:#1a2333;
+      --shadow: 0 10px 30px rgba(0,0,0,.25);
+      --header: rgba(11,15,20,.65);
+      --headerLine: rgba(36,48,68,.6);
+      --dayBg: rgba(12,16,24,.35);
+      --pillBg: rgba(26,35,51,.70);
+      --pillLine: rgba(36,48,68,.65);
+      --btnBg: rgba(18,24,38,.70);
+      --btnLine: rgba(36,48,68,.90);
+      --kbdBg: rgba(18,24,38,.60);
     }
+    html[data-theme="light"]{
+      --bg:#f6f8fb; --card:#ffffff; --muted:#5b677a; --text:#111827;
+      --line:#d8dee9; --accent:#2563eb; --accent2:#16a34a; --warn:#d97706; --bad:#dc2626;
+      --chip:#f1f5f9;
+      --shadow: 0 10px 30px rgba(15,23,42,.08);
+      --header: rgba(246,248,251,.85);
+      --headerLine: var(--line);
+      --dayBg:#ffffff;
+      --pillBg:#f8fafc;
+      --pillLine: var(--line);
+      --btnBg: rgba(255,255,255,.9);
+      --btnLine: var(--line);
+      --kbdBg: #ffffff;
+    }
+
     *{box-sizing:border-box}
     body{
       margin:0;
       font-family: system-ui, -apple-system, Segoe UI, Roboto, Noto Sans KR, Arial, sans-serif;
-      background: radial-gradient(1200px 800px at 15% 10%, #ffffff 0%, var(--bg) 60%);
+      background: radial-gradient(1200px 800px at 15% 10%, rgba(255,255,255,.06) 0%, var(--bg) 60%);
       color:var(--text);
     }
     header{
       position:sticky; top:0; z-index:10;
-      background: rgba(246,248,251,.85);
       backdrop-filter: blur(10px);
-      border-bottom:1px solid var(--line);
+      background: var(--header);
+      border-bottom:1px solid var(--headerLine);
     }
-    .wrap{max-width:1200px; margin:0 auto; padding:16px;}
-    .title{display:flex; align-items:flex-end; justify-content:space-between; gap:12px; flex-wrap:wrap;}
+    .wrap{max-width:1150px; margin:0 auto; padding:16px;}
+    .title{
+      display:flex; align-items:flex-end; justify-content:space-between; gap:12px; flex-wrap:wrap;
+    }
     h1{margin:0; font-size:20px; letter-spacing:-.3px;}
     .sub{margin:0; color:var(--muted); font-size:13px}
 
-    .toolbar{display:flex; gap:10px; flex-wrap:wrap; margin-top:12px; align-items:center; justify-content:space-between;}
+    .toolbar{
+      display:flex; gap:10px; flex-wrap:wrap; margin-top:12px;
+      align-items:center; justify-content:space-between;
+    }
     .controls{display:flex; gap:10px; flex-wrap:wrap; align-items:center}
 
     .btn{
-      border:1px solid var(--line);
-      background: rgba(255,255,255,.9);
+      border:1px solid var(--btnLine);
+      background: var(--btnBg);
       color:var(--text);
       padding:10px 12px; border-radius:12px; cursor:pointer;
       display:inline-flex; gap:8px; align-items:center;
-      transition:.15s transform, .15s opacity, .15s box-shadow;
+      transition:.15s transform, .15s opacity;
       user-select:none;
-      box-shadow: 0 1px 0 rgba(15,23,42,.03);
     }
-    .btn:hover{opacity:.95; box-shadow: 0 6px 18px rgba(15,23,42,.08)}
+    .btn:hover{opacity:.92}
     .btn:active{transform: translateY(1px)}
-    .btn.primary{border-color: rgba(37,99,235,.35); box-shadow: 0 0 0 3px rgba(37,99,235,.12) inset;}
-    .btn.good{border-color: rgba(22,163,74,.35)}
-    .btn.bad{border-color: rgba(220,38,38,.35)}
+    .btn.primary{border-color: rgba(78,161,255,.9); box-shadow: 0 0 0 3px rgba(78,161,255,.12) inset;}
+    html[data-theme="light"] .btn.primary{border-color: rgba(37,99,235,.35); box-shadow: 0 0 0 3px rgba(37,99,235,.12) inset;}
     .btn.small{padding:8px 10px; border-radius:10px; font-size:13px}
-    .btn.link{
-      border:0;
-      background: transparent;
-      box-shadow:none;
-      padding:0;
-      color: var(--accent);
-      font-size:12px;
-    }
-    .btn.link:hover{box-shadow:none; text-decoration: underline}
 
-    .input, select, textarea{
-      border:1px solid var(--line);
-      background: rgba(255,255,255,.95);
+    .input, select{
+      border:1px solid var(--btnLine);
+      background: var(--btnBg);
       color:var(--text);
       padding:10px 12px; border-radius:12px;
       outline:none;
-      box-shadow: 0 1px 0 rgba(15,23,42,.03);
     }
-    textarea{min-height:92px; resize:vertical}
-    .input::placeholder{color:#94a3b8}
+    .input::placeholder{color: color-mix(in oklab, var(--muted) 70%, transparent);}
 
-    main .grid{display:grid; grid-template-columns: 1.1fr .9fr; gap:14px; padding:16px;}
-    @media (max-width: 980px){ main .grid{grid-template-columns:1fr} }
-
+    main .grid{
+      display:grid; grid-template-columns: 1.15fr .85fr; gap:14px; padding:16px;
+    }
+    @media (max-width: 980px){
+      main .grid{grid-template-columns:1fr}
+    }
     .card{
-      background: var(--card);
-      border:1px solid var(--line);
+      background: color-mix(in oklab, var(--card) 92%, transparent);
+      border:1px solid color-mix(in oklab, var(--line) 70%, transparent);
       border-radius:18px;
       overflow:hidden;
       box-shadow: var(--shadow);
     }
-    .card h2{margin:0; font-size:15px; padding:14px 14px 0 14px; letter-spacing:-.2px;}
+    .card h2{
+      margin:0; font-size:15px; padding:14px 14px 0 14px;
+      letter-spacing:-.2px;
+    }
     .card .hint{padding:6px 14px 12px 14px; margin:0; color:var(--muted); font-size:12px}
 
     .monthbar{
       display:flex; justify-content:space-between; align-items:center; gap:10px; padding:12px 14px;
-      border-bottom:1px solid var(--line);
-      background: #fafbff;
+      border-bottom:1px solid color-mix(in oklab, var(--line) 65%, transparent);
+      background: color-mix(in oklab, var(--bg) 85%, transparent);
     }
     .monthbar .m{font-weight:700; letter-spacing:-.2px}
 
     .chips{display:flex; gap:8px; flex-wrap:wrap; padding:0 14px 14px}
     .chip{
       display:inline-flex; align-items:center; gap:8px;
-      background: var(--chip);
-      border:1px solid var(--line);
+      background: color-mix(in oklab, var(--chip) 85%, transparent);
+      border:1px solid color-mix(in oklab, var(--line) 65%, transparent);
       color: var(--muted);
       padding:8px 10px; border-radius:999px; font-size:12px;
       cursor:pointer;
     }
-    .chip.active{color:var(--text); border-color: rgba(37,99,235,.35); background: rgba(37,99,235,.10)}
+    .chip.active{color:var(--text); border-color: color-mix(in oklab, var(--accent) 55%, transparent); background: color-mix(in oklab, var(--accent) 18%, transparent)}
     .chip b{color:var(--text); font-weight:600}
 
     .calendar{padding:14px}
-    .cal-head{display:grid; grid-template-columns: repeat(7, 1fr); gap:8px; padding:0 0 10px 0; color:var(--muted); font-size:12px}
-    .cal-grid{display:grid; grid-template-columns: repeat(7, 1fr); gap:8px}
-
+    .cal-head{
+      display:grid; grid-template-columns: repeat(7, 1fr);
+      gap:8px; padding:0 0 10px 0;
+      color:var(--muted); font-size:12px;
+    }
+    .cal-grid{
+      display:grid; grid-template-columns: repeat(7, 1fr);
+      gap:8px;
+    }
     .day{
       min-height:92px;
-      border:1px solid var(--line);
+      border:1px solid color-mix(in oklab, var(--line) 55%, transparent);
       border-radius:14px;
       padding:10px;
-      background: #ffffff;
+      background: var(--dayBg);
       display:flex; flex-direction:column; gap:8px;
     }
     .day.muted{opacity:.45}
@@ -126,9 +148,11 @@
 
     .pill{
       display:inline-flex; align-items:center; gap:6px;
-      font-size:11px; padding:6px 8px; border-radius:999px;
-      border:1px solid var(--line);
-      background: #f8fafc;
+      font-size:11px;
+      padding:6px 8px;
+      border-radius:999px;
+      border:1px solid var(--pillLine);
+      background: var(--pillBg);
       color: var(--text);
       overflow:hidden; white-space:nowrap; text-overflow:ellipsis;
     }
@@ -140,10 +164,10 @@
 
     .list{padding:14px; display:flex; flex-direction:column; gap:10px}
     .item{
-      border:1px solid var(--line);
+      border:1px solid color-mix(in oklab, var(--line) 60%, transparent);
       border-radius:16px;
       padding:12px;
-      background: #ffffff;
+      background: color-mix(in oklab, var(--dayBg) 88%, transparent);
       display:flex; gap:12px; align-items:flex-start; justify-content:space-between;
     }
     .item .left{min-width:0}
@@ -152,61 +176,23 @@
     .item .tag{
       font-size:12px; color:var(--text);
       padding:8px 10px; border-radius:999px;
-      border:1px solid var(--line);
-      background: #f8fafc;
+      border:1px solid color-mix(in oklab, var(--line) 60%, transparent);
+      background: var(--pillBg);
       white-space:nowrap;
     }
-    .item .actions{display:flex; gap:8px; align-items:center}
 
+    .footer{
+      max-width:1150px; margin:0 auto; padding:0 16px 24px; color:var(--muted); font-size:12px;
+    }
     .kbd{
-      border:1px solid var(--line);
+      border:1px solid color-mix(in oklab, var(--line) 80%, transparent);
       padding:2px 6px; border-radius:6px;
-      background: #ffffff;
+      background: var(--kbdBg);
       color:var(--text);
     }
 
-    .badge-admin{
-      display:inline-flex; gap:8px; align-items:center;
-      padding:8px 10px; border-radius:999px;
-      border:1px solid rgba(22,163,74,.35);
-      background: rgba(22,163,74,.10);
-      color: var(--text);
-      font-size:12px;
-    }
-
-    .footer{max-width:1200px; margin:0 auto; padding:0 16px 24px; color:var(--muted); font-size:12px;}
-    .note{color:var(--muted); font-size:12px; line-height:1.4}
-    .row{display:grid; grid-template-columns: 1fr 1fr; gap:10px}
-    @media (max-width: 720px){ .row{grid-template-columns:1fr} }
-
-    .modal-backdrop{
-      position:fixed; inset:0; background: rgba(15,23,42,.35);
-      display:none; align-items:center; justify-content:center; padding:16px; z-index:1000;
-    }
-    .modal{
-      width:min(740px, 100%);
-      background: #ffffff;
-      border:1px solid var(--line);
-      border-radius:18px;
-      box-shadow: 0 24px 80px rgba(15, 23, 42, .22);
-      overflow:hidden;
-    }
-    .modal header{
-      position:relative; top:auto; backdrop-filter:none;
-      background: #fafbff;
-      border-bottom:1px solid var(--line);
-    }
-    .modal .content{padding:14px}
-    .modal .footerbar{
-      display:flex; justify-content:space-between; gap:10px; padding:12px 14px;
-      border-top:1px solid var(--line);
-      background: #fafbff;
-      flex-wrap:wrap;
-      align-items:center;
-    }
-
     @media print{
-      .adminOnly, .toolbar, .chips, .badge-admin, .modal-backdrop {display:none !important}
+      header, .toolbar, .chips {display:none !important}
       body{background:#fff; color:#000}
       .card{box-shadow:none; background:#fff; border:1px solid #ddd}
       .day, .item{background:#fff}
@@ -219,13 +205,10 @@
     <div class="title">
       <div>
         <h1>2026학년도 학사일정</h1>
-        <p class="sub">월별 캘린더 + 일정 리스트 · 검색/필터 · 관리자 편집</p>
+        <p class="sub">월별 캘린더 + 일정 리스트 · 검색/필터 · 다크/라이트 모드</p>
       </div>
       <div class="controls">
-        <span id="adminBadge" class="badge-admin" style="display:none;">🛡 관리자 모드</span>
-        <button class="btn small" id="loginBtn">🔒 관리자 로그인</button>
-        <button class="btn small bad" id="logoutBtn" style="display:none;">로그아웃</button>
-        <button class="btn small" id="pwChangeOpenBtn" style="display:none;">🔁 비밀번호 변경</button>
+        <button class="btn small" id="themeBtn" title="다크/라이트 전환">🌓 테마</button>
       </div>
     </div>
 
@@ -245,7 +228,6 @@
       </div>
 
       <div class="controls">
-        <button class="btn adminOnly good" id="addBtn" style="display:none;">＋ 일정 추가</button>
         <button class="btn" id="exportBtn" title="현재 필터 결과를 CSV로 저장">⤓ CSV</button>
         <button class="btn primary" id="printBtn" title="인쇄/저장 (Ctrl+P)">🖨 인쇄</button>
       </div>
@@ -256,7 +238,7 @@
 <main>
   <div class="wrap">
     <div class="grid">
-      <section class="card" id="monthCard">
+      <section class="card">
         <div class="monthbar">
           <div class="m" id="monthTitle">2026.03</div>
           <div style="color:var(--muted); font-size:12px;">
@@ -270,7 +252,7 @@
         </div>
       </section>
 
-      <aside class="card" id="sideCard">
+      <aside class="card">
         <h2>선택 월 일정</h2>
         <p class="hint">현재 월 + 필터/검색 조건에 맞는 일정만 표시됩니다.</p>
         <div class="list" id="list"></div>
@@ -281,280 +263,52 @@
 
 <div class="footer">
   <div class="wrap">
-    <div>※ 변경 내용은 <b>이 브라우저(LocalStorage)</b>에 저장됩니다.</div>
-    <div class="note">여러 사람이 함께 쓰거나 다른 PC/휴대폰에서도 동일하게 보이게 하려면 서버/DB가 필요합니다.</div>
-  </div>
-</div>
-
-<!-- 로그인 모달 -->
-<div class="modal-backdrop" id="loginModal">
-  <div class="modal">
-    <header>
-      <div class="monthbar">
-        <div class="m">관리자 로그인</div>
-        <button class="btn small" onclick="UI.closeModal('loginModal')">✕ 닫기</button>
-      </div>
-    </header>
-    <div class="content">
-      <div>
-        <div style="margin-bottom:8px; color:var(--muted); font-size:12px;">비밀번호</div>
-        <!-- 기본 비밀번호 문구/노출 없음 -->
-        <input id="pwInput" class="input" type="password" placeholder="비밀번호 입력" autocomplete="current-password" />
-      </div>
-
-      <div style="margin-top:10px; display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap;">
-        <div class="note">로그인이 필요한 기능: 일정 추가/수정/삭제</div>
-        <button class="btn link" id="forgotBtn" type="button">비밀번호를 잊어버리셨나요?</button>
-      </div>
-
-      <div class="note" style="margin-top:10px;">
-        • 서버 없는 단일 파일이라 브라우저 저장 비밀번호로 보호됩니다.<br/>
-        • 보안이 중요하면 서버 로그인 방식으로 전환 권장.
-      </div>
-    </div>
-
-    <div class="footerbar">
-      <!-- 관리자 로그인 후에만 표시 (요구사항 유지) -->
-      <button class="btn bad" id="resetBtn" style="display:none;" onclick="DATA.resetAll()">초기화(전체 삭제)</button>
-
-      <div style="display:flex; gap:10px; flex-wrap:wrap;">
-        <button class="btn" onclick="UI.closeModal('loginModal')">취소</button>
-        <button class="btn primary" id="doLoginBtn">로그인</button>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- 비밀번호 찾기/재설정 모달 -->
-<div class="modal-backdrop" id="recoverModal">
-  <div class="modal">
-    <header>
-      <div class="monthbar">
-        <div class="m">비밀번호 재설정</div>
-        <button class="btn small" onclick="UI.closeModal('recoverModal')">✕ 닫기</button>
-      </div>
-    </header>
-
-    <div class="content">
-      <div>
-        <div style="margin-bottom:8px; color:var(--muted); font-size:12px;">질문</div>
-        <div style="font-weight:700; margin-bottom:10px;">1학년때 학번은 뭐냐?</div>
-        <input id="recoverAnswer" class="input" inputmode="numeric" placeholder="학번 입력" />
-        <div class="note" style="margin-top:8px;">정답을 입력하면 아래에서 새 비밀번호를 설정할 수 있습니다.</div>
-      </div>
-
-      <div id="recoverFields" style="display:none; margin-top:14px;">
-        <div class="row">
-          <div>
-            <div style="margin-bottom:8px; color:var(--muted); font-size:12px;">새 비밀번호</div>
-            <input id="recoverNewPw" class="input" type="password" placeholder="새 비밀번호 입력" autocomplete="new-password" />
-          </div>
-          <div>
-            <div style="margin-bottom:8px; color:var(--muted); font-size:12px;">새 비밀번호 확인</div>
-            <input id="recoverNewPw2" class="input" type="password" placeholder="한 번 더 입력" autocomplete="new-password" />
-          </div>
-        </div>
-        <div class="note" style="margin-top:10px;">
-          • 재설정 후에는 다시 로그인해 주세요.
-        </div>
-      </div>
-    </div>
-
-    <div class="footerbar">
-      <button class="btn" onclick="UI.closeModal('recoverModal')">취소</button>
-      <div style="display:flex; gap:10px; flex-wrap:wrap;">
-        <button class="btn" id="recoverCheckBtn">정답 확인</button>
-        <button class="btn primary" id="recoverSaveBtn" style="display:none;">비밀번호 변경</button>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- 비밀번호 변경 모달 (관리자 로그인 후에만 열림) -->
-<div class="modal-backdrop" id="pwModal">
-  <div class="modal">
-    <header>
-      <div class="monthbar">
-        <div class="m">비밀번호 변경</div>
-        <button class="btn small" onclick="UI.closeModal('pwModal')">✕ 닫기</button>
-      </div>
-    </header>
-    <div class="content">
-      <div class="row">
-        <div>
-          <div style="margin-bottom:8px; color:var(--muted); font-size:12px;">현재 비밀번호</div>
-          <input id="pwCur2" class="input" type="password" placeholder="현재 비밀번호" autocomplete="current-password" />
-        </div>
-        <div>
-          <div style="margin-bottom:8px; color:var(--muted); font-size:12px;">새 비밀번호</div>
-          <input id="pwNew2" class="input" type="password" placeholder="새 비밀번호" autocomplete="new-password" />
-        </div>
-      </div>
-      <div class="note" style="margin-top:10px;">
-        • 변경 즉시 이 브라우저에 저장됩니다.
-      </div>
-    </div>
-    <div class="footerbar">
-      <button class="btn" onclick="UI.closeModal('pwModal')">취소</button>
-      <button class="btn primary" id="pwSaveBtn">변경 저장</button>
-    </div>
-  </div>
-</div>
-
-<!-- 일정 편집/추가 모달 -->
-<div class="modal-backdrop" id="editModal">
-  <div class="modal">
-    <header>
-      <div class="monthbar">
-        <div class="m" id="editTitle">일정 추가</div>
-        <button class="btn small" onclick="UI.closeModal('editModal')">✕ 닫기</button>
-      </div>
-    </header>
-    <div class="content">
-      <div class="row">
-        <div>
-          <div style="margin-bottom:8px; color:var(--muted); font-size:12px;">날짜</div>
-          <input id="fDate" class="input" type="date" />
-        </div>
-        <div>
-          <div style="margin-bottom:8px; color:var(--muted); font-size:12px;">분류</div>
-          <select id="fCat" class="input"></select>
-        </div>
-      </div>
-      <div style="margin-top:10px;">
-        <div style="margin-bottom:8px; color:var(--muted); font-size:12px;">일정명</div>
-        <input id="fTitle" class="input" placeholder="예: 1학기 개강" />
-      </div>
-      <div style="margin-top:10px;">
-        <div style="margin-bottom:8px; color:var(--muted); font-size:12px;">설명(선택)</div>
-        <textarea id="fNote" class="input" placeholder="예: 수강신청 정정 기간 / 세부 안내 링크 등"></textarea>
-      </div>
-      <input type="hidden" id="fId" />
-    </div>
-    <div class="footerbar">
-      <button class="btn bad" id="deleteBtn" style="display:none;">삭제</button>
-      <div style="display:flex; gap:10px; flex-wrap:wrap;">
-        <button class="btn" onclick="UI.closeModal('editModal')">취소</button>
-        <button class="btn good" id="saveBtn">저장</button>
-      </div>
-    </div>
+    <div>※ 이 버전은 “관리자/로그인/웹편집” 기능이 없습니다. 변경은 코드에서 일정 데이터만 수정하면 됩니다.</div>
   </div>
 </div>
 
 <script>
-/** ==========================================================
- *  저장소 키
- * ========================================================== */
-const LS = {
-  EVENTS: "acad_2026_events_v1",
-  ADMIN_PW: "acad_2026_admin_pw_v1",
-  ADMIN_ON: "acad_2026_admin_on_v1",
-  CATS: "acad_2026_categories_v1",
-};
+/** =========================
+ *  1) 일정 데이터
+ *  - 단일일: { date:"YYYY-MM-DD", title, category, note? }
+ *  - 기간일정: { start:"YYYY-MM-DD", end:"YYYY-MM-DD", title, category, note? }
+ * ========================= */
+const EVENTS = [
+  { date:"2026-03-02", title:"1학기 개강(예시)", category:"학사", note:"학교 공지 기준으로 수정" },
+  { date:"2026-04-20", title:"중간고사(예시)", category:"시험", note:"학교별 일정 상이" },
+  { date:"2026-06-15", title:"기말고사(예시)", category:"시험", note:"학교별 일정 상이" },
+  { date:"2026-06-26", title:"1학기 종강(예시)", category:"학사" },
 
-/** ==========================================================
- *  기본 데이터 (처음 실행 시만 사용)
- * ========================================================== */
-const DEFAULT_CATEGORIES = ["학사","수업","시험","휴일"];
-const DEFAULT_EVENTS = [
-  { id: crypto.randomUUID(), date:"2026-03-02", title:"1학기 개강(예시)", category:"학사", note:"학교 공지 기준으로 수정" },
-  { id: crypto.randomUUID(), date:"2026-03-02", title:"수강신청 정정/변경(예시)", category:"학사", note:"기간/방식은 학교별 상이" },
-  { id: crypto.randomUUID(), date:"2026-04-20", title:"중간고사(예시)", category:"시험", note:"기간/주간으로 입력 가능" },
-  { id: crypto.randomUUID(), date:"2026-06-15", title:"기말고사(예시)", category:"시험", note:"학교별 일정 상이" },
-  { id: crypto.randomUUID(), date:"2026-06-26", title:"1학기 종강(예시)", category:"학사" },
-  { id: crypto.randomUUID(), date:"2026-09-01", title:"2학기 개강(예시)", category:"학사" },
-  { id: crypto.randomUUID(), date:"2026-10-19", title:"중간고사(예시)", category:"시험" },
-  { id: crypto.randomUUID(), date:"2026-12-14", title:"기말고사(예시)", category:"시험" },
-  { id: crypto.randomUUID(), date:"2026-12-23", title:"2학기 종강(예시)", category:"학사" },
-  { id: crypto.randomUUID(), date:"2026-05-05", title:"어린이날(예시)", category:"휴일" },
+  { date:"2026-09-01", title:"2학기 개강(예시)", category:"학사" },
+  { date:"2026-10-19", title:"중간고사(예시)", category:"시험" },
+  { date:"2026-12-14", title:"기말고사(예시)", category:"시험" },
+  { date:"2026-12-23", title:"2학기 종강(예시)", category:"학사" },
+
+  { date:"2026-05-05", title:"어린이날(예시)", category:"휴일" },
+
+  /* ✅ 요청: 6월 1일 ~ 7월 14일까지 3학년 체험학습 */
+  { start:"2026-06-01", end:"2026-07-14", title:"3학년 체험학습", category:"학사", note:"기간 일정" },
 ];
 
 const START_MONTH = "2026-03-01";
 const END_MONTH   = "2027-02-01";
 
-/** 요구사항: 기본 비밀번호 */
-const DEFAULT_ADMIN_PW = "120725";
+/** =========================
+ *  2) 테마(다크/라이트) 저장
+ * ========================= */
+const THEME_KEY = "acad_theme_v1";
+function getTheme(){
+  return localStorage.getItem(THEME_KEY) || "dark";
+}
+function setTheme(t){
+  document.documentElement.setAttribute("data-theme", t);
+  localStorage.setItem(THEME_KEY, t);
+}
+setTheme(getTheme());
 
-/** 요구사항: 비밀번호 찾기 정답 */
-const RECOVERY_ANSWER = "10929";
-
-/** ==========================================================
- *  DATA 모듈 (LocalStorage CRUD)
- * ========================================================== */
-const DATA = {
-  init(){
-    if(!localStorage.getItem(LS.CATS)){
-      localStorage.setItem(LS.CATS, JSON.stringify(DEFAULT_CATEGORIES));
-    }
-    if(!localStorage.getItem(LS.EVENTS)){
-      localStorage.setItem(LS.EVENTS, JSON.stringify(DEFAULT_EVENTS));
-    }
-    // 기본 비밀번호를 120725로 설정 (최초 1회)
-    if(!localStorage.getItem(LS.ADMIN_PW)){
-      localStorage.setItem(LS.ADMIN_PW, this.hash(DEFAULT_ADMIN_PW));
-    }
-    if(!localStorage.getItem(LS.ADMIN_ON)){
-      localStorage.setItem(LS.ADMIN_ON, "0");
-    }
-  },
-  getCategories(){
-    return JSON.parse(localStorage.getItem(LS.CATS) || "[]");
-  },
-  getEvents(){
-    return JSON.parse(localStorage.getItem(LS.EVENTS) || "[]");
-  },
-  setEvents(events){
-    localStorage.setItem(LS.EVENTS, JSON.stringify(events));
-  },
-  isAdmin(){
-    return localStorage.getItem(LS.ADMIN_ON)==="1";
-  },
-  setAdmin(on){
-    localStorage.setItem(LS.ADMIN_ON, on ? "1":"0");
-  },
-  hash(s){
-    // 단일 파일용 간단 해시(보안 강도 목적 아님)
-    let h = 2166136261;
-    for(let i=0;i<s.length;i++){
-      h ^= s.charCodeAt(i);
-      h = Math.imul(h, 16777619);
-    }
-    return (h>>>0).toString(16);
-  },
-  verifyPw(pw){
-    const saved = localStorage.getItem(LS.ADMIN_PW) || "";
-    return saved === this.hash(pw);
-  },
-  setPw(newPw){
-    localStorage.setItem(LS.ADMIN_PW, this.hash(newPw));
-  },
-  upsertEvent(ev){
-    const list = this.getEvents();
-    const idx = list.findIndex(x=>x.id===ev.id);
-    if(idx>=0) list[idx]=ev; else list.push(ev);
-    this.setEvents(list);
-  },
-  deleteEvent(id){
-    const list = this.getEvents().filter(x=>x.id!==id);
-    this.setEvents(list);
-  },
-  resetAll(){
-    if(!DATA.isAdmin()){
-      alert("관리자 로그인 후에만 초기화할 수 있습니다.");
-      return;
-    }
-    if(!confirm("정말 초기화할까요? (모든 일정/비번 포함)")) return;
-    localStorage.removeItem(LS.EVENTS);
-    localStorage.removeItem(LS.ADMIN_PW);
-    localStorage.removeItem(LS.ADMIN_ON);
-    localStorage.removeItem(LS.CATS);
-    location.reload();
-  }
-};
-
-/** ==========================================================
- *  UI 렌더
- * ========================================================== */
+/** =========================
+ *  3) UI 로직
+ * ========================= */
 const DOW = ["일","월","화","수","목","금","토"];
 
 let state = {
@@ -572,46 +326,7 @@ const els = {
   catSelect: document.getElementById("catSelect"),
   q: document.getElementById("q"),
   summaryChips: document.getElementById("summaryChips"),
-
-  loginBtn: document.getElementById("loginBtn"),
-  logoutBtn: document.getElementById("logoutBtn"),
-  adminBadge: document.getElementById("adminBadge"),
-  addBtn: document.getElementById("addBtn"),
-  exportBtn: document.getElementById("exportBtn"),
-  printBtn: document.getElementById("printBtn"),
-  prevBtn: document.getElementById("prevBtn"),
-  nextBtn: document.getElementById("nextBtn"),
-  startBtn: document.getElementById("startBtn"),
-
-  loginModal: document.getElementById("loginModal"),
-  pwInput: document.getElementById("pwInput"),
-  doLoginBtn: document.getElementById("doLoginBtn"),
-  resetBtn: document.getElementById("resetBtn"),
-  forgotBtn: document.getElementById("forgotBtn"),
-
-  recoverModal: document.getElementById("recoverModal"),
-  recoverAnswer: document.getElementById("recoverAnswer"),
-  recoverFields: document.getElementById("recoverFields"),
-  recoverNewPw: document.getElementById("recoverNewPw"),
-  recoverNewPw2: document.getElementById("recoverNewPw2"),
-  recoverCheckBtn: document.getElementById("recoverCheckBtn"),
-  recoverSaveBtn: document.getElementById("recoverSaveBtn"),
-
-  pwChangeOpenBtn: document.getElementById("pwChangeOpenBtn"),
-  pwModal: document.getElementById("pwModal"),
-  pwCur2: document.getElementById("pwCur2"),
-  pwNew2: document.getElementById("pwNew2"),
-  pwSaveBtn: document.getElementById("pwSaveBtn"),
-
-  editModal: document.getElementById("editModal"),
-  editTitle: document.getElementById("editTitle"),
-  fId: document.getElementById("fId"),
-  fDate: document.getElementById("fDate"),
-  fCat: document.getElementById("fCat"),
-  fTitle: document.getElementById("fTitle"),
-  fNote: document.getElementById("fNote"),
-  saveBtn: document.getElementById("saveBtn"),
-  deleteBtn: document.getElementById("deleteBtn"),
+  themeBtn: document.getElementById("themeBtn"),
 };
 
 function pad2(n){ return String(n).padStart(2,"0"); }
@@ -619,11 +334,18 @@ function toISODate(d){
   const y=d.getFullYear(), m=pad2(d.getMonth()+1), day=pad2(d.getDate());
   return `${y}-${m}-${day}`;
 }
+function parseISO(iso){
+  const [y,m,d]=iso.split("-").map(Number);
+  return new Date(y, m-1, d);
+}
 function ymKey(d){ return `${d.getFullYear()}-${pad2(d.getMonth()+1)}`; }
 function formatYM(d){ return `${d.getFullYear()}.${pad2(d.getMonth()+1)}`; }
 function formatDateK(iso){
   const [y,m,d]=iso.split("-").map(Number);
   return `${y}.${pad2(m)}.${pad2(d)}`;
+}
+function formatRangeK(s,e){
+  return `${formatDateK(s)}~${formatDateK(e)}`;
 }
 function normalized(s){ return (s||"").toLowerCase().trim(); }
 function escapeHtml(s){
@@ -638,21 +360,68 @@ function clampCursor(){
   if(state.cursor > max) state.cursor = max;
 }
 
+function isRange(e){ return !!(e.start && e.end); }
+function rangeCoversDate(e, iso){
+  const t = parseISO(iso).getTime();
+  const a = parseISO(e.start).getTime();
+  const b = parseISO(e.end).getTime();
+  return a <= t && t <= b;
+}
+function rangeOverlapsMonth(e, monthDate){
+  const ms = new Date(monthDate.getFullYear(), monthDate.getMonth(), 1);
+  const me = new Date(monthDate.getFullYear(), monthDate.getMonth()+1, 0); // last day
+  const a = parseISO(e.start).getTime();
+  const b = parseISO(e.end).getTime();
+  return a <= me.getTime() && b >= ms.getTime();
+}
+
+function getCategories(){
+  const cats = Array.from(new Set(EVENTS.map(e=>e.category))).sort((a,b)=>a.localeCompare(b,"ko"));
+  return cats;
+}
+
 function getFilteredEvents(){
   const q = normalized(state.q);
-  const all = DATA.getEvents().slice().sort((a,b)=>a.date.localeCompare(b.date));
-  return all
+  return EVENTS
+    .slice()
+    .sort((a,b)=>{
+      const da = isRange(a) ? a.start : a.date;
+      const db = isRange(b) ? b.start : b.date;
+      return da.localeCompare(db);
+    })
     .filter(e => state.cat==="ALL" ? true : e.category===state.cat)
     .filter(e => {
       if(!q) return true;
-      return normalized(e.title).includes(q) || normalized(e.note).includes(q) || normalized(e.category).includes(q) || e.date.includes(q);
+      const hay = [
+        e.title, e.note, e.category,
+        isRange(e) ? `${e.start} ${e.end}` : e.date
+      ].join(" ").toLowerCase();
+      return hay.includes(q);
     });
 }
-function eventsInMonth(monthDate){
-  const key = ymKey(monthDate);
-  return getFilteredEvents().filter(e => e.date.startsWith(key));
+
+/* 달력 셀(날짜별)에서 보여줄 이벤트: 단일일 or 기간일정이 해당 날짜를 포함 */
+function eventsOnDate(iso){
+  const list = getFilteredEvents();
+  return list.filter(e=>{
+    if(isRange(e)) return rangeCoversDate(e, iso);
+    return e.date === iso;
+  });
 }
-function colorClass(cat){ return `cat-${cat}`; }
+
+/* 우측 리스트(월별)에서 보여줄 이벤트: 단일일이 그 달에 있거나, 기간일정이 그 달과 겹치면 1회 표시 */
+function eventsForMonthList(monthDate){
+  const key = ymKey(monthDate);
+  const list = getFilteredEvents();
+  return list.filter(e=>{
+    if(isRange(e)) return rangeOverlapsMonth(e, monthDate);
+    return (e.date || "").startsWith(key);
+  });
+}
+
+function renderDOW(){
+  els.dow.innerHTML = DOW.map(x=>`<div>${x}</div>`).join("");
+}
 
 function buildMonthOptions(){
   const start = new Date(START_MONTH);
@@ -666,34 +435,33 @@ function buildMonthOptions(){
   }
   els.monthSelect.innerHTML = opts.map(o => `<option value="${o.value}">${o.label}</option>`).join("");
 }
+
 function buildCategoryOptions(){
-  const cats = DATA.getCategories();
+  const cats = getCategories();
   els.catSelect.innerHTML = `<option value="ALL">전체 분류</option>` + cats.map(c=>`<option value="${c}">${c}</option>`).join("");
-  els.fCat.innerHTML = cats.map(c=>`<option value="${c}">${c}</option>`).join("");
 }
 
-function renderDOW(){
-  els.dow.innerHTML = DOW.map(x=>`<div>${x}</div>`).join("");
-}
-
-function renderSummaryChips(monthEvents){
+function renderSummaryChips(monthDate){
+  const monthList = eventsForMonthList(monthDate);
   const byCat = {};
-  for(const e of monthEvents){
+  for(const e of monthList){
     byCat[e.category] = (byCat[e.category]||0)+1;
   }
   const cats = Object.keys(byCat).sort((a,b)=>a.localeCompare(b,"ko"));
-  const total = monthEvents.length;
+  const total = monthList.length;
 
   const makeChip = (label, count, active, value) => `
     <div class="chip ${active?'active':''}" data-cat="${escapeHtml(value)}">
       <b>${escapeHtml(label)}</b> ${count}건
     </div>
   `;
+
   const chips = [];
   chips.push(makeChip("전체", total, state.cat==="ALL", "ALL"));
   for(const c of cats){
     chips.push(makeChip(c, byCat[c], state.cat===c, c));
   }
+
   els.summaryChips.innerHTML = chips.join("");
   els.summaryChips.querySelectorAll(".chip").forEach(ch => {
     ch.addEventListener("click", () => {
@@ -709,9 +477,9 @@ function renderCalendar(){
   const cur = new Date(state.cursor);
   cur.setDate(1);
   els.monthTitle.textContent = formatYM(cur);
+  els.monthSelect.value = ymKey(cur);
 
-  const monthEvents = eventsInMonth(cur);
-  renderSummaryChips(monthEvents);
+  renderSummaryChips(cur);
 
   const firstDay = new Date(cur);
   const startDow = firstDay.getDay();
@@ -724,10 +492,10 @@ function renderCalendar(){
     d.setDate(startCell.getDate()+i);
     const iso = toISODate(d);
     const inMonth = d.getMonth()===cur.getMonth();
-    const dayEvents = monthEvents.filter(e => e.date===iso);
+    const dayEvents = eventsOnDate(iso);
 
     const pills = dayEvents.slice(0,3).map(e => `
-      <div class="pill ${colorClass(e.category)}" title="${escapeHtml(e.title)}${e.note ? ' - '+escapeHtml(e.note) : ''}">
+      <div class="pill cat-${escapeHtml(e.category)}" title="${escapeHtml(e.title)}${e.note ? ' - '+escapeHtml(e.note) : ''}">
         <span class="dot"></span>
         <span style="min-width:0; overflow:hidden; text-overflow:ellipsis;">${escapeHtml(e.title)}</span>
       </div>
@@ -744,75 +512,43 @@ function renderCalendar(){
   }
   els.cal.innerHTML = cells.join("");
 
+  // 클릭하면 우측 리스트에서 해당 날짜(단일일)로 스크롤
   els.cal.querySelectorAll(".day").forEach(dayEl => {
     dayEl.addEventListener("click", () => {
       const iso = dayEl.dataset.date;
-      if(DATA.isAdmin()){
-        UI.openEdit({ id:"", date:iso, title:"", category:DATA.getCategories()[0] || "학사", note:"" }, true);
-      }else{
-        const target = document.querySelector(`[data-item-date="${iso}"]`);
-        if(target) target.scrollIntoView({behavior:"smooth", block:"center"});
-      }
+      const target = document.querySelector(`[data-item-anchor="${iso}"]`);
+      if(target) target.scrollIntoView({behavior:"smooth", block:"center"});
     });
   });
-
-  els.monthSelect.value = ymKey(cur);
 }
 
 function renderSideList(){
   const cur = new Date(state.cursor);
   cur.setDate(1);
-  const monthEvents = eventsInMonth(cur);
+  const monthEvents = eventsForMonthList(cur);
 
   if(monthEvents.length===0){
     els.list.innerHTML = `<div style="color:var(--muted); padding:10px 2px;">표시할 일정이 없습니다. (필터/검색 조건 확인)</div>`;
     return;
   }
 
-  const admin = DATA.isAdmin();
-
-  els.list.innerHTML = monthEvents.map(e => `
-    <div class="item" data-item-date="${escapeHtml(e.date)}">
-      <div class="left">
-        <div class="date">${formatDateK(e.date)} · ${escapeHtml(e.title)}</div>
-        <div class="meta">${escapeHtml(e.note || "")}</div>
-      </div>
-      <div class="actions">
+  els.list.innerHTML = monthEvents.map(e => {
+    const labelDate = isRange(e) ? formatRangeK(e.start, e.end) : formatDateK(e.date);
+    const anchor = isRange(e) ? e.start : e.date; // 스크롤 기준
+    return `
+      <div class="item" data-item-anchor="${escapeHtml(anchor)}">
+        <div class="left">
+          <div class="date">${escapeHtml(labelDate)} · ${escapeHtml(e.title)}</div>
+          <div class="meta">${escapeHtml(e.note || "")}</div>
+        </div>
         <div class="tag">${escapeHtml(e.category)}</div>
-        ${admin ? `<button class="btn small adminOnly" data-edit="${escapeHtml(e.id)}">수정</button>` : ``}
       </div>
-    </div>
-  `).join("");
-
-  if(admin){
-    els.list.querySelectorAll("[data-edit]").forEach(btn=>{
-      btn.addEventListener("click", (ev)=>{
-        ev.stopPropagation();
-        const id = btn.dataset.edit;
-        const item = DATA.getEvents().find(x=>x.id===id);
-        if(item) UI.openEdit(item, false);
-      });
-    });
-  }
-}
-
-function updateAdminUI(){
-  const on = DATA.isAdmin();
-  els.adminBadge.style.display = on ? "" : "none";
-  els.loginBtn.style.display = on ? "none" : "";
-  els.logoutBtn.style.display = on ? "" : "none";
-  els.addBtn.style.display = on ? "" : "none";
-
-  // 전체 삭제 버튼: 관리자 로그인 후에만 표시
-  if(els.resetBtn) els.resetBtn.style.display = on ? "" : "none";
-
-  // 비밀번호 변경 버튼: 관리자 로그인 후에만 표시
-  els.pwChangeOpenBtn.style.display = on ? "" : "none";
+    `;
+  }).join("");
 }
 
 function render(){
   buildCategoryOptions();
-  updateAdminUI();
   renderCalendar();
   renderSideList();
 }
@@ -827,10 +563,11 @@ function moveMonth(delta){
 }
 
 function exportCSV(){
-  const rows = [["date","category","title","note"]];
+  const rows = [["date_or_range","category","title","note"]];
   const data = getFilteredEvents();
   for(const e of data){
-    rows.push([e.date, e.category, e.title, e.note||""]);
+    const d = isRange(e) ? `${e.start}~${e.end}` : e.date;
+    rows.push([d, e.category, e.title, e.note||""]);
   }
   const csv = rows.map(r => r.map(v => `"${String(v).replace(/"/g,'""')}"`).join(",")).join("\n");
   const blob = new Blob([csv], {type:"text/csv;charset=utf-8;"});
@@ -844,196 +581,43 @@ function exportCSV(){
   URL.revokeObjectURL(url);
 }
 
-/** ==========================================================
- *  모달 / 편집
- * ========================================================== */
-const UI = {
-  openModal(id){ document.getElementById(id).style.display="flex"; },
-  closeModal(id){ document.getElementById(id).style.display="none"; },
-
-  openLogin(){
-    els.pwInput.value="";
-    this.openModal("loginModal");
-    setTimeout(()=>els.pwInput.focus(), 30);
-  },
-
-  openRecover(){
-    // reset UI state
-    els.recoverAnswer.value="";
-    els.recoverFields.style.display="none";
-    els.recoverSaveBtn.style.display="none";
-    els.recoverNewPw.value="";
-    els.recoverNewPw2.value="";
-    this.openModal("recoverModal");
-    setTimeout(()=>els.recoverAnswer.focus(), 30);
-  },
-
-  openPwChange(){
-    if(!DATA.isAdmin()){
-      alert("관리자 로그인 후에만 비밀번호 변경이 가능합니다.");
-      return;
-    }
-    els.pwCur2.value="";
-    els.pwNew2.value="";
-    this.openModal("pwModal");
-    setTimeout(()=>els.pwCur2.focus(), 30);
-  },
-
-  openEdit(ev, isNew){
-    if(!DATA.isAdmin()) return;
-
-    els.editTitle.textContent = isNew ? "일정 추가" : "일정 수정";
-    els.fId.value = ev.id || "";
-    els.fDate.value = ev.date || "";
-    els.fCat.value = ev.category || (DATA.getCategories()[0] || "학사");
-    els.fTitle.value = ev.title || "";
-    els.fNote.value = ev.note || "";
-
-    els.deleteBtn.style.display = isNew ? "none" : "";
-    this.openModal("editModal");
-    setTimeout(()=>els.fTitle.focus(), 30);
-
-    els.deleteBtn.onclick = () => {
-      if(!confirm("정말 삭제할까요?")) return;
-      DATA.deleteEvent(ev.id);
-      this.closeModal("editModal");
-      render();
-    };
-  }
-};
-
-/** ==========================================================
- *  바인딩
- * ========================================================== */
-DATA.init();
+/** =========================
+ *  4) 이벤트 바인딩
+ * ========================= */
 buildMonthOptions();
 renderDOW();
 
-els.prevBtn.addEventListener("click", ()=>moveMonth(-1));
-els.nextBtn.addEventListener("click", ()=>moveMonth(+1));
-els.startBtn.addEventListener("click", ()=>{ state.cursor = new Date(START_MONTH); render(); });
+document.getElementById("prevBtn").addEventListener("click", ()=>moveMonth(-1));
+document.getElementById("nextBtn").addEventListener("click", ()=>moveMonth(+1));
+document.getElementById("startBtn").addEventListener("click", ()=>{
+  state.cursor = new Date(START_MONTH);
+  render();
+});
 
 els.monthSelect.addEventListener("change", (e)=>{
   const [y,m] = e.target.value.split("-").map(Number);
   state.cursor = new Date(y, m-1, 1);
   render();
 });
-els.catSelect.addEventListener("change", (e)=>{ state.cat = e.target.value; render(); });
-els.q.addEventListener("input", (e)=>{ state.q = e.target.value; render(); });
-
-els.exportBtn.addEventListener("click", exportCSV);
-els.printBtn.addEventListener("click", ()=>window.print());
-
-els.loginBtn.addEventListener("click", ()=>UI.openLogin());
-els.logoutBtn.addEventListener("click", ()=>{
-  DATA.setAdmin(false);
+els.catSelect.addEventListener("change", (e)=>{
+  state.cat = e.target.value;
+  render();
+});
+els.q.addEventListener("input", (e)=>{
+  state.q = e.target.value;
   render();
 });
 
-els.doLoginBtn.addEventListener("click", ()=>{
-  const pw = els.pwInput.value || "";
-  if(!DATA.verifyPw(pw)){
-    alert("비밀번호가 틀렸습니다.");
-    return;
-  }
-  DATA.setAdmin(true);
-  UI.closeModal("loginModal");
-  render();
-});
+document.getElementById("exportBtn").addEventListener("click", exportCSV);
+document.getElementById("printBtn").addEventListener("click", ()=>window.print());
 
-els.forgotBtn.addEventListener("click", ()=>{
-  UI.closeModal("loginModal");
-  UI.openRecover();
-});
-
-els.recoverCheckBtn.addEventListener("click", ()=>{
-  const ans = (els.recoverAnswer.value || "").trim();
-  if(ans !== RECOVERY_ANSWER){
-    alert("정답이 아닙니다.");
-    els.recoverFields.style.display = "none";
-    els.recoverSaveBtn.style.display = "none";
-    return;
-  }
-  els.recoverFields.style.display = "";
-  els.recoverSaveBtn.style.display = "";
-  els.recoverNewPw.focus();
-});
-
-els.recoverSaveBtn.addEventListener("click", ()=>{
-  const ans = (els.recoverAnswer.value || "").trim();
-  if(ans !== RECOVERY_ANSWER){
-    alert("정답 확인을 먼저 해주세요.");
-    return;
-  }
-  const npw1 = (els.recoverNewPw.value || "").trim();
-  const npw2 = (els.recoverNewPw2.value || "").trim();
-
-  if(npw1.length < 4){
-    alert("새 비밀번호는 4자 이상을 권장합니다.");
-    return;
-  }
-  if(npw1 !== npw2){
-    alert("새 비밀번호 확인이 일치하지 않습니다.");
-    return;
-  }
-
-  DATA.setPw(npw1);
-  DATA.setAdmin(false); // 재설정 후에는 다시 로그인하도록
-  UI.closeModal("recoverModal");
-  alert("비밀번호가 변경되었습니다. 새 비밀번호로 로그인해 주세요.");
-  render();
-});
-
-els.pwChangeOpenBtn.addEventListener("click", ()=>UI.openPwChange());
-
-els.pwSaveBtn.addEventListener("click", ()=>{
-  if(!DATA.isAdmin()){
-    alert("관리자 로그인 후에만 변경할 수 있습니다.");
-    return;
-  }
-  const cur = els.pwCur2.value || "";
-  const nw = (els.pwNew2.value || "").trim();
-
-  if(!DATA.verifyPw(cur)){
-    alert("현재 비밀번호가 틀렸습니다.");
-    return;
-  }
-  if(nw.length < 4){
-    alert("새 비밀번호는 4자 이상을 권장합니다.");
-    return;
-  }
-  DATA.setPw(nw);
-  UI.closeModal("pwModal");
-  alert("비밀번호가 변경되었습니다.");
-});
-
-els.addBtn.addEventListener("click", ()=>{
-  const date = toISODate(new Date(state.cursor.getFullYear(), state.cursor.getMonth(), 1));
-  UI.openEdit({ id:"", date, title:"", category: DATA.getCategories()[0] || "학사", note:"" }, true);
-});
-
-els.saveBtn.addEventListener("click", ()=>{
-  if(!DATA.isAdmin()) return;
-
-  const id = els.fId.value || crypto.randomUUID();
-  const date = els.fDate.value;
-  const category = els.fCat.value;
-  const title = els.fTitle.value.trim();
-  const note = els.fNote.value.trim();
-
-  if(!date){ alert("날짜를 입력하세요."); return; }
-  if(!title){ alert("일정명을 입력하세요."); return; }
-
-  DATA.upsertEvent({ id, date, category, title, note });
-  UI.closeModal("editModal");
-  render();
+els.themeBtn.addEventListener("click", ()=>{
+  const cur = getTheme();
+  const next = (cur === "dark") ? "light" : "dark";
+  setTheme(next);
 });
 
 window.addEventListener("keydown", (e)=>{
-  if(els.editModal.style.display==="flex") return;
-  if(els.loginModal.style.display==="flex") return;
-  if(els.pwModal.style.display==="flex") return;
-  if(els.recoverModal.style.display==="flex") return;
   if(e.key==="ArrowLeft") moveMonth(-1);
   if(e.key==="ArrowRight") moveMonth(+1);
 });
