@@ -6,102 +6,120 @@
   <title>2026학년도 학사일정</title>
   <style>
     :root{
-      --bg:#0b0f14; --card:#121826; --muted:#9aa4b2; --text:#e6edf3;
-      --line:#243044; --accent:#4ea1ff; --accent2:#7ee787; --warn:#ffcc66; --bad:#ff7b72;
-      --chip:#1a2333;
+      /* White mode */
+      --bg:#f6f8fb;
+      --card:#ffffff;
+      --muted:#5b677a;
+      --text:#111827;
+      --line:#d8dee9;
+      --accent:#2563eb;
+      --accent2:#16a34a;
+      --warn:#d97706;
+      --bad:#dc2626;
+      --chip:#f1f5f9;
+      --shadow: 0 10px 30px rgba(15, 23, 42, .08);
     }
     *{box-sizing:border-box}
     body{
-      margin:0; font-family: system-ui, -apple-system, Segoe UI, Roboto, Noto Sans KR, Arial, sans-serif;
-      background: radial-gradient(1200px 800px at 15% 10%, #101a2b 0%, var(--bg) 60%);
+      margin:0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Noto Sans KR, Arial, sans-serif;
+      background: radial-gradient(1200px 800px at 15% 10%, #ffffff 0%, var(--bg) 60%);
       color:var(--text);
     }
     header{
       position:sticky; top:0; z-index:10;
+      background: rgba(246,248,251,.85);
       backdrop-filter: blur(10px);
-      background: rgba(11,15,20,.65);
-      border-bottom:1px solid rgba(36,48,68,.6);
+      border-bottom:1px solid var(--line);
     }
     .wrap{max-width:1200px; margin:0 auto; padding:16px;}
     .title{display:flex; align-items:flex-end; justify-content:space-between; gap:12px; flex-wrap:wrap;}
     h1{margin:0; font-size:20px; letter-spacing:-.3px;}
     .sub{margin:0; color:var(--muted); font-size:13px}
+
     .toolbar{display:flex; gap:10px; flex-wrap:wrap; margin-top:12px; align-items:center; justify-content:space-between;}
     .controls{display:flex; gap:10px; flex-wrap:wrap; align-items:center}
+
     .btn{
-      border:1px solid rgba(36,48,68,.9);
-      background: rgba(18,24,38,.7);
+      border:1px solid var(--line);
+      background: rgba(255,255,255,.9);
       color:var(--text);
       padding:10px 12px; border-radius:12px; cursor:pointer;
       display:inline-flex; gap:8px; align-items:center;
-      transition:.15s transform, .15s opacity;
+      transition:.15s transform, .15s opacity, .15s box-shadow;
       user-select:none;
+      box-shadow: 0 1px 0 rgba(15,23,42,.03);
     }
-    .btn:hover{opacity:.92}
+    .btn:hover{opacity:.95; box-shadow: 0 6px 18px rgba(15,23,42,.08)}
     .btn:active{transform: translateY(1px)}
-    .btn.primary{border-color: rgba(78,161,255,.9); box-shadow: 0 0 0 3px rgba(78,161,255,.12) inset;}
-    .btn.good{border-color: rgba(126,231,135,.7)}
-    .btn.bad{border-color: rgba(255,123,114,.7)}
+    .btn.primary{border-color: rgba(37,99,235,.35); box-shadow: 0 0 0 3px rgba(37,99,235,.12) inset;}
+    .btn.good{border-color: rgba(22,163,74,.35)}
+    .btn.bad{border-color: rgba(220,38,38,.35)}
     .btn.small{padding:8px 10px; border-radius:10px; font-size:13px}
-    .seg{display:flex; border:1px solid rgba(36,48,68,.9); border-radius:12px; overflow:hidden; background: rgba(18,24,38,.6);}
-    .seg button{border:0; background:transparent; color:var(--muted); padding:10px 12px; cursor:pointer;}
-    .seg button.active{color:var(--text); background: rgba(78,161,255,.16)}
+
     .input, select, textarea{
-      border:1px solid rgba(36,48,68,.9);
-      background: rgba(18,24,38,.6);
+      border:1px solid var(--line);
+      background: rgba(255,255,255,.95);
       color:var(--text);
       padding:10px 12px; border-radius:12px;
       outline:none;
+      box-shadow: 0 1px 0 rgba(15,23,42,.03);
     }
     textarea{min-height:92px; resize:vertical}
-    .input::placeholder{color:#6b778a}
+    .input::placeholder{color:#94a3b8}
+
     main .grid{display:grid; grid-template-columns: 1.1fr .9fr; gap:14px; padding:16px;}
     @media (max-width: 980px){ main .grid{grid-template-columns:1fr} }
+
     .card{
-      background: rgba(18,24,38,.65);
-      border:1px solid rgba(36,48,68,.7);
+      background: var(--card);
+      border:1px solid var(--line);
       border-radius:18px;
       overflow:hidden;
-      box-shadow: 0 10px 30px rgba(0,0,0,.25);
+      box-shadow: var(--shadow);
     }
     .card h2{margin:0; font-size:15px; padding:14px 14px 0 14px; letter-spacing:-.2px;}
     .card .hint{padding:6px 14px 12px 14px; margin:0; color:var(--muted); font-size:12px}
-    .pad{padding:14px}
+
     .monthbar{
       display:flex; justify-content:space-between; align-items:center; gap:10px; padding:12px 14px;
-      border-bottom:1px solid rgba(36,48,68,.6);
-      background: rgba(10,14,20,.15);
+      border-bottom:1px solid var(--line);
+      background: #fafbff;
     }
     .monthbar .m{font-weight:700; letter-spacing:-.2px}
+
     .chips{display:flex; gap:8px; flex-wrap:wrap; padding:0 14px 14px}
     .chip{
       display:inline-flex; align-items:center; gap:8px;
-      background: rgba(26,35,51,.75);
-      border:1px solid rgba(36,48,68,.6);
+      background: var(--chip);
+      border:1px solid var(--line);
       color: var(--muted);
       padding:8px 10px; border-radius:999px; font-size:12px;
       cursor:pointer;
     }
-    .chip.active{color:var(--text); border-color: rgba(78,161,255,.7); background: rgba(78,161,255,.14)}
+    .chip.active{color:var(--text); border-color: rgba(37,99,235,.35); background: rgba(37,99,235,.10)}
     .chip b{color:var(--text); font-weight:600}
+
     .calendar{padding:14px}
     .cal-head{display:grid; grid-template-columns: repeat(7, 1fr); gap:8px; padding:0 0 10px 0; color:var(--muted); font-size:12px}
     .cal-grid{display:grid; grid-template-columns: repeat(7, 1fr); gap:8px}
+
     .day{
       min-height:92px;
-      border:1px solid rgba(36,48,68,.55);
+      border:1px solid var(--line);
       border-radius:14px;
       padding:10px;
-      background: rgba(12,16,24,.35);
+      background: #ffffff;
       display:flex; flex-direction:column; gap:8px;
     }
     .day.muted{opacity:.45}
     .dnum{font-size:12px; color:var(--muted); display:flex; justify-content:space-between; gap:8px}
+
     .pill{
       display:inline-flex; align-items:center; gap:6px;
       font-size:11px; padding:6px 8px; border-radius:999px;
-      border:1px solid rgba(36,48,68,.65);
-      background: rgba(26,35,51,.7);
+      border:1px solid var(--line);
+      background: #f8fafc;
       color: var(--text);
       overflow:hidden; white-space:nowrap; text-overflow:ellipsis;
     }
@@ -110,57 +128,73 @@
     .pill.cat-수업 .dot{background: var(--accent2)}
     .pill.cat-시험 .dot{background: var(--warn)}
     .pill.cat-휴일 .dot{background: var(--bad)}
+
     .list{padding:14px; display:flex; flex-direction:column; gap:10px}
     .item{
-      border:1px solid rgba(36,48,68,.6);
+      border:1px solid var(--line);
       border-radius:16px;
       padding:12px;
-      background: rgba(12,16,24,.35);
+      background: #ffffff;
       display:flex; gap:12px; align-items:flex-start; justify-content:space-between;
     }
     .item .left{min-width:0}
     .item .date{font-weight:700; letter-spacing:-.2px}
     .item .meta{color:var(--muted); font-size:12px; margin-top:4px}
-    .item .tag{font-size:12px; color:var(--text); padding:8px 10px; border-radius:999px;
-      border:1px solid rgba(36,48,68,.65); background: rgba(26,35,51,.7); white-space:nowrap;}
+    .item .tag{
+      font-size:12px; color:var(--text);
+      padding:8px 10px; border-radius:999px;
+      border:1px solid var(--line);
+      background: #f8fafc;
+      white-space:nowrap;
+    }
     .item .actions{display:flex; gap:8px; align-items:center}
-    .kbd{border:1px solid rgba(36,48,68,.8); padding:2px 6px; border-radius:6px; background: rgba(18,24,38,.6); color:var(--text)}
+
+    .kbd{
+      border:1px solid var(--line);
+      padding:2px 6px; border-radius:6px;
+      background: #ffffff;
+      color:var(--text);
+    }
+
+    .badge-admin{
+      display:inline-flex; gap:8px; align-items:center;
+      padding:8px 10px; border-radius:999px;
+      border:1px solid rgba(22,163,74,.35);
+      background: rgba(22,163,74,.10);
+      color: var(--text);
+      font-size:12px;
+    }
+
     .footer{max-width:1200px; margin:0 auto; padding:0 16px 24px; color:var(--muted); font-size:12px;}
+    .note{color:var(--muted); font-size:12px; line-height:1.4}
     .row{display:grid; grid-template-columns: 1fr 1fr; gap:10px}
     @media (max-width: 720px){ .row{grid-template-columns:1fr} }
+
     .modal-backdrop{
-      position:fixed; inset:0; background: rgba(0,0,0,.55);
+      position:fixed; inset:0; background: rgba(15,23,42,.35);
       display:none; align-items:center; justify-content:center; padding:16px; z-index:1000;
     }
     .modal{
-      width:min(720px, 100%);
-      background: rgba(18,24,38,.95);
-      border:1px solid rgba(36,48,68,.9);
+      width:min(740px, 100%);
+      background: #ffffff;
+      border:1px solid var(--line);
       border-radius:18px;
-      box-shadow: 0 20px 70px rgba(0,0,0,.55);
+      box-shadow: 0 24px 80px rgba(15, 23, 42, .22);
       overflow:hidden;
     }
     .modal header{
       position:relative; top:auto; backdrop-filter:none;
-      background: rgba(10,14,20,.2);
-      border-bottom:1px solid rgba(36,48,68,.6);
+      background: #fafbff;
+      border-bottom:1px solid var(--line);
     }
     .modal .content{padding:14px}
     .modal .footerbar{
       display:flex; justify-content:space-between; gap:10px; padding:12px 14px;
-      border-top:1px solid rgba(36,48,68,.6);
-      background: rgba(10,14,20,.2);
+      border-top:1px solid var(--line);
+      background: #fafbff;
       flex-wrap:wrap;
     }
-    .note{color:var(--muted); font-size:12px; line-height:1.4}
-    .badge-admin{
-      display:inline-flex; gap:8px; align-items:center;
-      padding:8px 10px; border-radius:999px;
-      border:1px solid rgba(126,231,135,.35);
-      background: rgba(126,231,135,.10);
-      color: var(--text);
-      font-size:12px;
-    }
+
     @media print{
       .adminOnly, .toolbar, .chips, .badge-admin, .modal-backdrop {display:none !important}
       body{background:#fff; color:#000}
@@ -181,6 +215,7 @@
         <span id="adminBadge" class="badge-admin" style="display:none;">🛡 관리자 모드</span>
         <button class="btn small" id="loginBtn">🔒 관리자 로그인</button>
         <button class="btn small bad" id="logoutBtn" style="display:none;">로그아웃</button>
+        <button class="btn small" id="pwChangeOpenBtn" style="display:none;">🔁 비밀번호 변경</button>
       </div>
     </div>
 
@@ -236,12 +271,12 @@
 
 <div class="footer">
   <div class="wrap">
-    <div>※ 이 버전은 <b>웹에서 바로 편집</b> 가능하며, 변경 내용은 <b>이 브라우저(LocalStorage)</b>에 저장됩니다.</div>
-    <div class="note">여러 사람이 함께 쓰거나 다른 PC/휴대폰에서도 동일하게 보이게 하려면 서버/DB(예: Firebase, Supabase, 자체 서버)가 필요합니다.</div>
+    <div>※ 변경 내용은 <b>이 브라우저(LocalStorage)</b>에 저장됩니다.</div>
+    <div class="note">여러 사람이 함께 쓰거나 다른 PC/휴대폰에서도 동일하게 보이게 하려면 서버/DB가 필요합니다.</div>
   </div>
 </div>
 
-<!-- 로그인 모달 -->
+<!-- 로그인 모달 (로그인만) -->
 <div class="modal-backdrop" id="loginModal">
   <div class="modal">
     <header>
@@ -251,27 +286,54 @@
       </div>
     </header>
     <div class="content">
-      <div class="row">
-        <div>
-          <div style="margin-bottom:8px; color:var(--muted); font-size:12px;">비밀번호</div>
-          <input id="pwInput" class="input" type="password" placeholder="기본: admin1234" />
-        </div>
-        <div>
-          <div style="margin-bottom:8px; color:var(--muted); font-size:12px;">(옵션) 새 비밀번호로 변경</div>
-          <input id="pwNewInput" class="input" type="password" placeholder="비워두면 변경 안 함" />
-        </div>
+      <div>
+        <div style="margin-bottom:8px; color:var(--muted); font-size:12px;">비밀번호</div>
+        <input id="pwInput" class="input" type="password" placeholder="기본: admin1234" />
       </div>
       <div class="note" style="margin-top:10px;">
-        • 이 파일은 서버 없이 동작하므로 “계정 시스템”이 아니라 브라우저에 저장된 비밀번호로 보호됩니다.<br/>
-        • 보안이 중요한 환경이면 서버 로그인으로 바꾸는 게 안전합니다.
+        • 서버 없는 단일 파일이라 “계정 시스템”이 아니라 브라우저 저장 비밀번호로 보호됩니다.<br/>
+        • 보안이 중요하면 서버 로그인 방식으로 전환 권장.
       </div>
     </div>
     <div class="footerbar">
-      <button class="btn bad" onclick="DATA.resetAll()">초기화(전체 삭제)</button>
+      <!-- 로그인 전에는 전체 삭제 버튼 안 보이게 -->
+      <button class="btn bad" id="resetBtn" style="display:none;" onclick="DATA.resetAll()">초기화(전체 삭제)</button>
       <div style="display:flex; gap:10px; flex-wrap:wrap;">
         <button class="btn" onclick="UI.closeModal('loginModal')">취소</button>
         <button class="btn primary" id="doLoginBtn">로그인</button>
       </div>
+    </div>
+  </div>
+</div>
+
+<!-- 비밀번호 변경 모달 (관리자 로그인 후에만 열림) -->
+<div class="modal-backdrop" id="pwModal">
+  <div class="modal">
+    <header>
+      <div class="monthbar">
+        <div class="m">비밀번호 변경</div>
+        <button class="btn small" onclick="UI.closeModal('pwModal')">✕ 닫기</button>
+      </div>
+    </header>
+    <div class="content">
+      <div class="row">
+        <div>
+          <div style="margin-bottom:8px; color:var(--muted); font-size:12px;">현재 비밀번호</div>
+          <input id="pwCur2" class="input" type="password" placeholder="현재 비밀번호" />
+        </div>
+        <div>
+          <div style="margin-bottom:8px; color:var(--muted); font-size:12px;">새 비밀번호</div>
+          <input id="pwNew2" class="input" type="password" placeholder="6자 이상 권장" />
+        </div>
+      </div>
+      <div class="note" style="margin-top:10px;">
+        • 변경 즉시 이 브라우저에 저장됩니다.<br/>
+        • 다른 PC/폰과는 자동 동기화되지 않습니다.
+      </div>
+    </div>
+    <div class="footerbar">
+      <button class="btn" onclick="UI.closeModal('pwModal')">취소</button>
+      <button class="btn primary" id="pwSaveBtn">변경 저장</button>
     </div>
   </div>
 </div>
@@ -330,7 +392,7 @@ const LS = {
 /** ==========================================================
  *  기본 데이터 (처음 실행 시만 사용)
  * ========================================================== */
-const DEFAULT_CATEGORIES = ["학사","수업","시험","휴일"]; // 관리자에서 확장 가능하게 할 수도 있음
+const DEFAULT_CATEGORIES = ["학사","수업","시험","휴일"];
 const DEFAULT_EVENTS = [
   { id: crypto.randomUUID(), date:"2026-03-02", title:"1학기 개강(예시)", category:"학사", note:"학교 공지 기준으로 수정" },
   { id: crypto.randomUUID(), date:"2026-03-02", title:"수강신청 정정/변경(예시)", category:"학사", note:"기간/방식은 학교별 상이" },
@@ -352,19 +414,15 @@ const END_MONTH   = "2027-02-01";
  * ========================================================== */
 const DATA = {
   init(){
-    // categories
     if(!localStorage.getItem(LS.CATS)){
       localStorage.setItem(LS.CATS, JSON.stringify(DEFAULT_CATEGORIES));
     }
-    // events
     if(!localStorage.getItem(LS.EVENTS)){
       localStorage.setItem(LS.EVENTS, JSON.stringify(DEFAULT_EVENTS));
     }
-    // admin pw
     if(!localStorage.getItem(LS.ADMIN_PW)){
       localStorage.setItem(LS.ADMIN_PW, this.hash("admin1234"));
     }
-    // admin on
     if(!localStorage.getItem(LS.ADMIN_ON)){
       localStorage.setItem(LS.ADMIN_ON, "0");
     }
@@ -385,7 +443,7 @@ const DATA = {
     localStorage.setItem(LS.ADMIN_ON, on ? "1":"0");
   },
   hash(s){
-    // 간단 해시(브라우저 단독 파일용). 강력 보안 목적 아님.
+    // 단일 파일용 간단 해시(보안 강도 목적 아님)
     let h = 2166136261;
     for(let i=0;i<s.length;i++){
       h ^= s.charCodeAt(i);
@@ -411,6 +469,10 @@ const DATA = {
     this.setEvents(list);
   },
   resetAll(){
+    if(!DATA.isAdmin()){
+      alert("관리자 로그인 후에만 초기화할 수 있습니다.");
+      return;
+    }
     if(!confirm("정말 초기화할까요? (모든 일정/비번 포함)")) return;
     localStorage.removeItem(LS.EVENTS);
     localStorage.removeItem(LS.ADMIN_PW);
@@ -440,6 +502,7 @@ const els = {
   catSelect: document.getElementById("catSelect"),
   q: document.getElementById("q"),
   summaryChips: document.getElementById("summaryChips"),
+
   loginBtn: document.getElementById("loginBtn"),
   logoutBtn: document.getElementById("logoutBtn"),
   adminBadge: document.getElementById("adminBadge"),
@@ -452,8 +515,14 @@ const els = {
 
   loginModal: document.getElementById("loginModal"),
   pwInput: document.getElementById("pwInput"),
-  pwNewInput: document.getElementById("pwNewInput"),
   doLoginBtn: document.getElementById("doLoginBtn"),
+  resetBtn: document.getElementById("resetBtn"),
+
+  pwChangeOpenBtn: document.getElementById("pwChangeOpenBtn"),
+  pwModal: document.getElementById("pwModal"),
+  pwCur2: document.getElementById("pwCur2"),
+  pwNew2: document.getElementById("pwNew2"),
+  pwSaveBtn: document.getElementById("pwSaveBtn"),
 
   editModal: document.getElementById("editModal"),
   editTitle: document.getElementById("editTitle"),
@@ -521,7 +590,6 @@ function buildMonthOptions(){
 function buildCategoryOptions(){
   const cats = DATA.getCategories();
   els.catSelect.innerHTML = `<option value="ALL">전체 분류</option>` + cats.map(c=>`<option value="${c}">${c}</option>`).join("");
-  // 편집 모달 select
   els.fCat.innerHTML = cats.map(c=>`<option value="${c}">${c}</option>`).join("");
 }
 
@@ -597,7 +665,6 @@ function renderCalendar(){
   }
   els.cal.innerHTML = cells.join("");
 
-  // 클릭하면: 관리자면 "해당 날짜에 추가" / 아니면 해당 날짜 리스트로 이동
   els.cal.querySelectorAll(".day").forEach(dayEl => {
     dayEl.addEventListener("click", () => {
       const iso = dayEl.dataset.date;
@@ -656,6 +723,12 @@ function updateAdminUI(){
   els.loginBtn.style.display = on ? "none" : "";
   els.logoutBtn.style.display = on ? "" : "none";
   els.addBtn.style.display = on ? "" : "none";
+
+  // 요구사항 1) 전체 삭제 버튼: 관리자 로그인 후에만 표시
+  if(els.resetBtn) els.resetBtn.style.display = on ? "" : "none";
+
+  // 요구사항 2) 비밀번호 변경 버튼: 관리자 로그인 후에만 표시
+  els.pwChangeOpenBtn.style.display = on ? "" : "none";
 }
 
 function render(){
@@ -693,21 +766,29 @@ function exportCSV(){
 }
 
 /** ==========================================================
- *  UI 모달 / 편집
+ *  모달 / 편집
  * ========================================================== */
 const UI = {
-  openModal(id){
-    document.getElementById(id).style.display="flex";
-  },
-  closeModal(id){
-    document.getElementById(id).style.display="none";
-  },
+  openModal(id){ document.getElementById(id).style.display="flex"; },
+  closeModal(id){ document.getElementById(id).style.display="none"; },
+
   openLogin(){
     els.pwInput.value="";
-    els.pwNewInput.value="";
     this.openModal("loginModal");
     setTimeout(()=>els.pwInput.focus(), 30);
   },
+
+  openPwChange(){
+    if(!DATA.isAdmin()){
+      alert("관리자 로그인 후에만 비밀번호 변경이 가능합니다.");
+      return;
+    }
+    els.pwCur2.value="";
+    els.pwNew2.value="";
+    this.openModal("pwModal");
+    setTimeout(()=>els.pwCur2.focus(), 30);
+  },
+
   openEdit(ev, isNew){
     if(!DATA.isAdmin()) return;
 
@@ -732,7 +813,7 @@ const UI = {
 };
 
 /** ==========================================================
- *  이벤트 바인딩
+ *  바인딩
  * ========================================================== */
 DATA.init();
 buildMonthOptions();
@@ -761,27 +842,41 @@ els.logoutBtn.addEventListener("click", ()=>{
 
 els.doLoginBtn.addEventListener("click", ()=>{
   const pw = els.pwInput.value || "";
-  const newPw = els.pwNewInput.value || "";
-
   if(!DATA.verifyPw(pw)){
     alert("비밀번호가 틀렸습니다.");
     return;
-  }
-  if(newPw.trim()){
-    if(newPw.trim().length < 6){
-      alert("새 비밀번호는 6자 이상 권장.");
-      return;
-    }
-    DATA.setPw(newPw.trim());
   }
   DATA.setAdmin(true);
   UI.closeModal("loginModal");
   render();
 });
 
+els.pwChangeOpenBtn.addEventListener("click", ()=>UI.openPwChange());
+
+els.pwSaveBtn.addEventListener("click", ()=>{
+  if(!DATA.isAdmin()){
+    alert("관리자 로그인 후에만 변경할 수 있습니다.");
+    return;
+  }
+  const cur = els.pwCur2.value || "";
+  const nw = (els.pwNew2.value || "").trim();
+
+  if(!DATA.verifyPw(cur)){
+    alert("현재 비밀번호가 틀렸습니다.");
+    return;
+  }
+  if(nw.length < 6){
+    alert("새 비밀번호는 6자 이상을 권장합니다.");
+    return;
+  }
+  DATA.setPw(nw);
+  UI.closeModal("pwModal");
+  alert("비밀번호가 변경되었습니다.");
+});
+
 els.addBtn.addEventListener("click", ()=>{
-  const today = toISODate(new Date(state.cursor.getFullYear(), state.cursor.getMonth(), 1));
-  UI.openEdit({ id:"", date: today, title:"", category: DATA.getCategories()[0] || "학사", note:"" }, true);
+  const date = toISODate(new Date(state.cursor.getFullYear(), state.cursor.getMonth(), 1));
+  UI.openEdit({ id:"", date, title:"", category: DATA.getCategories()[0] || "학사", note:"" }, true);
 });
 
 els.saveBtn.addEventListener("click", ()=>{
@@ -802,8 +897,9 @@ els.saveBtn.addEventListener("click", ()=>{
 });
 
 window.addEventListener("keydown", (e)=>{
-  if(document.getElementById("editModal").style.display==="flex") return;
-  if(document.getElementById("loginModal").style.display==="flex") return;
+  if(els.editModal.style.display==="flex") return;
+  if(els.loginModal.style.display==="flex") return;
+  if(els.pwModal.style.display==="flex") return;
   if(e.key==="ArrowLeft") moveMonth(-1);
   if(e.key==="ArrowRight") moveMonth(+1);
 });
