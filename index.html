@@ -1,0 +1,601 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>2026학년도 학사일정</title>
+  <style>
+    :root{
+      --bg:#0b0f14; --card:#121826; --muted:#9aa4b2; --text:#e6edf3;
+      --line:#243044; --accent:#4ea1ff; --accent2:#7ee787; --warn:#ffcc66;
+      --chip:#1a2333;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0; font-family: system-ui, -apple-system, Segoe UI, Roboto, Noto Sans KR, Arial, sans-serif;
+      background: radial-gradient(1200px 800px at 15% 10%, #101a2b 0%, var(--bg) 60%);
+      color:var(--text);
+    }
+    a{color:inherit}
+    header{
+      position:sticky; top:0; z-index:10;
+      backdrop-filter: blur(10px);
+      background: rgba(11,15,20,.65);
+      border-bottom:1px solid rgba(36,48,68,.6);
+    }
+    .wrap{max-width:1100px; margin:0 auto; padding:16px;}
+    .title{
+      display:flex; align-items:flex-end; justify-content:space-between; gap:12px; flex-wrap:wrap;
+    }
+    h1{margin:0; font-size:20px; letter-spacing:-.3px;}
+    .sub{margin:0; color:var(--muted); font-size:13px}
+    .toolbar{
+      display:flex; gap:10px; flex-wrap:wrap; margin-top:12px;
+      align-items:center; justify-content:space-between;
+    }
+    .controls{display:flex; gap:10px; flex-wrap:wrap; align-items:center}
+    .btn{
+      border:1px solid rgba(36,48,68,.9);
+      background: rgba(18,24,38,.7);
+      color:var(--text);
+      padding:10px 12px; border-radius:12px; cursor:pointer;
+      display:inline-flex; gap:8px; align-items:center;
+      transition:.15s transform, .15s opacity;
+      user-select:none;
+    }
+    .btn:hover{opacity:.9}
+    .btn:active{transform: translateY(1px)}
+    .btn.primary{border-color: rgba(78,161,255,.9); box-shadow: 0 0 0 3px rgba(78,161,255,.12) inset;}
+    .btn.small{padding:8px 10px; border-radius:10px; font-size:13px}
+    .seg{
+      display:flex; border:1px solid rgba(36,48,68,.9); border-radius:12px; overflow:hidden;
+      background: rgba(18,24,38,.6);
+    }
+    .seg button{
+      border:0; background:transparent; color:var(--muted);
+      padding:10px 12px; cursor:pointer;
+    }
+    .seg button.active{color:var(--text); background: rgba(78,161,255,.16)}
+    .input, select{
+      border:1px solid rgba(36,48,68,.9);
+      background: rgba(18,24,38,.6);
+      color:var(--text);
+      padding:10px 12px; border-radius:12px;
+      outline:none;
+    }
+    .input::placeholder{color:#6b778a}
+    main .grid{
+      display:grid; grid-template-columns: 1.15fr .85fr; gap:14px; padding:16px;
+    }
+    @media (max-width: 980px){
+      main .grid{grid-template-columns:1fr}
+    }
+    .card{
+      background: rgba(18,24,38,.65);
+      border:1px solid rgba(36,48,68,.7);
+      border-radius:18px;
+      overflow:hidden;
+      box-shadow: 0 10px 30px rgba(0,0,0,.25);
+    }
+    .card h2{
+      margin:0; font-size:15px; padding:14px 14px 0 14px;
+      letter-spacing:-.2px;
+    }
+    .card .hint{padding:6px 14px 12px 14px; margin:0; color:var(--muted); font-size:12px}
+    .pad{padding:14px}
+    .monthbar{
+      display:flex; justify-content:space-between; align-items:center; gap:10px; padding:12px 14px;
+      border-bottom:1px solid rgba(36,48,68,.6);
+      background: rgba(10,14,20,.15);
+    }
+    .monthbar .m{font-weight:700; letter-spacing:-.2px}
+    .chips{display:flex; gap:8px; flex-wrap:wrap; padding:0 14px 14px}
+    .chip{
+      display:inline-flex; align-items:center; gap:8px;
+      background: rgba(26,35,51,.75);
+      border:1px solid rgba(36,48,68,.6);
+      color: var(--muted);
+      padding:8px 10px; border-radius:999px; font-size:12px;
+      cursor:pointer;
+    }
+    .chip.active{color:var(--text); border-color: rgba(78,161,255,.7); background: rgba(78,161,255,.14)}
+    .chip b{color:var(--text); font-weight:600}
+    .calendar{
+      padding:14px;
+    }
+    .cal-head{
+      display:grid; grid-template-columns: repeat(7, 1fr);
+      gap:8px; padding:0 0 10px 0;
+      color:var(--muted); font-size:12px;
+    }
+    .cal-grid{
+      display:grid; grid-template-columns: repeat(7, 1fr);
+      gap:8px;
+    }
+    .day{
+      min-height:92px;
+      border:1px solid rgba(36,48,68,.55);
+      border-radius:14px;
+      padding:10px;
+      background: rgba(12,16,24,.35);
+      display:flex; flex-direction:column; gap:8px;
+    }
+    .day.muted{
+      opacity:.45;
+    }
+    .dnum{font-size:12px; color:var(--muted); display:flex; justify-content:space-between; gap:8px}
+    .pill{
+      display:inline-flex; align-items:center; gap:6px;
+      font-size:11px;
+      padding:6px 8px;
+      border-radius:999px;
+      border:1px solid rgba(36,48,68,.65);
+      background: rgba(26,35,51,.7);
+      color: var(--text);
+      overflow:hidden; white-space:nowrap; text-overflow:ellipsis;
+    }
+    .pill .dot{width:8px; height:8px; border-radius:50%}
+    .pill.cat-학사 .dot{background: var(--accent)}
+    .pill.cat-수업 .dot{background: var(--accent2)}
+    .pill.cat-시험 .dot{background: var(--warn)}
+    .pill.cat-휴일 .dot{background: #ff7b72}
+    .list{
+      padding:14px;
+      display:flex; flex-direction:column; gap:10px;
+    }
+    .item{
+      border:1px solid rgba(36,48,68,.6);
+      border-radius:16px;
+      padding:12px;
+      background: rgba(12,16,24,.35);
+      display:flex; gap:12px; align-items:flex-start; justify-content:space-between;
+    }
+    .item .left{min-width:0}
+    .item .date{font-weight:700; letter-spacing:-.2px}
+    .item .meta{color:var(--muted); font-size:12px; margin-top:4px}
+    .item .tag{
+      font-size:12px; color:var(--text);
+      padding:8px 10px; border-radius:999px;
+      border:1px solid rgba(36,48,68,.65); background: rgba(26,35,51,.7);
+      white-space:nowrap;
+    }
+    .footer{
+      max-width:1100px; margin:0 auto; padding:0 16px 24px; color:var(--muted); font-size:12px;
+    }
+    .kbd{border:1px solid rgba(36,48,68,.8); padding:2px 6px; border-radius:6px; background: rgba(18,24,38,.6); color:var(--text)}
+    @media print{
+      header, .toolbar, .chips {display:none !important}
+      body{background:#fff; color:#000}
+      .card{box-shadow:none; background:#fff; border:1px solid #ddd}
+      .day{background:#fff}
+      .item{background:#fff}
+    }
+  </style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <div class="title">
+      <div>
+        <h1>2026학년도 학사일정</h1>
+        <p class="sub">월별 캘린더 + 일정 리스트 · 검색/필터 · 인쇄 지원</p>
+      </div>
+      <div class="seg" id="viewSeg" aria-label="보기 전환">
+        <button data-view="month" class="active">월별</button>
+        <button data-view="list">리스트</button>
+      </div>
+    </div>
+
+    <div class="toolbar">
+      <div class="controls">
+        <button class="btn small" id="prevBtn" title="이전 달 (←)">
+          ◀︎ <span>이전</span>
+        </button>
+        <button class="btn small" id="todayBtn" title="2026년 3월로 이동">
+          ◎ <span>2026 시작</span>
+        </button>
+        <button class="btn small" id="nextBtn" title="다음 달 (→)">
+          <span>다음</span> ▶︎
+        </button>
+
+        <select id="monthSelect" title="월 선택"></select>
+
+        <select id="catSelect" title="분류 필터">
+          <option value="ALL">전체 분류</option>
+        </select>
+
+        <input id="q" class="input" placeholder="검색: 예) 수강, 중간, 종강, 휴강…" />
+      </div>
+
+      <div class="controls">
+        <button class="btn" id="exportBtn" title="현재 필터 결과를 CSV로 저장">
+          ⤓ CSV
+        </button>
+        <button class="btn primary" id="printBtn" title="인쇄/저장 (Ctrl+P)">
+          🖨 인쇄
+        </button>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main>
+  <div class="wrap">
+    <div class="grid">
+      <section class="card" id="monthCard">
+        <div class="monthbar">
+          <div class="m" id="monthTitle">2026.03</div>
+          <div style="color:var(--muted); font-size:12px;">
+            단축키: <span class="kbd">←</span> <span class="kbd">→</span>
+          </div>
+        </div>
+        <div class="chips" id="summaryChips"></div>
+        <div class="calendar">
+          <div class="cal-head" id="dow"></div>
+          <div class="cal-grid" id="cal"></div>
+        </div>
+      </section>
+
+      <aside class="card" id="sideCard">
+        <h2>선택 월 일정</h2>
+        <p class="hint">현재 월 + 필터/검색 조건에 맞는 일정만 표시됩니다.</p>
+        <div class="list" id="list"></div>
+      </aside>
+
+      <section class="card" id="listCard" style="display:none;">
+        <div class="monthbar">
+          <div class="m">전체 일정 리스트</div>
+          <div style="color:var(--muted); font-size:12px;">정렬: 날짜 오름차순</div>
+        </div>
+        <div class="pad" style="padding-top:10px;">
+          <div id="bigList"></div>
+        </div>
+      </section>
+    </div>
+  </div>
+</main>
+
+<div class="footer">
+  <div class="wrap">
+    <div>※ 상단의 <b>EVENTS</b> 배열을 학교의 “공식 2026학년도 학사일정”으로 바꾸면 그대로 적용됩니다.</div>
+  </div>
+</div>
+
+<script>
+/** =========================
+ *  1) 여기만 수정하면 됨: 2026학년도 학사일정 데이터
+ *  - date: "YYYY-MM-DD"
+ *  - title: 일정명
+ *  - category: "학사" | "수업" | "시험" | "휴일" (원하면 더 추가 가능)
+ *  - note: 선택(설명)
+ * ========================= */
+const EVENTS = [
+  // ↓↓↓ 아래는 "예시" 데이터입니다. 실제 학사일정 공지에 맞춰 날짜/내용을 수정하세요.
+  { date:"2026-03-02", title:"1학기 개강(예시)", category:"학사", note:"학교 공지 기준으로 수정" },
+  { date:"2026-03-02", title:"수강신청 정정/변경(예시)", category:"학사", note:"기간/방식은 학교별 상이" },
+  { date:"2026-04-20", title:"중간고사(예시)", category:"시험", note:"주간 또는 기간으로 입력" },
+  { date:"2026-06-15", title:"기말고사(예시)", category:"시험", note:"학교별 일정 상이" },
+  { date:"2026-06-26", title:"1학기 종강(예시)", category:"학사" },
+
+  { date:"2026-09-01", title:"2학기 개강(예시)", category:"학사" },
+  { date:"2026-10-19", title:"중간고사(예시)", category:"시험" },
+  { date:"2026-12-14", title:"기말고사(예시)", category:"시험" },
+  { date:"2026-12-23", title:"2학기 종강(예시)", category:"학사" },
+
+  // 휴일/휴강 등 추가 가능
+  { date:"2026-05-05", title:"어린이날(예시)", category:"휴일" },
+];
+
+/** =========================
+ *  2) UI 로직
+ * ========================= */
+const DOW = ["일","월","화","수","목","금","토"];
+const START_MONTH = "2026-03-01"; // 학년도 시작 기준(원하면 바꾸기)
+const END_MONTH   = "2027-02-01"; // 학년도 끝 기준(원하면 바꾸기)
+
+let state = {
+  view: "month",
+  cursor: new Date(START_MONTH),
+  cat: "ALL",
+  q: "",
+};
+
+const els = {
+  monthTitle: document.getElementById("monthTitle"),
+  dow: document.getElementById("dow"),
+  cal: document.getElementById("cal"),
+  list: document.getElementById("list"),
+  bigList: document.getElementById("bigList"),
+  monthSelect: document.getElementById("monthSelect"),
+  catSelect: document.getElementById("catSelect"),
+  q: document.getElementById("q"),
+  summaryChips: document.getElementById("summaryChips"),
+  monthCard: document.getElementById("monthCard"),
+  sideCard: document.getElementById("sideCard"),
+  listCard: document.getElementById("listCard"),
+};
+
+function pad2(n){ return String(n).padStart(2,"0"); }
+function toISODate(d){
+  const y=d.getFullYear(), m=pad2(d.getMonth()+1), day=pad2(d.getDate());
+  return `${y}-${m}-${day}`;
+}
+function ymKey(d){ return `${d.getFullYear()}-${pad2(d.getMonth()+1)}`; }
+function formatYM(d){ return `${d.getFullYear()}.${pad2(d.getMonth()+1)}`; }
+function formatDateK(iso){
+  const [y,m,d]=iso.split("-").map(Number);
+  return `${y}.${pad2(m)}.${pad2(d)}`;
+}
+function clampCursor(){
+  const min = new Date(START_MONTH);
+  const max = new Date(END_MONTH);
+  if(state.cursor < min) state.cursor = min;
+  if(state.cursor > max) state.cursor = max;
+}
+
+function buildMonthOptions(){
+  const start = new Date(START_MONTH);
+  const end = new Date(END_MONTH);
+  const opts = [];
+  const d = new Date(start);
+  d.setDate(1);
+  while(d <= end){
+    opts.push({ value: ymKey(d), label: formatYM(d) });
+    d.setMonth(d.getMonth()+1);
+  }
+  els.monthSelect.innerHTML = opts.map(o => `<option value="${o.value}">${o.label}</option>`).join("");
+}
+function buildCategoryOptions(){
+  const cats = Array.from(new Set(EVENTS.map(e=>e.category))).sort((a,b)=>a.localeCompare(b,"ko"));
+  els.catSelect.innerHTML = `<option value="ALL">전체 분류</option>` + cats.map(c=>`<option value="${c}">${c}</option>`).join("");
+}
+
+function normalized(s){ return (s||"").toLowerCase().trim(); }
+
+function getFilteredEvents(){
+  const q = normalized(state.q);
+  return EVENTS
+    .slice()
+    .sort((a,b)=>a.date.localeCompare(b.date))
+    .filter(e => state.cat==="ALL" ? true : e.category===state.cat)
+    .filter(e => {
+      if(!q) return true;
+      return normalized(e.title).includes(q) || normalized(e.note).includes(q) || normalized(e.category).includes(q) || e.date.includes(q);
+    });
+}
+
+function eventsInMonth(monthDate){
+  const key = ymKey(monthDate);
+  return getFilteredEvents().filter(e => e.date.startsWith(key));
+}
+
+function renderDOW(){
+  els.dow.innerHTML = DOW.map(x=>`<div>${x}</div>`).join("");
+}
+
+function colorClass(cat){
+  return `cat-${cat}`;
+}
+
+function renderSummaryChips(monthEvents){
+  const byCat = {};
+  for(const e of monthEvents){
+    byCat[e.category] = (byCat[e.category]||0)+1;
+  }
+  const cats = Object.keys(byCat).sort((a,b)=>a.localeCompare(b,"ko"));
+  const total = monthEvents.length;
+
+  const makeChip = (label, count, active, value) => `
+    <div class="chip ${active?'active':''}" data-cat="${value}">
+      <b>${label}</b> ${count}건
+    </div>
+  `;
+
+  const chips = [];
+  chips.push(makeChip("전체", total, state.cat==="ALL", "ALL"));
+  for(const c of cats){
+    chips.push(makeChip(c, byCat[c], state.cat===c, c));
+  }
+  els.summaryChips.innerHTML = chips.join("");
+  els.summaryChips.querySelectorAll(".chip").forEach(ch => {
+    ch.addEventListener("click", () => {
+      state.cat = ch.dataset.cat;
+      els.catSelect.value = state.cat;
+      render();
+    });
+  });
+}
+
+function renderCalendar(){
+  clampCursor();
+  const cur = new Date(state.cursor);
+  cur.setDate(1);
+  els.monthTitle.textContent = formatYM(cur);
+
+  const monthEvents = eventsInMonth(cur);
+  renderSummaryChips(monthEvents);
+
+  const firstDay = new Date(cur);
+  const startDow = firstDay.getDay(); // 0~6
+  const startCell = new Date(firstDay);
+  startCell.setDate(startCell.getDate() - startDow);
+
+  const cells = [];
+  for(let i=0;i<42;i++){
+    const d = new Date(startCell);
+    d.setDate(startCell.getDate()+i);
+    const iso = toISODate(d);
+    const inMonth = d.getMonth()===cur.getMonth();
+    const dayEvents = monthEvents.filter(e => e.date===iso);
+
+    const pills = dayEvents.slice(0,3).map(e => `
+      <div class="pill ${colorClass(e.category)}" title="${e.title}${e.note ? ' - '+e.note : ''}">
+        <span class="dot"></span>
+        <span style="min-width:0; overflow:hidden; text-overflow:ellipsis;">${escapeHtml(e.title)}</span>
+      </div>
+    `).join("");
+
+    const more = dayEvents.length>3 ? `<div class="pill" style="opacity:.75;">+${dayEvents.length-3} 더보기</div>` : "";
+
+    cells.push(`
+      <div class="day ${inMonth ? "" : "muted"}" data-date="${iso}">
+        <div class="dnum"><span>${d.getDate()}</span><span style="color:${dayEvents.length? 'var(--text)':'var(--muted)'}">${dayEvents.length? dayEvents.length+'건':''}</span></div>
+        ${pills}${more}
+      </div>
+    `);
+  }
+  els.cal.innerHTML = cells.join("");
+
+  // 클릭하면 우측 리스트에서 해당 날짜로 스크롤(있을 때)
+  els.cal.querySelectorAll(".day").forEach(dayEl => {
+    dayEl.addEventListener("click", () => {
+      const iso = dayEl.dataset.date;
+      const target = document.querySelector(`[data-item-date="${iso}"]`);
+      if(target) target.scrollIntoView({behavior:"smooth", block:"center"});
+    });
+  });
+
+  // 월 선택 셀렉트 동기화
+  els.monthSelect.value = ymKey(cur);
+}
+
+function renderSideList(){
+  const cur = new Date(state.cursor);
+  cur.setDate(1);
+  const monthEvents = eventsInMonth(cur);
+
+  if(monthEvents.length===0){
+    els.list.innerHTML = `<div style="color:var(--muted); padding:10px 2px;">표시할 일정이 없습니다. (필터/검색 조건 확인)</div>`;
+    return;
+  }
+
+  els.list.innerHTML = monthEvents.map(e => `
+    <div class="item" data-item-date="${e.date}">
+      <div class="left">
+        <div class="date">${formatDateK(e.date)} · ${escapeHtml(e.title)}</div>
+        <div class="meta">${escapeHtml(e.note || "")}</div>
+      </div>
+      <div class="tag">${escapeHtml(e.category)}</div>
+    </div>
+  `).join("");
+}
+
+function renderBigList(){
+  const all = getFilteredEvents();
+  if(all.length===0){
+    els.bigList.innerHTML = `<div style="color:var(--muted); padding:8px 2px;">표시할 일정이 없습니다.</div>`;
+    return;
+  }
+  els.bigList.innerHTML = all.map(e => `
+    <div class="item" style="margin-bottom:10px;">
+      <div class="left">
+        <div class="date">${formatDateK(e.date)} · ${escapeHtml(e.title)}</div>
+        <div class="meta">${escapeHtml(e.note || "")}</div>
+      </div>
+      <div class="tag">${escapeHtml(e.category)}</div>
+    </div>
+  `).join("");
+}
+
+function setView(view){
+  state.view = view;
+  document.querySelectorAll("#viewSeg button").forEach(b=>{
+    b.classList.toggle("active", b.dataset.view===view);
+  });
+
+  const isMonth = view==="month";
+  els.monthCard.style.display = isMonth ? "" : "none";
+  els.sideCard.style.display  = isMonth ? "" : "none";
+  els.listCard.style.display  = isMonth ? "none" : "";
+  render();
+}
+
+function escapeHtml(s){
+  return String(s||"").replace(/[&<>"']/g, (m)=>({
+    "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"
+  })[m]);
+}
+
+function render(){
+  if(state.view==="month"){
+    renderDOW();
+    renderCalendar();
+    renderSideList();
+  }else{
+    renderBigList();
+  }
+}
+
+function moveMonth(delta){
+  const d = new Date(state.cursor);
+  d.setMonth(d.getMonth()+delta);
+  d.setDate(1);
+  state.cursor = d;
+  clampCursor();
+  render();
+}
+
+function exportCSV(){
+  const rows = [["date","category","title","note"]];
+  const data = (state.view==="month")
+    ? eventsInMonth(new Date(state.cursor))
+    : getFilteredEvents();
+
+  for(const e of data){
+    rows.push([e.date, e.category, e.title, e.note||""]);
+  }
+  const csv = rows.map(r => r.map(v => `"${String(v).replace(/"/g,'""')}"`).join(",")).join("\n");
+  const blob = new Blob([csv], {type:"text/csv;charset=utf-8;"});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = `academic_calendar_${state.view}_${ymKey(new Date(state.cursor))}.csv`;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  URL.revokeObjectURL(url);
+}
+
+/** =========================
+ *  3) 초기화/이벤트 바인딩
+ * ========================= */
+buildMonthOptions();
+buildCategoryOptions();
+renderDOW();
+
+document.getElementById("prevBtn").addEventListener("click", ()=>moveMonth(-1));
+document.getElementById("nextBtn").addEventListener("click", ()=>moveMonth(+1));
+document.getElementById("todayBtn").addEventListener("click", ()=>{
+  state.cursor = new Date(START_MONTH);
+  render();
+});
+document.getElementById("printBtn").addEventListener("click", ()=>window.print());
+document.getElementById("exportBtn").addEventListener("click", exportCSV);
+
+els.monthSelect.addEventListener("change", (e)=>{
+  const [y,m] = e.target.value.split("-").map(Number);
+  state.cursor = new Date(y, m-1, 1);
+  render();
+});
+els.catSelect.addEventListener("change", (e)=>{
+  state.cat = e.target.value;
+  render();
+});
+els.q.addEventListener("input", (e)=>{
+  state.q = e.target.value;
+  render();
+});
+
+document.querySelectorAll("#viewSeg button").forEach(b=>{
+  b.addEventListener("click", ()=>setView(b.dataset.view));
+});
+
+window.addEventListener("keydown", (e)=>{
+  if(e.key==="ArrowLeft") moveMonth(-1);
+  if(e.key==="ArrowRight") moveMonth(+1);
+});
+
+render();
+</script>
+</body>
+</html>
