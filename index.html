@@ -7,14 +7,52 @@
   <style>
     :root{
       --bg:#ffffff; --panel:#ffffff; --text:#111827; --muted:#6b7280; --line:#d1d5db;
-      --accent:#2563eb; --accent2:#16a34a; --warn:#d97706; --bad:#dc2626;
-      --chipBg:#f1f5f9; --cellBg:#ffffff; --cellAlt:#fafafa; --barBg:#eef2ff;
+      --accent:#2563eb;
+      --cellBg:#ffffff; --cellAlt:#fafafa; --barBg:#eef2ff;
       --shadow: 0 10px 30px rgba(15,23,42,.08);
-
-      --fs-body:14px; --fs-h1:18px; --fs-ui:12px;
-      --fs-dow:12px; --fs-day:11px; --fs-bar:11px; --fs-mini:11px;
-
       --today:#BDC0C0;
+
+      /* desktop defaults (모바일에서 더 줄임) */
+      --fs-h1:18px;
+      --fs-ui:12px;
+      --fs-dow:12px;
+      --fs-day:11px;
+      --fs-bar:11px;
+      --fs-mini:11px;
+
+      --pad-wrap:14px;
+      --pad-card:14px;
+
+      --cell-minh:112px;
+      --cell-pad:10px;
+
+      --bar-top:34px;
+      --bar-row-h:30px; /* 24 + gap 6 */
+      --bar-h:24px;
+      --bar-gap:6px;
+    }
+
+    /* ✅ 모바일 최적화: 여백/글자 더 줄임 */
+    @media (max-width: 600px){
+      :root{
+        --fs-h1:16px;
+        --fs-ui:11px;
+        --fs-dow:10px;
+        --fs-day:10px;
+        --fs-bar:10px;
+        --fs-mini:10px;
+
+        --pad-wrap:8px;
+        --pad-card:8px;
+
+        --cell-minh:70px;
+        --cell-pad:6px;
+
+        --bar-top:26px;
+        --bar-row-h:22px; /* 18 + gap 4 */
+        --bar-h:18px;
+        --bar-gap:4px;
+      }
     }
 
     *{box-sizing:border-box}
@@ -23,7 +61,6 @@
       font-family: system-ui, -apple-system, Segoe UI, Roboto, Noto Sans KR, Arial, sans-serif;
       background: var(--bg);
       color: var(--text);
-      font-size: var(--fs-body);
     }
 
     header{
@@ -32,23 +69,25 @@
       border-bottom:1px solid var(--line);
     }
 
-    .wrap{max-width:1200px; margin:0 auto; padding:14px;}
-    .title{display:flex; justify-content:space-between; align-items:flex-end; gap:12px; flex-wrap:wrap;}
+    .wrap{max-width:1200px; margin:0 auto; padding:var(--pad-wrap);}
     h1{margin:0; font-size:var(--fs-h1); letter-spacing:-.3px;}
 
-    .toolbar{display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap; margin-top:10px;}
-    .controls{display:flex; gap:10px; flex-wrap:wrap; align-items:center}
+    .toolbar{
+      display:flex; justify-content:space-between; align-items:center;
+      gap:8px; flex-wrap:wrap; margin-top:8px;
+    }
+    .controls{display:flex; gap:8px; flex-wrap:wrap; align-items:center}
 
     .btn{
       border:1px solid var(--line);
       background: transparent;
       color:var(--text);
-      padding:9px 11px;
-      border-radius:12px;
+      padding:7px 9px;
+      border-radius:10px;
       cursor:pointer;
       display:inline-flex;
       align-items:center;
-      gap:8px;
+      gap:6px;
       user-select:none;
       font-size: var(--fs-ui);
       white-space:nowrap;
@@ -63,72 +102,80 @@
       border:1px solid var(--line);
       background: transparent;
       color:var(--text);
-      padding:9px 11px;
-      border-radius:12px;
+      padding:7px 9px;
+      border-radius:10px;
       outline:none;
       font-size: var(--fs-ui);
-      max-width: 360px;
+      max-width: 320px;
     }
     .input::placeholder{color:var(--muted)}
     option{color:#111827}
 
-    main .grid{
+    /* ✅ 모바일은 단일 컬럼(달력 -> 목록 아래) */
+    .grid{
       display:grid;
       grid-template-columns: 1.2fr .8fr;
-      gap:14px;
-      padding:14px;
+      gap:10px;
+      padding:var(--pad-wrap);
     }
-    @media (max-width: 980px){ main .grid{grid-template-columns:1fr} }
+    @media (max-width: 980px){
+      .grid{grid-template-columns:1fr}
+    }
 
     .card{
       background: var(--panel);
       border:1px solid var(--line);
-      border-radius:18px;
+      border-radius:16px;
       overflow: visible;
       box-shadow: var(--shadow);
     }
 
     .monthbar{
-      display:flex; justify-content:space-between; align-items:center; gap:12px;
-      padding:12px 14px; border-bottom:1px solid var(--line); flex-wrap:wrap;
+      display:flex; justify-content:space-between; align-items:center; gap:10px;
+      padding:10px 12px;
+      border-bottom:1px solid var(--line);
+      flex-wrap:wrap;
     }
-    .monthbar .m{font-weight:800; letter-spacing:-.3px}
+    .monthbar .m{font-weight:800; letter-spacing:-.3px; font-size: var(--fs-ui);}
 
-    .calendar{padding:14px;}
+    .calendar{padding:var(--pad-card);}
 
     .dow{
       display:grid; grid-template-columns: repeat(7, 1fr);
       border:1px solid var(--line); border-bottom:0;
-      border-radius:14px 14px 0 0; overflow:hidden;
+      border-radius:12px 12px 0 0; overflow:hidden;
     }
     .dow div{
-      padding:10px 10px; font-size: var(--fs-dow); color:var(--muted);
-      border-right:1px solid var(--line); background: var(--cellAlt);
+      padding:6px 6px;
+      font-size: var(--fs-dow);
+      color:var(--muted);
+      border-right:1px solid var(--line);
+      background: var(--cellAlt);
+      text-align:left;
     }
     .dow div:last-child{border-right:0}
 
     .weeks{
       border:1px solid var(--line); border-top:0;
-      border-radius:0 0 14px 14px; overflow:hidden;
+      border-radius:0 0 12px 12px; overflow:hidden;
     }
 
+    /* ✅ 주(week) 단위: 리본 줄 수에 맞춰 셀 padding-top 자동 증가 */
     .week{
       position:relative;
-      display:grid; grid-template-columns: repeat(7, 1fr);
+      display:grid;
+      grid-template-columns: repeat(7, 1fr);
       border-top:1px solid var(--line);
       background: var(--cellBg);
       --bar-rows: 0;
-      --bar-row-h: 30px;
-      --bar-top: 34px;
-      --cell-base-pad: 10px;
     }
     .week:first-child{border-top:0}
 
     .cell{
       position:relative;
-      min-height:112px;
-      padding: var(--cell-base-pad);
-      padding-top: calc(var(--cell-base-pad) + 22px + (var(--bar-rows) * var(--bar-row-h)));
+      min-height:var(--cell-minh);
+      padding: var(--cell-pad);
+      padding-top: calc(var(--cell-pad) + 18px + (var(--bar-rows) * var(--bar-row-h)));
       border-right:1px solid var(--line);
       background: var(--cellBg);
       overflow:hidden;
@@ -139,91 +186,125 @@
 
     .cell.today{
       background: var(--today) !important;
-      box-shadow: inset 0 0 0 2px rgba(17,24,39,.25);
+      box-shadow: inset 0 0 0 2px rgba(17,24,39,.20);
     }
 
     .cellTop{
       position:absolute;
-      top: 8px;
-      left: 10px;
-      right: 10px;
-      display:flex; justify-content:space-between; align-items:center; gap:10px;
-      font-size: var(--fs-day); color:var(--muted);
+      top: 4px;
+      left: var(--cell-pad);
+      right: var(--cell-pad);
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      font-size: var(--fs-day);
+      color:var(--muted);
       pointer-events:none;
     }
     .cellTop .dayNum{font-weight:800; color:#111827;}
     .cell.muted .cellTop .dayNum{color:#6b7280;}
 
-    .cellList{display:flex; flex-direction:column; gap:6px; min-width:0}
+    .cellList{
+      display:flex;
+      flex-direction:column;
+      gap:4px;
+      min-width:0;
+    }
 
+    /* ✅ 하루 일정(단일) 표시: 더 얇게 */
     .mini{
-      display:flex; align-items:center; gap:8px; min-width:0;
-      padding:6px 8px; border-radius:10px;
+      display:flex;
+      align-items:center;
+      gap:6px;
+      min-width:0;
+      padding:4px 6px;
+      border-radius:9px;
       border:1px solid color-mix(in oklab, var(--line) 70%, transparent);
       background: color-mix(in oklab, var(--barBg) 55%, transparent);
       font-size: var(--fs-mini);
-      overflow:hidden; white-space:nowrap;
+      overflow:hidden;
+      white-space:nowrap;
+      line-height: 1.1;
     }
-    .mini .dot{width:8px; height:8px; border-radius:50%}
+    .mini .dot{width:7px; height:7px; border-radius:50%; background: var(--accent);}
     .mini .t{
-      min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
-      color:var(--text); font-weight:600;
+      min-width:0;
+      overflow:hidden;
+      text-overflow:ellipsis;
+      white-space:nowrap;
+      color:var(--text);
+      font-weight:600;
     }
 
+    /* ✅ 기간 일정 리본(띠): 더 얇게 + 줄 간격 줄임 */
     .bars{
       position:absolute;
       left:0; right:0;
       top: var(--bar-top);
-      padding:0 10px;
+      padding:0 var(--cell-pad);
       display:grid;
       grid-template-columns: repeat(7, 1fr);
-      grid-auto-rows:24px;
-      row-gap:6px;
+      grid-auto-rows: var(--bar-h);
+      row-gap: var(--bar-gap);
       pointer-events:none;
       z-index:2;
     }
     .bar{
-      height:24px;
-      border-radius:12px;
+      height:var(--bar-h);
+      border-radius:999px;
       border:1px solid color-mix(in oklab, var(--line) 70%, transparent);
       background: color-mix(in oklab, var(--barBg) 60%, transparent);
-      display:flex; align-items:center; gap:8px;
-      padding:0 10px;
-      overflow:hidden; white-space:nowrap;
+      display:flex;
+      align-items:center;
+      gap:6px;
+      padding:0 8px;
+      overflow:hidden;
+      white-space:nowrap;
       pointer-events:auto;
       z-index:3;
       min-width:0;
-      margin:0 2px;
+      margin:0 1px;
+      line-height: 1;
     }
-    .bar .dot{width:9px; height:9px; border-radius:50%}
+    .bar .dot{width:8px; height:8px; border-radius:50%; background: var(--accent);}
     .bar .txt{
-      min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
+      min-width:0;
+      overflow:hidden;
+      text-overflow:ellipsis;
+      white-space:nowrap;
       font-size: var(--fs-bar);
       font-weight:800;
       color:var(--text);
     }
 
-    /* ✅ 분류색 통일(분류 UI 제거했으므로 전부 같은 색) */
-    .dot{background: var(--accent);}
-
-    .side h2{margin:0; font-size:15px; padding:14px 14px 0 14px; letter-spacing:-.2px;}
-    .side .hint{padding:6px 14px 12px 14px; margin:0; color:var(--muted); font-size:12px}
-    .list{padding:14px; display:flex; flex-direction:column; gap:10px}
+    /* 목록 카드 */
+    .side h2{margin:0; font-size:14px; padding:10px 12px 0 12px; letter-spacing:-.2px;}
+    .side .hint{padding:6px 12px 10px 12px; margin:0; color:var(--muted); font-size:11px}
+    .list{padding:10px 12px 12px 12px; display:flex; flex-direction:column; gap:8px}
 
     .item{
       border:1px solid var(--line);
-      border-radius:16px;
-      padding:12px;
+      border-radius:14px;
+      padding:10px;
       background: var(--cellAlt);
       display:flex;
-      gap:12px;
+      gap:10px;
       align-items:flex-start;
     }
     .item .left{min-width:0}
-    .item .row1{font-weight:800; letter-spacing:-.2px; word-break:keep-all;}
-    .item .row2{color:var(--muted); font-size:12px; margin-top:4px; word-break:break-word;}
+    .item .row1{
+      font-weight:800;
+      letter-spacing:-.2px;
+      word-break:keep-all;
+      font-size: 12px;
+    }
+    @media (max-width:600px){
+      .item .row1{font-size:11px;}
+    }
 
-    @media print{ header, .toolbar {display:none !important} }
+    @media print{
+      header, .toolbar {display:none !important}
+    }
   </style>
 </head>
 <body>
@@ -235,16 +316,15 @@
 
     <div class="toolbar">
       <div class="controls">
-        <button class="btn small" id="prevBtn" title="이전 달 (←)">◀︎ <span>이전</span></button>
-        <button class="btn small" id="todayBtn" title="오늘로 이동">◎ <span id="todayLabel">오늘</span></button>
-        <button class="btn small" id="nextBtn" title="다음 달 (→)"><span>다음</span> ▶︎</button>
+        <button class="btn" id="prevBtn" title="이전 달 (←)">◀︎ 이전</button>
+        <button class="btn" id="todayBtn" title="오늘로 이동">◎ <span id="todayLabel">오늘</span></button>
+        <button class="btn" id="nextBtn" title="다음 달 (→)">다음 ▶︎</button>
 
         <select id="monthSelect" title="월 선택"></select>
         <input id="q" class="input" placeholder="검색: 예) 6월 15일 | 일정명 / 설명" />
       </div>
 
       <div class="controls">
-        <!-- ✅ CSV 버튼 삭제 -->
         <button class="btn primary" id="printBtn" title="인쇄/저장">🖨 인쇄</button>
       </div>
     </div>
@@ -257,7 +337,7 @@
       <section class="card">
         <div class="monthbar">
           <div class="m" id="monthTitle">2026.03</div>
-          <div style="color:var(--muted); font-size:12px;">단축키: ← →</div>
+          <div style="color:var(--muted); font-size:11px;">← →</div>
         </div>
 
         <div class="calendar">
@@ -276,6 +356,7 @@
 </main>
 
 <script>
+/* 단일일: { date, title, note? } / 기간: { start, end, title, note? } */
 const EVENTS = [
   { date:"2026-03-02", title:"1학기 개강(예시)", note:"학교 공지 기준으로 수정" },
   { date:"2026-04-20", title:"중간고사(예시)", note:"학교별 일정 상이" },
@@ -296,14 +377,13 @@ const START_MONTH = "2026-03-01";
 const END_MONTH   = "2027-02-01";
 
 const DOW = ["일","월","화","수","목","금","토"];
+
 function pad2(n){ return String(n).padStart(2,"0"); }
 function toISODate(d){ return `${d.getFullYear()}-${pad2(d.getMonth()+1)}-${pad2(d.getDate())}`; }
 function parseISO(iso){ const [y,m,d]=iso.split("-").map(Number); return new Date(y, m-1, d); }
 function ymKey(d){ return `${d.getFullYear()}-${pad2(d.getMonth()+1)}`; }
 function formatYM(d){ return `${d.getFullYear()}.${pad2(d.getMonth()+1)}`; }
 function formatDateK(iso){ const [_,m,d]=iso.split("-").map(Number); return `${m}월 ${d}일`; }
-function formatDateKFull(iso){ const [y,m,d]=iso.split("-").map(Number); return `${y}.${pad2(m)}.${pad2(d)}`; }
-function formatRangeK(s,e){ return `${formatDateK(s)} ~ ${formatDateK(e)}`; }
 function normalized(s){ return (s||"").toLowerCase().trim(); }
 function escapeHtml(s){
   return String(s||"").replace(/[&<>"']/g, (m)=>({
@@ -319,7 +399,13 @@ function clampDateToRange(d){
 }
 function isRange(e){ return !!(e.start && e.end); }
 function addDays(dateObj, n){ const d=new Date(dateObj); d.setDate(d.getDate()+n); return d; }
-function weekStartOf(dateObj){ const d=new Date(dateObj); const dow=d.getDay(); d.setDate(d.getDate()-dow); d.setHours(0,0,0,0); return d; }
+function weekStartOf(dateObj){
+  const d=new Date(dateObj);
+  const dow=d.getDay();
+  d.setDate(d.getDate()-dow);
+  d.setHours(0,0,0,0);
+  return d;
+}
 function rangeOverlapsMonth(e, monthDate){
   const ms = new Date(monthDate.getFullYear(), monthDate.getMonth(), 1);
   const me = new Date(monthDate.getFullYear(), monthDate.getMonth()+1, 0);
@@ -369,8 +455,7 @@ function getFilteredEvents(){
     .filter(e => {
       if(!q) return true;
       const datePart = isRange(e) ? `${e.start} ${e.end}` : e.date;
-      const pretty = isRange(e) ? `${formatRangeK(e.start,e.end)} ${formatDateKFull(e.start)} ${formatDateKFull(e.end)}`
-                               : `${formatDateK(e.date)} ${formatDateKFull(e.date)}`;
+      const pretty = isRange(e) ? `${e.start}~${e.end}` : e.date;
       const hay = [datePart, pretty, e.title, e.note].join(" ").toLowerCase();
       return hay.includes(q);
     });
@@ -397,7 +482,7 @@ function rangeEventsForCalendarMonth(monthDate){
   return all.filter(e => isRange(e) && rangeOverlapsMonth(e, monthDate));
 }
 
-/* 겹침 방지: 리본 줄 무제한 추가 */
+/* ✅ 겹침 방지: 리본 줄 무제한 배치 */
 function splitRangeToWeekSegment(e, weekStartDate){
   const ws = new Date(weekStartDate); ws.setHours(0,0,0,0);
   const we = addDays(ws, 6);
@@ -436,6 +521,10 @@ function layoutBarsForWeek(rangeEvents, weekStartDate){
   return { rowsCount: rowsEnd.length, placed };
 }
 
+function renderDOW(){
+  els.dow.innerHTML = DOW.map(x=>`<div>${x}</div>`).join("");
+}
+
 function renderCalendar(){
   let cur;
   if(state.month === "ALL"){
@@ -447,7 +536,7 @@ function renderCalendar(){
   }
 
   els.monthTitle.textContent = (state.month === "ALL")
-    ? `${formatYM(cur)} (전체 선택)`
+    ? `${formatYM(cur)} (전체)`
     : formatYM(cur);
 
   els.monthSelect.value = state.month;
@@ -460,16 +549,15 @@ function renderCalendar(){
     const ws = addDays(gridStart, w*7);
     const { rowsCount, placed } = layoutBarsForWeek(rangeEvents, ws);
 
-    let barsHtml = `<div class="bars" style="grid-template-rows: repeat(${Math.max(rowsCount,0)}, 24px);">`;
+    let barsHtml = `<div class="bars" style="grid-template-rows: repeat(${Math.max(rowsCount,0)}, var(--bar-h));">`;
     for(const p of placed){
       const s = p.seg;
       const e = s.e;
-      const title = `${e.title} (${formatDateKFull(e.start)}~${formatDateKFull(e.end)})${e.note? " - "+e.note:""}`;
       const gcStart = s.colStart + 1;
       const gcEnd = s.colEnd + 2;
       const gr = p.rowIndex + 1;
       barsHtml += `
-        <div class="bar" style="grid-column:${gcStart} / ${gcEnd}; grid-row:${gr};" title="${escapeHtml(title)}">
+        <div class="bar" style="grid-column:${gcStart} / ${gcEnd}; grid-row:${gr};" title="${escapeHtml(e.title)}">
           <span class="dot"></span>
           <span class="txt">${escapeHtml(e.title)}</span>
         </div>
@@ -483,7 +571,7 @@ function renderCalendar(){
       const iso = toISODate(d);
       const inMonth = d.getMonth() === cur.getMonth();
       const singles = singleEventsOnDate(iso);
-      const miniItems = singles.slice(0,3).map(ev => `
+      const miniItems = singles.slice(0,2).map(ev => `
         <div class="mini" title="${escapeHtml(ev.title)}${ev.note ? ' - '+escapeHtml(ev.note) : ''}">
           <span class="dot"></span>
           <span class="t">${escapeHtml(ev.title)}</span>
@@ -494,10 +582,7 @@ function renderCalendar(){
 
       cellsHtml += `
         <div class="cell ${inMonth ? "" : "muted"} ${isVisitToday ? "today" : ""}" data-date="${iso}">
-          <div class="cellTop">
-            <span class="dayNum">${d.getDate()}</span>
-            <span class="cnt"></span>
-          </div>
+          <div class="cellTop"><span class="dayNum">${d.getDate()}</span><span></span></div>
           <div class="cellList">${miniItems}</div>
         </div>
       `;
@@ -512,26 +597,21 @@ function renderCalendar(){
 function renderList(){
   const list = eventsForList();
   if(list.length === 0){
-    els.list.innerHTML = `<div style="color:var(--muted); padding:10px 2px;">표시할 일정이 없습니다.</div>`;
+    els.list.innerHTML = `<div style="color:var(--muted); padding:6px 2px; font-size:11px;">표시할 일정이 없습니다.</div>`;
     return;
   }
   els.list.innerHTML = list.map(e=>{
-    const datePart = isRange(e) ? formatRangeK(e.start, e.end) : formatDateK(e.date);
+    const datePart = isRange(e) ? `${formatDateK(e.start)} ~ ${formatDateK(e.end)}` : formatDateK(e.date);
     const desc = (e.note||"").trim();
     const line = desc ? `${e.title} / ${desc}` : `${e.title}`;
     return `
       <div class="item">
         <div class="left">
           <div class="row1">${escapeHtml(datePart)} | ${escapeHtml(line)}</div>
-          <div class="row2"></div>
         </div>
       </div>
     `;
   }).join("");
-}
-
-function renderDOW(){
-  els.dow.innerHTML = DOW.map(x=>`<div>${x}</div>`).join("");
 }
 
 function render(){
@@ -554,13 +634,13 @@ function moveMonth(delta){
 /* init */
 renderDOW();
 buildMonthOptions();
+
 els.todayLabel.textContent = VISIT_TODAY_ISO;
 
 state.cursor = clampDateToRange(new Date());
 state.month = ymKey(state.cursor);
 els.monthSelect.value = state.month;
 
-/* bind */
 document.getElementById("prevBtn").addEventListener("click", ()=>moveMonth(-1));
 document.getElementById("nextBtn").addEventListener("click", ()=>moveMonth(+1));
 document.getElementById("todayBtn").addEventListener("click", ()=>{
@@ -577,7 +657,6 @@ els.monthSelect.addEventListener("change", (e)=>{
   render();
 });
 els.q.addEventListener("input", (e)=>{ state.q = e.target.value; render(); });
-
 document.getElementById("printBtn").addEventListener("click", ()=>window.print());
 
 window.addEventListener("keydown", (e)=>{
@@ -585,7 +664,6 @@ window.addEventListener("keydown", (e)=>{
   if(e.key==="ArrowRight") moveMonth(+1);
 });
 
-/* first render */
 render();
 </script>
 </body>
