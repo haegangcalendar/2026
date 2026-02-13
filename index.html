@@ -237,7 +237,7 @@
         <button class="btn" id="nextBtn" title="다음 달 (→)">다음 ▶︎</button>
 
         <select id="monthSelect" title="월 선택"></select>
-        <input id="q" class="input" placeholder="검색: 예) 3.3 | 개학식 / 1교시" />
+        <input id="q" class="input" placeholder="검색" />
       </div>
 
       <div class="controls">
@@ -264,7 +264,6 @@
 
       <aside class="card side">
         <h2>일정 목록</h2>
-        <p class="hint">표시 형식: <b>월.일 | 이름/설명</b></p>
         <div class="list" id="list"></div>
       </aside>
     </div>
@@ -276,8 +275,8 @@
 const EVENTS = [
   { date:"2026-03-01", title:"삼일절", note:"" },
   { date:"2026-03-02", title:"삼일절 대체공휴일", note:"" },
-  { date:"2026-03-03", title:"개학식", note:"1교시" },
-  { date:"2026-03-03", title:"입학식", note:"3교시" },
+  { date:"2026-03-03", title:"개학식", note:"" },
+  { date:"2026-03-03", title:"입학식", note:"" },
 
   { date:"2026-05-05", title:"어린이날", note:"" },
   { date:"2026-05-06", title:"개교기념일", note:"" },
@@ -520,3 +519,4 @@ render();
 </script>
 </body>
 </html>
+
