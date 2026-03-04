@@ -6,24 +6,29 @@
   <title>2026학년도 학사일정</title>
   <style>
     :root{
-      --bg:#ffffff; --panel:#ffffff; --text:#111827; --muted:#6b7280; --line:#d1d5db;
+      --bg:#ffffff; --text:#111827; --muted:#6b7280; --line:#d1d5db;
       --accent:#2563eb;
-      --cellBg:#ffffff; --cellAlt:#fafafa; --barBg:#eef2ff;
+      --cellBg:#ffffff; --cellAlt:#fafafa; --pill:#eef2ff;
       --shadow: 0 10px 30px rgba(15,23,42,.08);
       --today:#BDC0C0;
 
-      --fs-h1:18px; --fs-ui:12px; --fs-dow:12px; --fs-day:11px; --fs-bar:11px; --fs-mini:11px;
-      --pad-wrap:14px; --pad-card:14px;
-      --cell-minh:112px; --cell-pad:10px;
-      --bar-top:34px; --bar-row-h:30px; --bar-h:24px; --bar-gap:6px;
+      --fs-h1:18px; --fs-ui:12px; --fs-dow:12px; --fs-day:11px; --fs-pill:11px;
+      --pad-wrap:8px; --pad-card:8px;
+      --cell-minh:110px; --cell-pad:10px;
     }
+
     @media (max-width: 600px){
       :root{
-        --fs-h1:16px; --fs-ui:11px; --fs-dow:10px; --fs-day:10px; --fs-bar:10px; --fs-mini:10px;
-        --pad-wrap:8px; --pad-card:8px;
+        --fs-h1:16px; --fs-ui:11px; --fs-dow:10px; --fs-day:10px; --fs-pill:10px;
+        --pad-wrap:6px; --pad-card:6px;
         --cell-minh:70px; --cell-pad:6px;
-        --bar-top:26px; --bar-row-h:22px; --bar-h:18px; --bar-gap:4px;
       }
+    }
+
+    /* PC에서 좌우 여백 최소 + 달력 넓게 */
+    @media (min-width: 900px){
+      .wrap{ max-width: 1700px; }
+      :root{ --cell-minh:120px; --fs-pill:12px; --fs-day:12px; }
     }
 
     *{box-sizing:border-box}
@@ -34,12 +39,15 @@
       color: var(--text);
     }
 
-    header{position: static; background: var(--bg); border-bottom:1px solid var(--line);}
-    .wrap{max-width:1200px; margin:0 auto; padding:var(--pad-wrap);}
-    h1{margin:0; font-size:var(--fs-h1); letter-spacing:-.3px;}
+    header{ background: var(--bg); border-bottom:1px solid var(--line); }
+    .wrap{ max-width:1200px; margin:0 auto; padding: var(--pad-wrap); }
+    h1{ margin:0; font-size: var(--fs-h1); letter-spacing:-.3px; }
 
-    .toolbar{display:flex; justify-content:space-between; align-items:center; gap:8px; flex-wrap:wrap; margin-top:8px;}
-    .controls{display:flex; gap:8px; flex-wrap:wrap; align-items:center}
+    .toolbar{
+      display:flex; justify-content:space-between; align-items:center;
+      gap:8px; flex-wrap:wrap; margin-top:8px;
+    }
+    .controls{ display:flex; gap:8px; flex-wrap:wrap; align-items:center; }
 
     .btn{
       border:1px solid var(--line);
@@ -55,13 +63,13 @@
       font-size: var(--fs-ui);
       white-space:nowrap;
     }
-    .btn:active{transform: translateY(1px)}
+    .btn:active{ transform: translateY(1px) }
     .btn.primary{
       border-color: color-mix(in oklab, var(--accent) 55%, var(--line));
       box-shadow: 0 0 0 3px color-mix(in oklab, var(--accent) 12%, transparent) inset;
     }
 
-    .input, select{
+    select, .input{
       border:1px solid var(--line);
       background: transparent;
       color:var(--text);
@@ -71,22 +79,13 @@
       font-size: var(--fs-ui);
       max-width: 320px;
     }
-    .input::placeholder{color:var(--muted)}
-    option{color:#111827}
-
-    .grid{
-      display:grid;
-      grid-template-columns: 1.2fr .8fr;
-      gap:10px;
-      padding:var(--pad-wrap);
-    }
-    @media (max-width: 980px){ .grid{grid-template-columns:1fr} }
+    .input::placeholder{ color: var(--muted) }
+    option{ color:#111827 }
 
     .card{
-      background: var(--panel);
+      background:#fff;
       border:1px solid var(--line);
       border-radius:16px;
-      overflow: visible;
       box-shadow: var(--shadow);
     }
 
@@ -94,9 +93,9 @@
       display:flex; justify-content:space-between; align-items:center; gap:10px;
       padding:10px 12px; border-bottom:1px solid var(--line); flex-wrap:wrap;
     }
-    .monthbar .m{font-weight:800; letter-spacing:-.3px; font-size: var(--fs-ui);}
+    .monthbar .m{ font-weight:900; letter-spacing:-.3px; font-size: var(--fs-ui); }
 
-    .calendar{padding:var(--pad-card);}
+    .calendar{ padding: var(--pad-card); }
 
     .dow{
       display:grid; grid-template-columns: repeat(7, 1fr);
@@ -111,7 +110,7 @@
       background: var(--cellAlt);
       text-align:left;
     }
-    .dow div:last-child{border-right:0}
+    .dow div:last-child{ border-right:0 }
 
     .weeks{
       border:1px solid var(--line); border-top:0;
@@ -119,27 +118,25 @@
     }
 
     .week{
-      position:relative;
       display:grid;
       grid-template-columns: repeat(7, 1fr);
       border-top:1px solid var(--line);
       background: var(--cellBg);
-      --bar-rows: 0;
     }
-    .week:first-child{border-top:0}
+    .week:first-child{ border-top:0 }
 
     .cell{
       position:relative;
-      min-height:var(--cell-minh);
+      min-height: var(--cell-minh);
       padding: var(--cell-pad);
-      padding-top: calc(var(--cell-pad) + 18px + (var(--bar-rows) * var(--bar-row-h)));
+      padding-top: calc(var(--cell-pad) + 18px);
       border-right:1px solid var(--line);
       background: var(--cellBg);
       overflow:hidden;
     }
-    .cell:nth-child(odd){background: var(--cellAlt)}
-    .cell:last-child{border-right:0}
-    .cell.muted{opacity:.45}
+    .cell:nth-child(odd){ background: var(--cellAlt) }
+    .cell:last-child{ border-right:0 }
+    .cell.muted{ opacity:.45 }
 
     .cell.today{
       background: var(--today) !important;
@@ -158,78 +155,40 @@
       color:var(--muted);
       pointer-events:none;
     }
-    .cellTop .dayNum{font-weight:800; color:#111827;}
-    .cell.muted .cellTop .dayNum{color:#6b7280;}
+    .cellTop .dayNum{ font-weight:900; color:#111827; }
+    .cell.muted .cellTop .dayNum{ color:#6b7280; }
 
-    .cellList{display:flex; flex-direction:column; gap:4px; min-width:0}
+    .cellList{
+      display:flex;
+      flex-direction:column;
+      gap:4px;
+      min-width:0;
+    }
 
-    .mini{
+    .pill{
       display:flex; align-items:center; gap:6px; min-width:0;
       padding:4px 6px;
-      border-radius:9px;
+      border-radius:10px;
       border:1px solid color-mix(in oklab, var(--line) 70%, transparent);
-      background: color-mix(in oklab, var(--barBg) 55%, transparent);
-      font-size: var(--fs-mini);
+      background: color-mix(in oklab, var(--pill) 65%, transparent);
+      font-size: var(--fs-pill);
       overflow:hidden; white-space:nowrap;
       line-height: 1.1;
     }
-    .mini .dot{width:7px; height:7px; border-radius:50%; background: var(--accent);}
-    .mini .t{min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; color:var(--text); font-weight:600;}
+    .pill .dot{ width:7px; height:7px; border-radius:50%; background: var(--accent); flex:0 0 auto; }
+    .pill .t{ min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; font-weight:700; }
 
-    .bars{
-      position:absolute;
-      left:0; right:0;
-      top: var(--bar-top);
-      padding:0 var(--cell-pad);
-      display:grid;
-      grid-template-columns: repeat(7, 1fr);
-      grid-auto-rows: var(--bar-h);
-      row-gap: var(--bar-gap);
-      pointer-events:none;
-      z-index:2;
+    @media print{
+      header{ display:none !important }
+      .card{ box-shadow:none }
+      body{ background:#fff }
     }
-    .bar{
-      height:var(--bar-h);
-      border-radius:999px;
-      border:1px solid color-mix(in oklab, var(--line) 70%, transparent);
-      background: color-mix(in oklab, var(--barBg) 60%, transparent);
-      display:flex; align-items:center; gap:6px;
-      padding:0 8px;
-      overflow:hidden; white-space:nowrap;
-      pointer-events:auto;
-      z-index:3;
-      min-width:0;
-      margin:0 1px;
-      line-height: 1;
-    }
-    .bar .dot{width:8px; height:8px; border-radius:50%; background: var(--accent);}
-    .bar .txt{min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; font-size: var(--fs-bar); font-weight:800; color:var(--text);}
-
-    .side h2{margin:0; font-size:14px; padding:10px 12px 0 12px; letter-spacing:-.2px;}
-    .side .hint{padding:6px 12px 10px 12px; margin:0; color:var(--muted); font-size:11px}
-    .list{padding:10px 12px 12px 12px; display:flex; flex-direction:column; gap:8px}
-
-    .item{
-      border:1px solid var(--line);
-      border-radius:14px;
-      padding:10px;
-      background: var(--cellAlt);
-      display:flex;
-      gap:10px;
-      align-items:flex-start;
-    }
-    .item .left{min-width:0}
-    .item .row1{font-weight:800; letter-spacing:-.2px; word-break:keep-all; font-size: 12px;}
-    @media (max-width:600px){ .item .row1{font-size:11px;} }
-
-    @media print{ header, .toolbar {display:none !important} }
   </style>
 </head>
 <body>
 <header>
   <div class="wrap">
-    <div class="title"><div><h1>2026학년도 학사일정</h1></div></div>
-
+    <h1>2026학년도 학사일정</h1>
     <div class="toolbar">
       <div class="controls">
         <button class="btn" id="prevBtn" title="이전 달 (←)">◀︎ 이전</button>
@@ -237,9 +196,8 @@
         <button class="btn" id="nextBtn" title="다음 달 (→)">다음 ▶︎</button>
 
         <select id="monthSelect" title="월 선택"></select>
-        <input id="q" class="input" placeholder="검색" />
+        <input id="q" class="input" placeholder="검색: 예) 4.20 | 중간고사" />
       </div>
-
       <div class="controls">
         <button class="btn primary" id="printBtn" title="인쇄/저장">🖨 인쇄</button>
       </div>
@@ -249,75 +207,131 @@
 
 <main>
   <div class="wrap">
-    <div class="grid">
-      <section class="card">
-        <div class="monthbar">
-          <div class="m" id="monthTitle">2026.03</div>
-          <div style="color:var(--muted); font-size:11px;">← →</div>
-        </div>
+    <section class="card">
+      <div class="monthbar">
+        <div class="m" id="monthTitle">2026.03</div>
+        <div style="color:var(--muted); font-size:11px;">← →</div>
+      </div>
 
-        <div class="calendar">
-          <div class="dow" id="dow"></div>
-          <div class="weeks" id="weeks"></div>
-        </div>
-      </section>
-
-      <aside class="card side">
-        <h2>일정 목록</h2>
-        <div class="list" id="list"></div>
-      </aside>
-    </div>
+      <div class="calendar">
+        <div class="dow" id="dow"></div>
+        <div class="weeks" id="weeks"></div>
+      </div>
+    </section>
   </div>
 </main>
 
 <script>
-/* ✅ 요청대로: 기존 일정 전부 삭제하고 아래만 반영 */
+/* PDF 학사일정 기반(요약/정리) */
 const EVENTS = [
-  { date:"2026-03-01", title:"삼일절", note:"" },
-  { date:"2026-03-02", title:"삼일절 대체공휴일", note:"" },
-  { date:"2026-03-03", title:"개학식", note:"" },
-  { date:"2026-03-03", title:"입학식", note:"" },
-  { date:"2026-03-04", title:"진로자아체험", note:"" },
-  { date:"2026-03-05", title:"학교폭력/사이버폭력 예방교육", note:"" },
-  { date:"2026-03-06", title:"동아리 (6교시)", note:"" },
-  { date:"2026-03-07", title:"봉사소양교육", note:"" },
-  { date:"2026-03-07", title:"성폭력, 성희롱, 성매매 예방교육", note:"" },
-  { date:"2026-03-12", title:"학급회 조직", note:"" },
-  { date:"2026-03-20", title:"학부모 총회", note:"" },
-  { date:"2026-03-24", title:"학생인권교육, 다문화 교육", note:"" },
-  { date:"2026-03-31", title:"1학년 영어듣기", note:"" },
-  
-  { date:"2026-04-01", title:"2학년 영어듣기", note:"" },
-  { date:"2026-04-02", title:"3학년 영어듣기", note:"" },
-  { date:"2026-04-06", title:"과학의 날 행사", note:"" },
-  { date:"2026-04-08", title:"인터넷, 스마트폰 과의존 예방교육", note:"" },
-  { date:"2026-04-21", title:"중간고사", note:"" },
-  { date:"2026-04-22", title:"중간고사", note:"" },
-  { date:"2026-04-24", title:"동아리", note:"" },
-  { date:"2026-04-30", title:"제난 대피 훈련", note:"" },
+  /* 1학기 */
+  { date:"2026-03-02", title:"대체공휴일" },
+  { date:"2026-03-03", title:"개학식(1교시)" },
+  { date:"2026-03-03", title:"입학식(3교시)" },
+  { date:"2026-03-04", title:"진로자아체험(2,3학년 1교시)" },
+  { date:"2026-03-05", title:"학교폭력·사이버폭력예방교육(1~3교시)" },
+  { date:"2026-03-05", title:"생명존중·자살예방교육(7교시)" },
+  { date:"2026-03-06", title:"동아리(6교시)" },
+  { date:"2026-03-09", title:"봉사소양교육(1교시)" },
+  { date:"2026-03-09", title:"성폭력·성희롱·성매매예방교육(2교시)" },
+  { date:"2026-03-12", title:"학급회조직(1교시)" },
+  { date:"2026-03-20", title:"학부모총회" },
+  { date:"2026-03-23", title:"학생인권·다문화교육(1교시)" },
+  { date:"2026-03-31", title:"1학년 영어듣기" },
+  { date:"2026-04-01", title:"2학년 영어듣기" },
+  { date:"2026-04-02", title:"3학년 영어듣기" },
+  { date:"2026-04-06", title:"과학의 날 행사(1,2교시)" },
+  { date:"2026-04-08", title:"인터넷·스마트폰 과의존 예방교육(2교시)" },
+  { date:"2026-04-20", title:"중간고사(2,3학년)" },
+  { date:"2026-04-21", title:"중간고사(2,3학년)" },
+  { date:"2026-04-22", title:"중간고사(2,3학년)" },
+  { date:"2026-04-23", title:"동아리(5,6교시)" },
+  { date:"2026-04-30", title:"재난대피훈련(4교시)" },
 
-  { date:"2026-05-04", title:"재량 휴업일", note:"" },
-  { date:"2026-05-05", title:"어린이날", note:"" },
-  { date:"2026-05-06", title:"야외활동 안전교육", note:"" },
-  { date:"2026-05-24", title:"부처님 오신날", note:"" },
-  { date:"2026-05-25", title:"부처님 오신날 대체공휴일", note:"" },
+  { date:"2026-05-04", title:"재량휴업일(개교기념일)" },
+  { date:"2026-05-05", title:"어린이날" },
+  { date:"2026-05-06", title:"체험학습·야외활동 안전교육(4~6교시)" },
+  { date:"2026-05-07", title:"현장체험학습(전학년)" },
+  { date:"2026-05-08", title:"현장체험학습(전학년)" },
+  { date:"2026-05-14", title:"사이버폭력 예방교육(2교시)" },
+  { date:"2026-05-15", title:"어울림한마당" },
+  { date:"2026-05-25", title:"부처님오신날 대체공휴일" },
+  { date:"2026-05-26", title:"약물오남용 예방교육(2교시)" },
+  { date:"2026-05-28", title:"동아리(6,7교시)" },
 
-  { date:"2026-06-03", title:"제 9회 전국동시지방선거", note:"" },
-  { date:"2026-06-06", title:"현충일", note:"" },
+  { date:"2026-06-03", title:"지방선거일" },
+  { date:"2026-06-10", title:"장애인권교육(3교시)" },
+  { date:"2026-06-23", title:"기말고사(2,3학년)" },
+  { date:"2026-06-24", title:"기말고사(2,3학년)" },
+  { date:"2026-06-25", title:"기말고사(2,3학년)" },
+  { date:"2026-06-26", title:"동아리(5,6교시)" },
 
-  { date:"2026-07-17", title:"제헌절", note:"" },
+  { date:"2026-07-02", title:"사이버 도박 예방교육(1교시)" },
+  { date:"2026-07-17", title:"제헌절" },
+  { date:"2026-07-20", title:"방학식" },
+  { date:"2026-07-21", title:"여름방학" },
+  { date:"2026-07-22", title:"여름방학" },
+  { date:"2026-07-23", title:"여름방학" },
+  { date:"2026-07-24", title:"여름방학" },
 
-  { date:"2026-08-15", title:"광복절", note:"" },
-  { date:"2026-08-17", title:"광복절 대체공휴일", note:"" },
+  /* 2학기 */
+  { date:"2026-08-17", title:"대체공휴일" },
+  { date:"2026-08-18", title:"2학기 개학식" },
+  { date:"2026-08-18", title:"대청소(1교시)" },
+  { date:"2026-08-18", title:"봉사활동교육(2교시)" },
+  { date:"2026-08-24", title:"언어폭력·사이버폭력 예방교육(1교시)" },
+  { date:"2026-08-25", title:"인터넷·스마트폰 과의존 예방교육(2교시)" },
+  { date:"2026-08-28", title:"동아리(5,6교시)" },
 
-  { date:"2026-10-03", title:"개천절", note:"" },
-  { date:"2026-10-05", title:"개천절 대체공휴일", note:"" },
-  { date:"2026-10-09", title:"한글날", note:"" },
+  { date:"2026-09-01", title:"1학년 영어듣기" },
+  { date:"2026-09-02", title:"2학년 영어듣기" },
+  { date:"2026-09-03", title:"3학년 영어듣기" },
+  { date:"2026-09-08", title:"생명존중·자살예방교육(1교시)" },
+  { date:"2026-09-14", title:"사이버 도박 예방교육(2교시)" },
+  { date:"2026-09-21", title:"아동학대·가정폭력 예방/학생인권/다문화교육(3,4교시)" },
+  { date:"2026-09-21", title:"동아리(5,6교시)" },
+  { date:"2026-09-23", title:"진로탐색의 날(1~5교시)" },
+  { date:"2026-09-23", title:"대청소(6교시)" },
+  { date:"2026-09-24", title:"추석연휴" },
+  { date:"2026-09-25", title:"추석연휴" },
 
-  { date:"2026-12-25", title:"크리스마스", note:"" },
+  { date:"2026-09-30", title:"한글날 백일장(1~2교시)" },
+  { date:"2026-09-30", title:"미세먼지예방교육(3교시)" },
+
+  { date:"2026-10-05", title:"대체공휴일" },
+  { date:"2026-10-08", title:"재량휴업일" },
+  { date:"2026-10-09", title:"한글날" },
+  { date:"2026-10-13", title:"양성평등·성폭력 예방교육(2교시)" },
+  { date:"2026-10-23", title:"진학설명회" },
+  { date:"2026-10-27", title:"중간고사(1,2학년) / 기말고사(3학년)" },
+  { date:"2026-10-28", title:"중간고사(1,2학년) / 기말고사(3학년)" },
+  { date:"2026-10-29", title:"청소(4교시)" },
+
+  { date:"2026-11-09", title:"인성자람 체험(1학년)" },
+  { date:"2026-11-10", title:"인성자람 체험(1학년)" },
+  { date:"2026-11-11", title:"재난대피훈련(7교시)" },
+  { date:"2026-11-19", title:"수능일(진로예술체험)" },
+
+  { date:"2026-12-07", title:"기말고사(1,2학년)" },
+  { date:"2026-12-08", title:"기말고사(1,2학년)" },
+  { date:"2026-12-09", title:"기말고사(1,2학년)" },
+  { date:"2026-12-10", title:"동아리(5,6,7)" },
+  { date:"2026-12-16", title:"학예전" },
+  { date:"2026-12-21", title:"장애인권·장애이해교육(2교시)" },
+  { date:"2026-12-25", title:"크리스마스" },
+  { date:"2026-12-30", title:"겨울방학식" },
+  { date:"2026-12-31", title:"겨울방학" },
+
+  { date:"2027-01-28", title:"개학식" },
+  { date:"2027-02-01", title:"종업식·졸업식" },
+  { date:"2027-02-15", title:"새학년 준비" },
+  { date:"2027-02-16", title:"새학년 준비" },
+  { date:"2027-02-17", title:"새학년 준비" },
+  { date:"2027-02-18", title:"새학년 준비" },
+  { date:"2027-02-19", title:"새학년 준비" },
 ];
 
-/* 2026학년도(필요하면 범위만 조정) */
+/* 표시 범위: 2026.03 ~ 2027.02 (학년도) */
 const START_MONTH = "2026-03-01";
 const END_MONTH   = "2027-02-28";
 
@@ -325,7 +339,6 @@ const DOW = ["일","월","화","수","목","금","토"];
 
 function pad2(n){ return String(n).padStart(2,"0"); }
 function toISODate(d){ return `${d.getFullYear()}-${pad2(d.getMonth()+1)}-${pad2(d.getDate())}`; }
-function parseISO(iso){ const [y,m,d]=iso.split("-").map(Number); return new Date(y, m-1, d); }
 function ymKey(d){ return `${d.getFullYear()}-${pad2(d.getMonth()+1)}`; }
 function formatYM(d){ return `${d.getFullYear()}.${pad2(d.getMonth()+1)}`; }
 function formatMD(iso){ const [_,m,d]=iso.split("-").map(Number); return `${m}.${d}`; }
@@ -361,13 +374,12 @@ const els = {
   monthTitle: document.getElementById("monthTitle"),
   dow: document.getElementById("dow"),
   weeks: document.getElementById("weeks"),
-  list: document.getElementById("list"),
   monthSelect: document.getElementById("monthSelect"),
   q: document.getElementById("q"),
   todayLabel: document.getElementById("todayLabel"),
 };
 
-/* ✅ 접속한 오늘 1칸만 색칠 */
+/* 접속한 날짜 1칸만 색칠 */
 const VISIT_TODAY_ISO = toISODate(new Date());
 
 function buildMonthOptions(){
@@ -385,22 +397,16 @@ function buildMonthOptions(){
 function getFilteredEvents(){
   const q = normalized(state.q);
   return EVENTS.slice()
-    .sort((a,b)=> a.date.localeCompare(b.date))
+    .sort((a,b)=> (a.date+a.title).localeCompare(b.date+b.title))
     .filter(e => {
       if(!q) return true;
       const md = formatMD(e.date);
-      const hay = [e.date, md, e.title, e.note].join(" ").toLowerCase();
+      const hay = [e.date, md, e.title].join(" ").toLowerCase();
       return hay.includes(q);
     });
 }
 
-function eventsForList(){
-  const all = getFilteredEvents();
-  if(state.month === "ALL") return all;
-  return all.filter(e => (e.date||"").startsWith(state.month));
-}
-
-function singleEventsOnDate(iso){
+function eventsOnDate(iso){
   const all = getFilteredEvents();
   if(state.month !== "ALL" && !iso.startsWith(state.month)) return [];
   return all.filter(e=> e.date === iso);
@@ -437,57 +443,42 @@ function renderCalendar(){
       const d = addDays(ws, c);
       const iso = toISODate(d);
       const inMonth = d.getMonth() === cur.getMonth();
-      const singles = singleEventsOnDate(iso);
+      const evs = eventsOnDate(iso);
 
-      const miniItems = singles.slice(0,2).map(ev => {
-        const line = ev.note ? `${ev.title} / ${ev.note}` : ev.title;
-        return `
-          <div class="mini" title="${escapeHtml(line)}">
-            <span class="dot"></span>
-            <span class="t">${escapeHtml(line)}</span>
-          </div>
-        `;
-      }).join("");
+      /* 한 칸에 너무 많아지면 3개까지만 표시하고 나머지는 +N */
+      const maxShow = (window.matchMedia("(max-width: 600px)").matches ? 2 : 3);
+      const show = evs.slice(0, maxShow);
+      const remain = evs.length - show.length;
+
+      const pillItems = show.map(ev => `
+        <div class="pill" title="${escapeHtml(ev.title)}">
+          <span class="dot"></span>
+          <span class="t">${escapeHtml(ev.title)}</span>
+        </div>
+      `).join("") + (remain > 0 ? `
+        <div class="pill" title="${escapeHtml(evs.slice(maxShow).map(x=>x.title).join(" / "))}">
+          <span class="dot"></span>
+          <span class="t">+${remain}개 더</span>
+        </div>
+      ` : "");
 
       const isVisitToday = (iso === VISIT_TODAY_ISO);
 
       cellsHtml += `
-        <div class="cell ${inMonth ? "" : "muted"} ${isVisitToday ? "today" : ""}" data-date="${iso}">
+        <div class="cell ${inMonth ? "" : "muted"} ${isVisitToday ? "today" : ""}">
           <div class="cellTop"><span class="dayNum">${d.getDate()}</span><span></span></div>
-          <div class="cellList">${miniItems}</div>
+          <div class="cellList">${pillItems}</div>
         </div>
       `;
     }
 
-    /* 기간 일정 리본 없으므로 bar-rows=0 고정 */
-    weeksHtml.push(`<div class="week" style="--bar-rows:0;">${cellsHtml}</div>`);
+    weeksHtml.push(`<div class="week">${cellsHtml}</div>`);
   }
 
   els.weeks.innerHTML = weeksHtml.join("");
 }
 
-function renderList(){
-  const list = eventsForList();
-  if(list.length === 0){
-    els.list.innerHTML = `<div style="color:var(--muted); padding:6px 2px; font-size:11px;">표시할 일정이 없습니다.</div>`;
-    return;
-  }
-  els.list.innerHTML = list.map(e=>{
-    const line = e.note ? `${e.title} / ${e.note}` : e.title;
-    return `
-      <div class="item">
-        <div class="left">
-          <div class="row1">${escapeHtml(formatMD(e.date))} | ${escapeHtml(line)}</div>
-        </div>
-      </div>
-    `;
-  }).join("");
-}
-
-function render(){
-  renderCalendar();
-  renderList();
-}
+function render(){ renderCalendar(); }
 
 function moveMonth(delta){
   const d = new Date(state.cursor);
@@ -528,7 +519,6 @@ els.monthSelect.addEventListener("change", (e)=>{
 });
 els.q.addEventListener("input", (e)=>{ state.q = e.target.value; render(); });
 document.getElementById("printBtn").addEventListener("click", ()=>window.print());
-
 window.addEventListener("keydown", (e)=>{
   if(e.key==="ArrowLeft") moveMonth(-1);
   if(e.key==="ArrowRight") moveMonth(+1);
@@ -538,6 +528,3 @@ render();
 </script>
 </body>
 </html>
-
-
-
