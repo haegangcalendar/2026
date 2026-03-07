@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>2026학년도 해강중학교 학사일정</title>
+  <title>2026학년도 학사일정</title>
   <style>
     :root{
       --bg:#ffffff;
@@ -35,8 +35,11 @@
       --bar-top:30px;
       --bar-h:20px;
       --bar-gap:4px;
-      --bar-row-h:24px;
+      --bar-row-h:24px; /* bar-h + gap */
+
+      --modal-max-h:78vh;
     }
+
     @media (max-width: 520px){
       :root{
         --fs-title:16px;
@@ -55,6 +58,8 @@
         --bar-h:18px;
         --bar-gap:3px;
         --bar-row-h:21px;
+
+        --modal-max-h:84vh;
       }
     }
 
@@ -83,7 +88,13 @@
       flex-wrap:wrap;
     }
     h1{margin:0; font-size: var(--fs-title); letter-spacing:-.3px; line-height:1.1;}
-    .notice{margin:4px 0 0 0; color: var(--muted); font-size: 11px;}
+    .notice{
+      margin:6px 0 0 0;
+      color: var(--muted);
+      font-size: 11px;
+      line-height: 1.35;
+      white-space: pre-line;
+    }
 
     .toolbar{
       display:flex;
@@ -235,6 +246,7 @@
       background: var(--cellBg);
       overflow:hidden;
       z-index: 1;
+      cursor: pointer;
     }
     .cell:nth-child(odd){background: var(--cellAlt)}
     .cell:last-child{border-right:0}
@@ -268,6 +280,7 @@
       min-width:0;
       z-index: 1;
       position: relative;
+      pointer-events:none; /* 클릭은 셀 전체로 */
     }
 
     .item{
@@ -287,9 +300,64 @@
     .item .dot{width:7px; height:7px; border-radius:50%; background: var(--accent); flex:0 0 auto;}
     .item .t{min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; font-weight:700;}
 
-    /* =========================
-       ✅ POPUP LIST MODAL
-       ========================= */
+    /* ===== Day view ===== */
+    .dayWrap{
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+      margin-top: 10px;
+    }
+    .dayCard{
+      background:#fff;
+      border:1px solid var(--line);
+      border-radius:16px;
+      box-shadow: var(--shadow);
+      overflow:hidden;
+    }
+    .dayHeader{
+      padding:10px 12px;
+      border-bottom:1px solid var(--line);
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+    .dayHeader .d{
+      font-weight:900;
+      font-size: 13px;
+      letter-spacing: -.2px;
+    }
+    .dayList{
+      padding:10px 12px 12px 12px;
+      display:flex;
+      flex-direction:column;
+      gap:8px;
+    }
+    .dayRow{
+      border:1px solid var(--line);
+      border-radius:14px;
+      padding:10px 12px;
+      background:#fafafa;
+      display:flex;
+      gap:10px;
+      align-items:flex-start;
+      justify-content:space-between;
+    }
+    .dayRow .left{min-width:0}
+    .dayRow .name{
+      font-weight:800;
+      font-size:12px;
+      word-break:break-word;
+    }
+    .dayRow .meta{
+      margin-top:4px;
+      color:var(--muted);
+      font-size:11px;
+      word-break:break-word;
+    }
+
+    /* ===== Modal ===== */
     .modalOverlay{
       position: fixed;
       inset: 0;
@@ -304,7 +372,7 @@
 
     .modal{
       width: min(920px, 96vw);
-      max-height: min(78vh, 820px);
+      max-height: var(--modal-max-h);
       overflow: hidden;
       background: #fff;
       border: 1px solid var(--line);
@@ -334,6 +402,7 @@
       color: var(--muted);
       font-size: 11px;
       margin: 0 0 10px 0;
+      white-space: pre-line;
     }
     .resultList{
       display:flex;
@@ -380,7 +449,7 @@
 
     @media print{
       header{display:none !important}
-      .monthCard{box-shadow:none}
+      .monthCard,.dayCard{box-shadow:none}
       .modalOverlay{display:none !important}
       body{background:#fff}
     }
@@ -392,20 +461,16 @@
     <div class="top">
       <div>
         <h1>2026학년도 학사일정</h1>
-        <div class="notice">이 웹사이트는 데스크톱에서 최적화되어 있습니다
-          (마지막 업데이트 : 2026-03-06).</div>
+        <div class="notice">이 웹사이트는 PC환경에서 최적하 되어 있습니다
+마지막 수정 : 2026.03.07</div>
       </div>
     </div>
 
     <div class="toolbar">
-      <div class="controls">
-        <button class="btn" id="prevBtn">◀︎ 이전 달</button>
-        <button class="btn" id="todayBtn">◎ <span id="todayLabel">오늘</span></button>
-        <button class="btn" id="nextBtn">다음 달 ▶︎</button>
-        <select id="monthSelect" title="월 선택"></select>
-      </div>
+      <!-- 좌측 영역(모드에 따라 변경됨) -->
+      <div class="controls" id="leftControls"></div>
 
-      <!-- ✅ 우측 상단: 리스트 버튼 + 검색창 -->
+      <!-- 우측 상단: 리스트 + 검색 -->
       <div class="controls">
         <button class="btn" id="openListBtn" title="리스트 보기">☰ 리스트</button>
         <input id="globalSearch" class="input" placeholder="2026 전체 검색" />
@@ -419,10 +484,16 @@
 </header>
 
 <main>
-  <div class="wrap" id="monthsRoot"></div>
+  <div class="wrap">
+    <!-- month view -->
+    <div id="monthsRoot"></div>
+
+    <!-- day view -->
+    <div id="dayRoot" style="display:none;"></div>
+  </div>
 </main>
 
-<!-- ✅ 리스트 팝업 -->
+<!-- 리스트 팝업 -->
 <div class="modalOverlay" id="modalOverlay" aria-hidden="true">
   <div class="modal" role="dialog" aria-modal="true" aria-label="일정 리스트">
     <div class="modalHeader">
@@ -441,50 +512,135 @@
 
 <script>
 /* =========================
-   EVENTS
+   1) 범위 수정: 2026.03.01 ~ 2027.02.19
+   ========================= */
+const RANGE_START = "2026-03-01";
+const RANGE_END   = "2027-02-19";
+
+/* =========================
+   EVENTS (PDF 반영 + 보강본)
    - 단일일: { date:"YYYY-MM-DD", title:"..." }
    - 기간일정: { start:"YYYY-MM-DD", end:"YYYY-MM-DD", title:"..." }
    ========================= */
-const EVENTS = [
-  { date:"2026-03-01", title:"삼일절" },
-  { date:"2026-03-02", title:"삼일절 대체공휴일" },
+const EVENTS_RAW = [
+  /* 1학기 */
+  { date:"2026-03-02", title:"대체공휴일" },
   { date:"2026-03-03", title:"개학식(1교시)" },
   { date:"2026-03-03", title:"입학식(3교시)" },
-  { date:"2026-05-05", title:"어린이날" },
-  { date:"2026-05-06", title:"개교기념일" },
-  { date:"2026-05-24", title:"부처님 오신날" },
-  { date:"2026-05-25", title:"부처님 오신날 대체공휴일" },
-  { date:"2026-06-03", title:"제 9회 전국동시지방선거" },
-  { date:"2026-06-06", title:"현충일" },
-  { date:"2026-07-17", title:"제헌절" },
-  { date:"2026-08-15", title:"광복절" },
-  { date:"2026-08-17", title:"광복절 대체공휴일" },
-  { date:"2026-10-03", title:"개천절" },
-  { date:"2026-10-05", title:"개천절 대체공휴일" },
-  { date:"2026-10-09", title:"한글날" },
-  { date:"2026-12-25", title:"크리스마스" },
+  { date:"2026-03-04", title:"진로자아체험(2,3학년·1교시)" },
+  { date:"2026-03-05", title:"학교폭력·사이버폭력예방교육(1~3학년·1~3교시)" },
+  { date:"2026-03-05", title:"생명존중·자살예방교육(7교시)" },
+  { date:"2026-03-06", title:"동아리(6교시)" },
 
-  { start:"2026-04-20", end:"2026-04-22", title:"중간고사(2,3학년)" },
+  { date:"2026-03-09", title:"봉사소양교육(1교시)" },
+  { date:"2026-03-09", title:"성폭력·성희롱·성매매예방교육(2교시)" },
+  { date:"2026-03-12", title:"학급회조직(1교시)" },
+  { date:"2026-03-20", title:"학부모총회" },
+  { date:"2026-03-24", title:"학생인권교육·다문화교육(1교시)" },
+
+  { date:"2026-03-31", title:"1학년 영어듣기" },
+  { date:"2026-04-01", title:"2학년 영어듣기" },
+  { date:"2026-04-02", title:"3학년 영어듣기" },
+  { date:"2026-04-06", title:"과학의 날 행사(1~2교시)" },
+  { date:"2026-04-08", title:"인터넷·스마트폰 과의존 예방교육(2교시)" },
+
+  { start:"2026-04-21", end:"2026-04-22", title:"중간고사(2,3학년)" },
+  { date:"2026-04-24", title:"동아리(5~6교시)" },
+  { date:"2026-04-30", title:"재난대피훈련(4교시)" },
+
+  { date:"2026-05-04", title:"재량휴업일(개교기념일)" },
+  { date:"2026-05-05", title:"어린이날" },
+  { date:"2026-05-06", title:"체험학습·야외활동 안전교육(1~3학년·4~6교시)" },
+  { start:"2026-05-07", end:"2026-05-08", title:"현장체험학습(전학년)" },
+  { date:"2026-05-14", title:"사이버폭력 예방교육(2교시)" },
+  { date:"2026-05-15", title:"어울림한마당" },
+  { date:"2026-05-25", title:"부처님오신날 대체공휴일" },
+  { date:"2026-05-26", title:"약물오남용 예방교육(2교시)" },
+  { date:"2026-05-28", title:"동아리(6~7교시)" },
+
+  { date:"2026-06-03", title:"지방선거일" },
+  { date:"2026-06-10", title:"장애인권교육(3교시)" },
+
+  { date:"2026-06-23", title:"진로탐색" },
   { start:"2026-06-23", end:"2026-06-25", title:"기말고사(2,3학년)" },
+  { date:"2026-06-26", title:"동아리(5~6교시)" },
+
+  { date:"2026-07-02", title:"사이버 도박 예방교육(1교시)" },
+  { date:"2026-07-17", title:"제헌절" },
+  { date:"2026-07-20", title:"방학식" },
   { start:"2026-07-21", end:"2026-08-17", title:"여름방학" },
+
+  /* 2학기 */
+  { date:"2026-08-17", title:"대체공휴일" },
+  { date:"2026-08-18", title:"2학기 개학식" },
+  { date:"2026-08-18", title:"대청소(1교시)" },
+  { date:"2026-08-18", title:"봉사활동교육(2교시)" },
+
+  { date:"2026-08-24", title:"언어폭력·사이버폭력 예방교육(1교시)" },
+  { date:"2026-08-25", title:"인터넷·스마트폰 과의존 예방교육(2교시)" },
+  { date:"2026-08-28", title:"동아리(5~6교시)" },
+
+  { date:"2026-09-01", title:"1학년 영어듣기" },
+  { date:"2026-09-02", title:"2학년 영어듣기" },
+  { date:"2026-09-03", title:"3학년 영어듣기" },
+  { date:"2026-09-08", title:"생명존중·자살예방교육(1교시)" },
+  { date:"2026-09-14", title:"사이버 도박 예방교육(2교시)" },
+
+  { date:"2026-09-22", title:"아동학대·가정폭력 예방/학생인권·다문화교육(3~4교시)" },
+  { date:"2026-09-22", title:"동아리(5~6교시)" },
+  { date:"2026-09-23", title:"진로탐색의 날(1~5교시)" },
+  { date:"2026-09-23", title:"대청소(6교시)" },
   { start:"2026-09-24", end:"2026-09-25", title:"추석연휴" },
-  { start:"2026-10-27", end:"2026-10-28", title:"중간고사(1,2) / 기말(3)" },
-  { start:"2026-12-07", end:"2026-12-09", title:"기말고사(1,2)" },
+
+  { date:"2026-09-30", title:"한글날 백일장(1~2교시)" },
+  { date:"2026-09-30", title:"미세먼지 예방교육(3교시)" },
+
+  { date:"2026-10-05", title:"대체공휴일" },
+  { date:"2026-10-08", title:"재량휴업일" },
+  { date:"2026-10-09", title:"한글날" },
+  { date:"2026-10-13", title:"양성평등·성폭력 예방교육(2교시)" },
+  { date:"2026-10-23", title:"진학설명회" },
+  { date:"2026-10-26", title:"2학년 자기주도학습(6교시)" },
+  { start:"2026-10-27", end:"2026-10-28", title:"중간고사(1,2학년) / 기말고사(3학년)" },
+  { date:"2026-10-28", title:"청소(4교시)" },
+
+  { date:"2026-11-09", title:"인성자람 체험(1학년)" },
+  { date:"2026-11-10", title:"인성자람 체험(1학년)" },
+  { date:"2026-11-11", title:"재난대피훈련(7교시)" },
+  { date:"2026-11-19", title:"수능일(진로예술체험)" },
+
+  { start:"2026-12-07", end:"2026-12-09", title:"기말고사(1,2학년)" },
+  { date:"2026-12-10", title:"동아리(5~7교시)" },
+  { date:"2026-12-10", title:"학예전 준비" },
+  { start:"2026-12-14", end:"2026-12-16", title:"학예전" },
+  { date:"2026-12-21", title:"장애인권·장애이해교육(2교시)" },
+  { date:"2026-12-25", title:"크리스마스" },
+  { date:"2026-12-30", title:"겨울방학식(5~6교시)" },
+
   { start:"2026-12-31", end:"2027-01-27", title:"겨울방학" },
+  { date:"2027-01-28", title:"개학식" },
+  { date:"2027-02-02", title:"종업식·졸업식" },
+  { start:"2027-02-03", end:"2027-02-28", title:"학년말방학" },
   { start:"2027-02-15", end:"2027-02-19", title:"새학년 준비" },
 ];
 
-const RANGE_START = "2026-03-01";
-const RANGE_END   = "2027-02-28";
-
+/* =========================
+   Utils
+   ========================= */
 const DOW = ["일","월","화","수","목","금","토"];
 const monthsRoot = document.getElementById("monthsRoot");
+const dayRoot = document.getElementById("dayRoot");
+const leftControls = document.getElementById("leftControls");
 
 function pad2(n){ return String(n).padStart(2,"0"); }
 function toISODate(d){ return `${d.getFullYear()}-${pad2(d.getMonth()+1)}-${pad2(d.getDate())}`; }
 function parseISO(iso){ const [y,m,d]=iso.split("-").map(Number); return new Date(y, m-1, d); }
 function ymKey(d){ return `${d.getFullYear()}-${pad2(d.getMonth()+1)}`; }
 function formatYM(d){ return `${d.getFullYear()}.${pad2(d.getMonth()+1)}`; }
+function formatYMD(d){
+  const dt = (typeof d === "string") ? parseISO(d) : d;
+  return `${dt.getFullYear()}.${pad2(dt.getMonth()+1)}.${pad2(dt.getDate())}`;
+}
 function escapeHtml(s){
   return String(s||"").replace(/[&<>"']/g, (m)=>({
     "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"
@@ -507,12 +663,43 @@ function clampToRange(d){
   return d;
 }
 function isRangeEvent(e){ return !!(e.start && e.end); }
+function inRangeDate(iso){
+  const t = parseISO(iso).getTime();
+  return t >= parseISO(RANGE_START).getTime() && t <= parseISO(RANGE_END).getTime();
+}
+function clipEventsToRange(events){
+  const out = [];
+  const minT = parseISO(RANGE_START).getTime();
+  const maxT = parseISO(RANGE_END).getTime();
+
+  for(const e of events){
+    if(isRangeEvent(e)){
+      let a = parseISO(e.start).getTime();
+      let b = parseISO(e.end).getTime();
+      if(b < minT || a > maxT) continue;
+      a = Math.max(a, minT);
+      b = Math.min(b, maxT);
+      const start = toISODate(new Date(a));
+      const end = toISODate(new Date(b));
+      if(parseISO(start) > parseISO(end)) continue;
+      out.push({ start, end, title: e.title });
+    }else{
+      if(!inRangeDate(e.date)) continue;
+      out.push({ date: e.date, title: e.title });
+    }
+  }
+  return out;
+}
 function rangeOverlapsMonth(e, monthDate){
   const ms = new Date(monthDate.getFullYear(), monthDate.getMonth(), 1);
   const me = new Date(monthDate.getFullYear(), monthDate.getMonth()+1, 0);
   const a = parseISO(e.start).getTime();
   const b = parseISO(e.end).getTime();
   return a <= me.getTime() && b >= ms.getTime();
+}
+function rangeCoversDate(e, iso){
+  const t = parseISO(iso).getTime();
+  return parseISO(e.start).getTime() <= t && t <= parseISO(e.end).getTime();
 }
 function splitRangeToWeekSegment(e, weekStartDate){
   const ws = new Date(weekStartDate); ws.setHours(0,0,0,0);
@@ -524,6 +711,7 @@ function splitRangeToWeekSegment(e, weekStartDate){
   if(segStart > segEnd) return null;
   return { colStart: segStart.getDay(), colEnd: segEnd.getDay(), e };
 }
+/* 리본 겹침 방지: 행 무제한 스택 */
 function layoutBarsForWeek(rangeEvents, weekStartDate){
   const segs = [];
   for(const e of rangeEvents){
@@ -552,12 +740,21 @@ function layoutBarsForWeek(rangeEvents, weekStartDate){
   return { rowsCount: rowsEnd.length, placed };
 }
 
-let state = {
-  q: "",
-  activeMonth: ymKey(clampToRange(new Date())),
-};
+/* =========================
+   State
+   ========================= */
 const VISIT_TODAY_ISO = toISODate(new Date());
+const EVENTS = clipEventsToRange(EVENTS_RAW);
 
+let state = {
+  mode: "month",          // "month" | "day"
+  activeMonth: ymKey(clampToRange(new Date())),
+  dayStartISO: null,      // day view start date
+};
+
+/* =========================
+   Month keys
+   ========================= */
 function buildMonthKeys(){
   const start = parseISO(RANGE_START);
   const end = parseISO(RANGE_END);
@@ -571,15 +768,52 @@ function buildMonthKeys(){
 }
 const MONTH_KEYS = buildMonthKeys();
 
-/* month select */
-const monthSelect = document.getElementById("monthSelect");
-monthSelect.innerHTML = MONTH_KEYS.map(k=>{
-  const [y,m]=k.split("-");
-  return `<option value="${k}">${y}.${m}</option>`;
-}).join("");
+/* =========================
+   Controls render (month vs day)
+   ========================= */
+function renderLeftControls(){
+  if(state.mode === "month"){
+    leftControls.innerHTML = `
+      <button class="btn" id="prevBtn">◀︎ 이전 달</button>
+      <button class="btn" id="todayBtn">◎ <span id="todayLabel"></span></button>
+      <button class="btn" id="nextBtn">다음 달 ▶︎</button>
+      <select id="monthSelect" title="월 선택"></select>
+    `;
 
-/* ✅ 필터: 달력 표시는 "globalSearch"로만(2026 전체 검색) */
-function getFilteredEventsByGlobalSearch(){
+    document.getElementById("todayLabel").textContent = VISIT_TODAY_ISO;
+
+    const monthSelect = document.getElementById("monthSelect");
+    monthSelect.innerHTML = MONTH_KEYS.map(k=>{
+      const [y,m]=k.split("-");
+      return `<option value="${k}">${y}.${m}</option>`;
+    }).join("");
+    monthSelect.value = state.activeMonth;
+
+    document.getElementById("prevBtn").addEventListener("click", ()=>scrollToMonth(getPrevMonth(state.activeMonth)));
+    document.getElementById("nextBtn").addEventListener("click", ()=>scrollToMonth(getNextMonth(state.activeMonth)));
+    document.getElementById("todayBtn").addEventListener("click", ()=>{
+      const t = clampToRange(new Date());
+      const k = ymKey(new Date(t.getFullYear(), t.getMonth(), 1));
+      scrollToMonth(k);
+    });
+    monthSelect.addEventListener("change", (e)=>scrollToMonth(e.target.value));
+  } else {
+    const label = state.dayStartISO ? formatYMD(state.dayStartISO) : "";
+    leftControls.innerHTML = `
+      <div class="btn" style="cursor:default;">${label}</div>
+      <button class="btn" id="backBtn">↩ 돌아가기</button>
+    `;
+    document.getElementById("backBtn").addEventListener("click", ()=>{
+      setMode("month");
+    });
+  }
+}
+
+/* =========================
+   Month view render
+   ========================= */
+function getFilteredEventsForCalendar(){
+  // 달력은 검색어로 필터됨
   const q = normalized(document.getElementById("globalSearch").value);
   if(!q) return EVENTS.slice();
   return EVENTS.filter(e=>{
@@ -591,7 +825,7 @@ function getFilteredEventsByGlobalSearch(){
 }
 
 function renderAllMonths(){
-  const filtered = getFilteredEventsByGlobalSearch();
+  const filtered = getFilteredEventsForCalendar();
 
   monthsRoot.innerHTML = MONTH_KEYS.map(k=>{
     const [y,m] = k.split("-").map(Number);
@@ -669,8 +903,11 @@ function renderAllMonths(){
 
         const isToday = (iso === VISIT_TODAY_ISO);
 
+        // 날짜 클릭 → day view
+        const clickable = inRangeDate(iso) ? "" : " style='cursor:default; pointer-events:none; opacity:.55;'";
+
         cellsHtml += `
-          <div class="cell ${inMonth ? "" : "muted"} ${isToday ? "today" : ""}">
+          <div class="cell ${inMonth ? "" : "muted"} ${isToday ? "today" : ""}" data-iso="${iso}" ${clickable}>
             <div class="cellTop"><span class="dayNum">${d.getDate()}</span><span></span></div>
             <div class="cellList">${items}</div>
           </div>
@@ -682,15 +919,25 @@ function renderAllMonths(){
 
     weeksEl.innerHTML = weeksHtml.join("");
   });
+
+  // bind day click
+  document.querySelectorAll(".cell[data-iso]").forEach(cell=>{
+    cell.addEventListener("click", ()=>{
+      const iso = cell.getAttribute("data-iso");
+      if(!iso) return;
+      openDayViewFrom(iso);
+    });
+  });
 }
 
-/* scroll */
+/* Scroll + observer */
 function scrollToMonth(k){
   const el = document.getElementById(`m-${k}`);
   if(!el) return;
   el.scrollIntoView({ behavior:"smooth", block:"start" });
   state.activeMonth = k;
-  monthSelect.value = k;
+  const monthSelect = document.getElementById("monthSelect");
+  if(monthSelect) monthSelect.value = k;
 }
 function getPrevMonth(k){
   const idx = MONTH_KEYS.indexOf(k);
@@ -701,25 +948,40 @@ function getNextMonth(k){
   return MONTH_KEYS[Math.min(MONTH_KEYS.length-1, idx+1)];
 }
 
+const io = new IntersectionObserver((entries)=>{
+  if(state.mode !== "month") return;
+  const visible = entries
+    .filter(e=>e.isIntersecting)
+    .sort((a,b)=>b.intersectionRatio - a.intersectionRatio)[0];
+  if(!visible) return;
+  const id = visible.target.id; // m-YYYY-MM
+  const k = id.replace("m-","");
+  state.activeMonth = k;
+  const monthSelect = document.getElementById("monthSelect");
+  if(monthSelect) monthSelect.value = k;
+}, { root:null, threshold:[0.35, 0.5, 0.65] });
+
+function observeMonths(){
+  document.querySelectorAll('.monthCard').forEach(el=>io.observe(el));
+}
+
 /* =========================
-   ✅ LIST POPUP + GLOBAL SEARCH RESULTS
+   2) 리스트 버튼: 검색어가 남아있어도 "전체" 출력
    ========================= */
 const modalOverlay = document.getElementById("modalOverlay");
 const modalList = document.getElementById("modalList");
 const modalTitle = document.getElementById("modalTitle");
 const modalHint = document.getElementById("modalHint");
 
-function expandToDailyList(events){
-  // 기간일정은 날짜별로 펼쳐서 리스트에 넣지 않고, "기간"으로 1건 표시
+function expandToListItems(events){
   const out = [];
   for(const e of events){
     if(isRangeEvent(e)){
-      out.push({ type:"range", key:`${e.start}~${e.end}|${e.title}`, date:e.start, title:e.title, range:`${e.start} ~ ${e.end}` });
+      out.push({ type:"range", date:e.start, label:`${e.start} ~ ${e.end}`, title:e.title, jump: e.start.slice(0,7) });
     }else{
-      out.push({ type:"single", key:`${e.date}|${e.title}`, date:e.date, title:e.title, range:null });
+      out.push({ type:"single", date:e.date, label:e.date, title:e.title, jump: e.date.slice(0,7) });
     }
   }
-  // sort by date then title
   out.sort((a,b)=>{
     if(a.date !== b.date) return a.date.localeCompare(b.date);
     return a.title.localeCompare(b.title, "ko");
@@ -732,20 +994,19 @@ function openModalWithList(items, titleText, hintText){
   modalHint.textContent = hintText;
 
   if(items.length === 0){
-    modalList.innerHTML = `<div style="color:var(--muted); font-size:12px; padding:8px 2px;">검색 결과가 없습니다.</div>`;
+    modalList.innerHTML = `<div style="color:var(--muted); font-size:12px; padding:8px 2px;">결과가 없습니다.</div>`;
   }else{
     modalList.innerHTML = items.map(it=>{
-      const label = it.type==="range" ? it.range : it.date;
-      // 점프 버튼: 해당 월로 이동
-      const k = it.date.slice(0,7);
+      const k = it.jump;
       return `
         <div class="resultRow">
           <div class="left">
-            <div class="date">${escapeHtml(label)}</div>
+            <div class="date">${escapeHtml(it.label)}</div>
             <div class="name">${escapeHtml(it.title)}</div>
           </div>
           <div class="tag">
-            <button class="linkBtn" data-jump="${escapeHtml(k)}">이동</button>
+            <button class="linkBtn" data-jump="${escapeHtml(k)}">월로 이동</button>
+            <button class="linkBtn" data-day="${escapeHtml(it.date)}">일로 보기</button>
           </div>
         </div>
       `;
@@ -755,7 +1016,15 @@ function openModalWithList(items, titleText, hintText){
       btn.addEventListener("click", ()=>{
         const k = btn.getAttribute("data-jump");
         closeModal();
+        if(state.mode !== "month") setMode("month");
         scrollToMonth(k);
+      });
+    });
+    modalList.querySelectorAll("[data-day]").forEach(btn=>{
+      btn.addEventListener("click", ()=>{
+        const iso = btn.getAttribute("data-day");
+        closeModal();
+        openDayViewFrom(iso);
       });
     });
   }
@@ -772,81 +1041,178 @@ function closeModal(){
 }
 
 document.getElementById("openListBtn").addEventListener("click", ()=>{
-  const filtered = getFilteredEventsByGlobalSearch();
-  const items = expandToDailyList(filtered);
-  openModalWithList(items, "일정 리스트", "전체 일정이 날짜 순으로 표시됩니다.");
+  // ✅ 검색어가 남아있어도 전체 리스트
+  const items = expandToListItems(EVENTS);
+  openModalWithList(items, "일정 리스트(전체)", "검색창 내용과 무관하게 전체 일정이 날짜 순으로 표시됩니다.");
 });
-
 document.getElementById("modalCloseBtn").addEventListener("click", closeModal);
-modalOverlay.addEventListener("click", (e)=>{
-  if(e.target === modalOverlay) closeModal();
-});
-document.addEventListener("keydown", (e)=>{
-  if(e.key === "Escape") closeModal();
-});
-
+modalOverlay.addEventListener("click", (e)=>{ if(e.target === modalOverlay) closeModal(); });
+document.addEventListener("keydown", (e)=>{ if(e.key === "Escape") closeModal(); });
 document.getElementById("modalScrollTop").addEventListener("click", ()=>{
   document.querySelector(".modalBody").scrollTo({top:0, behavior:"smooth"});
 });
 
-/* ✅ 검색창: 입력 시 “2026 전체 검색 결과”를 리스트로(팝업 자동 오픈) */
+/* =========================
+   검색창: 입력하면 검색 결과를 리스트(팝업)로 표시
+   - 달력도 동시에 필터됨
+   ========================= */
 let searchDebounce = null;
 document.getElementById("globalSearch").addEventListener("input", ()=>{
   clearTimeout(searchDebounce);
   searchDebounce = setTimeout(()=>{
-    renderAllMonths(); // 달력도 동시에 필터된 내용 반영
+    if(state.mode !== "month") {
+      // day mode일 때도 검색은 가능하지만, 달력 필터는 month mode에서만 의미가 큼
+      // 일단 결과 팝업만 띄움
+    } else {
+      renderAllMonths();
+      observeMonths();
+    }
+
     const q = normalized(document.getElementById("globalSearch").value);
     if(!q){
-      // 검색 지우면 팝업은 그대로 두지 않음
       closeModal();
       return;
     }
-    const filtered = getFilteredEventsByGlobalSearch();
-    const items = expandToDailyList(filtered);
-    openModalWithList(items, `검색 결과: "${q}"`, "2026~2027 학년도 범위 전체에서 검색한 결과입니다.");
+
+    const filtered = getFilteredEventsForCalendar(); // 검색어 반영
+    const items = expandToListItems(filtered);
+
+    openModalWithList(items, `검색 결과: "${q}"`, "2026.03.01 ~ 2027.02.19 범위에서 검색한 결과입니다.");
   }, 150);
 });
 
-/* header controls */
-document.getElementById("prevBtn").addEventListener("click", ()=>{
-  scrollToMonth(getPrevMonth(state.activeMonth));
-});
-document.getElementById("nextBtn").addEventListener("click", ()=>{
-  scrollToMonth(getNextMonth(state.activeMonth));
-});
-document.getElementById("todayBtn").addEventListener("click", ()=>{
-  const t = clampToRange(new Date());
-  const k = ymKey(new Date(t.getFullYear(), t.getMonth(), 1));
-  scrollToMonth(k);
-});
-document.getElementById("printBtn").addEventListener("click", ()=>window.print());
-
-monthSelect.addEventListener("change", (e)=>scrollToMonth(e.target.value));
-
-/* Intersection observer to track current month while scrolling */
-const io = new IntersectionObserver((entries)=>{
-  const visible = entries
-    .filter(e=>e.isIntersecting)
-    .sort((a,b)=>b.intersectionRatio - a.intersectionRatio)[0];
-  if(!visible) return;
-  const id = visible.target.id; // m-YYYY-MM
-  const k = id.replace("m-","");
-  state.activeMonth = k;
-  monthSelect.value = k;
-}, { root:null, threshold:[0.35, 0.5, 0.65] });
-
-function observeMonths(){
-  document.querySelectorAll('.monthCard').forEach(el=>io.observe(el));
+/* =========================
+   3) Day view: 클릭한 날부터 1일 단위로 표시
+   - 좌측 상단 YYYY.MM.DD
+   - month navigation 대신 "돌아가기" 버튼
+   ========================= */
+function eventsOnDay(iso){
+  const singles = EVENTS.filter(e=> !isRangeEvent(e) && e.date === iso);
+  const ranges = EVENTS.filter(e=> isRangeEvent(e) && rangeCoversDate(e, iso));
+  return { singles, ranges };
 }
 
-/* init */
-document.getElementById("todayLabel").textContent = VISIT_TODAY_ISO;
+function openDayViewFrom(iso){
+  const t = clampToRange(parseISO(iso));
+  const clampedISO = toISODate(t);
 
-renderAllMonths();
-observeMonths();
-scrollToMonth(state.activeMonth);
+  state.dayStartISO = clampedISO;
+  setMode("day");
+  renderDayView();
+  // day view는 항상 상단으로
+  window.scrollTo({top:0, behavior:"smooth"});
+}
+
+function renderDayView(){
+  const start = parseISO(state.dayStartISO);
+  const end = parseISO(RANGE_END);
+
+  // 너무 길어질 수 있어도 "요구사항"대로 클릭한 날부터 끝까지 일 단위 표시
+  // 성능 위해 날짜 블록을 생성하되, 각 날짜에 일정 없으면 접어둠(없으면 표시 안함)
+  const blocks = [];
+  let cur = new Date(start);
+
+  while(cur <= end){
+    const iso = toISODate(cur);
+    const { singles, ranges } = eventsOnDay(iso);
+
+    // 일정이 없는 날은 생략 (가독/성능)
+    if(singles.length || ranges.length){
+      const rows = [];
+
+      // range events 먼저
+      for(const r of ranges){
+        rows.push(`
+          <div class="dayRow">
+            <div class="left">
+              <div class="name">${escapeHtml(r.title)}</div>
+              <div class="meta">기간: ${escapeHtml(r.start)} ~ ${escapeHtml(r.end)}</div>
+            </div>
+          </div>
+        `);
+      }
+      // single events
+      for(const s of singles){
+        rows.push(`
+          <div class="dayRow">
+            <div class="left">
+              <div class="name">${escapeHtml(s.title)}</div>
+              <div class="meta">단일 일정</div>
+            </div>
+          </div>
+        `);
+      }
+
+      blocks.push(`
+        <div class="dayCard">
+          <div class="dayHeader">
+            <div class="d">${escapeHtml(formatYMD(cur))}</div>
+            <button class="linkBtn" data-jump-month="${escapeHtml(ymKey(cur))}">해당 월로</button>
+          </div>
+          <div class="dayList">
+            ${rows.join("")}
+          </div>
+        </div>
+      `);
+    }
+
+    cur = addDays(cur, 1);
+  }
+
+  dayRoot.innerHTML = `
+    <div class="dayWrap">
+      ${blocks.length ? blocks.join("") : `
+        <div class="dayCard">
+          <div class="dayHeader"><div class="d">${escapeHtml(formatYMD(state.dayStartISO))}</div></div>
+          <div class="dayList" style="color:var(--muted); font-size:12px;">이 날짜 이후(범위 내)에 표시할 일정이 없습니다.</div>
+        </div>
+      `}
+    </div>
+  `;
+
+  // month jump buttons
+  dayRoot.querySelectorAll("[data-jump-month]").forEach(btn=>{
+    btn.addEventListener("click", ()=>{
+      const k = btn.getAttribute("data-jump-month");
+      setMode("month");
+      scrollToMonth(k);
+    });
+  });
+}
+
+function setMode(mode){
+  state.mode = mode;
+  if(mode === "month"){
+    monthsRoot.style.display = "";
+    dayRoot.style.display = "none";
+    renderLeftControls();
+    renderAllMonths();
+    observeMonths();
+    // 유지: 현재 activeMonth로 스크롤
+    scrollToMonth(state.activeMonth);
+  } else {
+    monthsRoot.style.display = "none";
+    dayRoot.style.display = "";
+    renderLeftControls();
+  }
+}
+
+/* =========================
+   Print
+   ========================= */
+document.getElementById("printBtn").addEventListener("click", ()=>window.print());
+
+/* =========================
+   Init
+   ========================= */
+function init(){
+  // 시작은 month mode
+  renderLeftControls();
+  renderAllMonths();
+  observeMonths();
+  scrollToMonth(state.activeMonth);
+}
+init();
 </script>
 </body>
 </html>
-
-
