@@ -6,6 +6,14 @@
   <title>2026학년도 학사일정</title>
   <link rel="icon" type="image/png" href="./calendar-logo (final).png" />
   <style>
+    @font-face{
+      font-family: 'Noto Sans KR Custom';
+      src: url('./NotoSansKR-VariableFont_wght.ttf') format('truetype');
+      font-weight: 100 900;
+      font-style: normal;
+      font-display: swap;
+    }
+
     :root{
       --bg:#ffffff;
       --panel:#ffffff;
@@ -67,9 +75,13 @@
     *{box-sizing:border-box}
     body{
       margin:0;
-      font-family: system-ui, -apple-system, Segoe UI, Roboto, Noto Sans KR, Arial, sans-serif;
+      font-family: 'Noto Sans KR Custom', 'Noto Sans KR', system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif;
       background: var(--bg);
       color: var(--text);
+    }
+
+    button, input, select, textarea{
+      font-family: 'Noto Sans KR Custom', 'Noto Sans KR', system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif;
     }
 
     header{
@@ -1217,6 +1229,3 @@ init();
 </script>
 </body>
 </html>
-
-
-
