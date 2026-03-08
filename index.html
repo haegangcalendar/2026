@@ -44,9 +44,10 @@
       --bar-top:30px;
       --bar-h:20px;
       --bar-gap:4px;
-      --bar-row-h:24px; /* bar-h + gap */
+      --bar-row-h:24px;
 
       --modal-max-h:78vh;
+      --weekend-red:#dc2626;
     }
 
     @media (max-width: 520px){
@@ -201,6 +202,7 @@
       background: var(--cellAlt);
     }
     .dow div:last-child{border-right:0}
+    .dow div.weekend{color: var(--weekend-red); font-weight:700;}
 
     .weeks{
       border:1px solid var(--line);
@@ -285,6 +287,8 @@
     }
     .cellTop .dayNum{font-weight:900; color:#111827;}
     .cell.muted .cellTop .dayNum{color:#6b7280;}
+    .cell.weekend .cellTop .dayNum{color: var(--weekend-red) !important;}
+    .cell.muted.weekend .cellTop .dayNum{color: var(--weekend-red) !important;}
 
     .cellList{
       display:flex;
@@ -293,7 +297,7 @@
       min-width:0;
       z-index: 1;
       position: relative;
-      pointer-events:none; /* 클릭은 셀 전체로 */
+      pointer-events:none;
     }
 
     .item{
@@ -313,7 +317,6 @@
     .item .dot{width:7px; height:7px; border-radius:50%; background: var(--accent); flex:0 0 auto;}
     .item .t{min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; font-weight:700;}
 
-    /* ===== Day view ===== */
     .dayWrap{
       display:flex;
       flex-direction:column;
@@ -370,7 +373,6 @@
       word-break:break-word;
     }
 
-    /* ===== Modal ===== */
     .modalOverlay{
       position: fixed;
       inset: 0;
@@ -480,10 +482,8 @@
     </div>
 
     <div class="toolbar">
-      <!-- 좌측 영역(모드에 따라 변경됨) -->
       <div class="controls" id="leftControls"></div>
 
-      <!-- 우측 상단: 리스트 + 검색 -->
       <div class="controls">
         <button class="btn" id="openListBtn" title="리스트 보기">☰ 리스트</button>
         <input id="globalSearch" class="input" placeholder="2026 전체 검색" />
@@ -498,15 +498,11 @@
 
 <main>
   <div class="wrap">
-    <!-- month view -->
     <div id="monthsRoot"></div>
-
-    <!-- day view -->
     <div id="dayRoot" style="display:none;"></div>
   </div>
 </main>
 
-<!-- 리스트 팝업 -->
 <div class="modalOverlay" id="modalOverlay" aria-hidden="true">
   <div class="modal" role="dialog" aria-modal="true" aria-label="일정 리스트">
     <div class="modalHeader">
@@ -524,122 +520,84 @@
 </div>
 
 <script>
-/* =========================
-   1) 범위 수정: 2026.03.01 ~ 2027.02.19
-   ========================= */
 const RANGE_START = "2026-03-01";
 const RANGE_END   = "2027-02-19";
 
-/* =========================
-   EVENTS (PDF 반영 + 보강본)
-   - 단일일: { date:"YYYY-MM-DD", title:"..." }
-   - 기간일정: { start:"YYYY-MM-DD", end:"YYYY-MM-DD", title:"..." }
-   ========================= */
 const EVENTS_RAW = [
   /* 1학기 */
   { date:"2026-03-02", title:"대체공휴일" },
-  { date:"2026-03-03", title:"개학식(1교시)" },
-  { date:"2026-03-03", title:"입학식(3교시)" },
-  { date:"2026-03-04", title:"진로자아체험(2,3학년·1교시)" },
-  { date:"2026-03-05", title:"학교폭력·사이버폭력예방교육(1~3학년·1~3교시)" },
-  { date:"2026-03-05", title:"생명존중·자살예방교육(7교시)" },
-  { date:"2026-03-06", title:"동아리(6교시)" },
-
-  { date:"2026-03-09", title:"봉사소양교육(1교시)" },
-  { date:"2026-03-09", title:"성폭력·성희롱·성매매예방교육(2교시)" },
-  { date:"2026-03-12", title:"학급회조직(1교시)" },
+  { date:"2026-03-03", title:"개학식" },
+  { date:"2026-03-03", title:"봉사소양교육" },
+  { date:"2026-03-03", title:"성폭력 성희롱 성매매예방교육" },
+  { date:"2026-03-11", title:"진로자아체험 2,3학년" },
+  { date:"2026-03-18", title:"학교폭력 및 사이버폭력예방 교육" },
+  { date:"2026-03-18", title:"생명존중및자살 예방교육" },
+  { date:"2026-03-19", title:"학급회조직" },
   { date:"2026-03-20", title:"학부모총회" },
-  { date:"2026-03-24", title:"학생인권교육·다문화교육(1교시)" },
-
+  { date:"2026-03-24", title:"학생인권교육" },
+  { date:"2026-03-25", title:"다문화교육" },
   { date:"2026-03-31", title:"1학년 영어듣기" },
   { date:"2026-04-01", title:"2학년 영어듣기" },
   { date:"2026-04-02", title:"3학년 영어듣기" },
-  { date:"2026-04-06", title:"과학의 날 행사(1~2교시)" },
-  { date:"2026-04-08", title:"인터넷·스마트폰 과의존 예방교육(2교시)" },
-
-  { start:"2026-04-21", end:"2026-04-22", title:"중간고사(2,3학년)" },
-  { date:"2026-04-24", title:"동아리(5~6교시)" },
-  { date:"2026-04-30", title:"재난대피훈련(4교시)" },
-
-  { date:"2026-05-04", title:"재량휴업일(개교기념일)" },
+  { date:"2026-04-07", title:"과학의 날 행사" },
+  { date:"2026-04-08", title:"인터넷 스마트폰 과의존 예방교육" },
+  { start:"2026-04-20", end:"2026-04-22", title:"중간고사 2,3학년" },
+  { date:"2026-05-01", title:"재난대피훈련" },
+  { date:"2026-05-04", title:"재량휴업일 개교기념일" },
   { date:"2026-05-05", title:"어린이날" },
-  { date:"2026-05-06", title:"체험학습·야외활동 안전교육(1~3학년·4~6교시)" },
-  { start:"2026-05-07", end:"2026-05-08", title:"현장체험학습(전학년)" },
-  { date:"2026-05-14", title:"사이버폭력 예방교육(2교시)" },
+  { date:"2026-05-06", title:"체험학습 및 야외활동 안전교육" },
+  { start:"2026-05-07", end:"2026-05-08", title:"현장체험학습 전학년" },
+  { date:"2026-05-14", title:"사이버폭력 예방교육" },
   { date:"2026-05-15", title:"어울림한마당" },
+  { date:"2026-05-20", title:"약물오남용 예방교육" },
   { date:"2026-05-25", title:"부처님오신날 대체공휴일" },
-  { date:"2026-05-26", title:"약물오남용 예방교육(2교시)" },
-  { date:"2026-05-28", title:"동아리(6~7교시)" },
-
   { date:"2026-06-03", title:"지방선거일" },
-  { date:"2026-06-10", title:"장애인권교육(3교시)" },
-
-  { date:"2026-06-23", title:"진로탐색" },
-  { start:"2026-06-23", end:"2026-06-25", title:"기말고사(2,3학년)" },
-  { date:"2026-06-26", title:"동아리(5~6교시)" },
-
-  { date:"2026-07-02", title:"사이버 도박 예방교육(1교시)" },
+  { date:"2026-06-10", title:"장애인권교육" },
+  { start:"2026-06-22", end:"2026-06-25", title:"기말고사 2,3학년" },
+  { date:"2026-07-02", title:"사이버 도박 예방교육" },
   { date:"2026-07-17", title:"제헌절" },
   { date:"2026-07-20", title:"방학식" },
   { start:"2026-07-21", end:"2026-08-17", title:"여름방학" },
 
   /* 2학기 */
-  { date:"2026-08-17", title:"대체공휴일" },
   { date:"2026-08-18", title:"2학기 개학식" },
-  { date:"2026-08-18", title:"대청소(1교시)" },
-  { date:"2026-08-18", title:"봉사활동교육(2교시)" },
-
-  { date:"2026-08-24", title:"언어폭력·사이버폭력 예방교육(1교시)" },
-  { date:"2026-08-25", title:"인터넷·스마트폰 과의존 예방교육(2교시)" },
-  { date:"2026-08-28", title:"동아리(5~6교시)" },
-
+  { date:"2026-08-18", title:"대청소" },
+  { date:"2026-08-18", title:"봉사활동교육" },
+  { date:"2026-08-26", title:"언어폭력 및 사이버폭력 예방교육" },
+  { date:"2026-08-26", title:"인터넷 스마트폰 과의존 예방교육" },
   { date:"2026-09-01", title:"1학년 영어듣기" },
+  { date:"2026-09-01", title:"생명존중 및 자살예방교육" },
   { date:"2026-09-02", title:"2학년 영어듣기" },
   { date:"2026-09-03", title:"3학년 영어듣기" },
-  { date:"2026-09-08", title:"생명존중·자살예방교육(1교시)" },
-  { date:"2026-09-14", title:"사이버 도박 예방교육(2교시)" },
-
-  { date:"2026-09-22", title:"아동학대·가정폭력 예방/학생인권·다문화교육(3~4교시)" },
-  { date:"2026-09-22", title:"동아리(5~6교시)" },
-  { date:"2026-09-23", title:"진로탐색의 날(1~5교시)" },
-  { date:"2026-09-23", title:"대청소(6교시)" },
-  { start:"2026-09-24", end:"2026-09-25", title:"추석연휴" },
-
-  { date:"2026-09-30", title:"한글날 백일장(1~2교시)" },
-  { date:"2026-09-30", title:"미세먼지 예방교육(3교시)" },
-
+  { date:"2026-09-09", title:"사이버 도박 예방교육" },
+  { date:"2026-09-22", title:"아동학대 및 가정폭력 예방교육" },
+  { date:"2026-09-22", title:"학생인권교육" },
+  { date:"2026-09-22", title:"다문화교육" },
+  { date:"2026-09-23", title:"진로탐색의 날" },
+  { start:"2026-09-24", end:"2026-09-25", title:"대청소 추석연휴" },
+  { date:"2026-09-29", title:"한글날백일장" },
+  { date:"2026-09-30", title:"미세먼지예방교육" },
   { date:"2026-10-05", title:"대체공휴일" },
   { date:"2026-10-08", title:"재량휴업일" },
   { date:"2026-10-09", title:"한글날" },
-  { date:"2026-10-13", title:"양성평등·성폭력 예방교육(2교시)" },
+  { date:"2026-10-14", title:"양성평등 및 성폭력 예방교육" },
   { date:"2026-10-23", title:"진학설명회" },
-  { date:"2026-10-26", title:"2학년 자기주도학습(6교시)" },
-  { start:"2026-10-27", end:"2026-10-28", title:"중간고사(1,2학년) / 기말고사(3학년)" },
-  { date:"2026-10-28", title:"청소(4교시)" },
-
-  { date:"2026-11-09", title:"인성자람 체험(1학년)" },
-  { date:"2026-11-10", title:"인성자람 체험(1학년)" },
-  { date:"2026-11-11", title:"재난대피훈련(7교시)" },
-  { date:"2026-11-19", title:"수능일(진로예술체험)" },
-
-  { start:"2026-12-07", end:"2026-12-09", title:"기말고사(1,2학년)" },
-  { date:"2026-12-10", title:"동아리(5~7교시)" },
-  { date:"2026-12-10", title:"학예전 준비" },
-  { start:"2026-12-14", end:"2026-12-16", title:"학예전" },
-  { date:"2026-12-21", title:"장애인권·장애이해교육(2교시)" },
+  { start:"2026-10-27", end:"2026-10-29", title:"중간고사 1,2학년 기말고사 3학년" },
+  { start:"2026-11-09", end:"2026-11-10", title:"인성자람 체험 1학년" },
+  { date:"2026-11-11", title:"재난대피훈련" },
+  { date:"2026-11-19", title:"수능일 진로예술체험" },
+  { start:"2026-12-08", end:"2026-12-10", title:"기말고사 1,2학년" },
+  { date:"2026-12-16", title:"장애인권 및 장애이해교육" },
+  { date:"2026-12-17", title:"학예전" },
   { date:"2026-12-25", title:"크리스마스" },
-  { date:"2026-12-30", title:"겨울방학식(5~6교시)" },
-
+  { date:"2026-12-31", title:"겨울방학식" },
   { start:"2026-12-31", end:"2027-01-27", title:"겨울방학" },
   { date:"2027-01-28", title:"개학식" },
-  { date:"2027-02-02", title:"종업식·졸업식" },
+  { date:"2027-02-02", title:"종업식" },
+  { date:"2027-02-02", title:"졸업식" },
   { start:"2027-02-03", end:"2027-02-28", title:"학년말방학" },
-  { start:"2027-02-15", end:"2027-02-19", title:"새학년 준비" },
 ];
 
-/* =========================
-   Utils
-   ========================= */
 const DOW = ["일","월","화","수","목","금","토"];
 const monthsRoot = document.getElementById("monthsRoot");
 const dayRoot = document.getElementById("dayRoot");
@@ -724,7 +682,6 @@ function splitRangeToWeekSegment(e, weekStartDate){
   if(segStart > segEnd) return null;
   return { colStart: segStart.getDay(), colEnd: segEnd.getDay(), e };
 }
-/* 리본 겹침 방지: 행 무제한 스택 */
 function layoutBarsForWeek(rangeEvents, weekStartDate){
   const segs = [];
   for(const e of rangeEvents){
@@ -753,21 +710,15 @@ function layoutBarsForWeek(rangeEvents, weekStartDate){
   return { rowsCount: rowsEnd.length, placed };
 }
 
-/* =========================
-   State
-   ========================= */
 const VISIT_TODAY_ISO = toISODate(new Date());
 const EVENTS = clipEventsToRange(EVENTS_RAW);
 
 let state = {
-  mode: "month",          // "month" | "day"
+  mode: "month",
   activeMonth: ymKey(clampToRange(new Date())),
-  dayStartISO: null,      // day view start date
+  dayStartISO: null,
 };
 
-/* =========================
-   Month keys
-   ========================= */
 function buildMonthKeys(){
   const start = parseISO(RANGE_START);
   const end = parseISO(RANGE_END);
@@ -781,9 +732,6 @@ function buildMonthKeys(){
 }
 const MONTH_KEYS = buildMonthKeys();
 
-/* =========================
-   Controls render (month vs day)
-   ========================= */
 function renderLeftControls(){
   if(state.mode === "month"){
     leftControls.innerHTML = `
@@ -822,11 +770,7 @@ function renderLeftControls(){
   }
 }
 
-/* =========================
-   Month view render
-   ========================= */
 function getFilteredEventsForCalendar(){
-  // 달력은 검색어로 필터됨
   const q = normalized(document.getElementById("globalSearch").value);
   if(!q) return EVENTS.slice();
   return EVENTS.filter(e=>{
@@ -851,7 +795,7 @@ function renderAllMonths(){
           <div style="color:var(--muted); font-size:11px;">스크롤로 다음 달 계속</div>
         </div>
         <div class="calendar">
-          <div class="dow">${DOW.map(d=>`<div>${d}</div>`).join("")}</div>
+          <div class="dow">${DOW.map((d,idx)=>`<div class="${(idx===0 || idx===6) ? 'weekend' : ''}">${d}</div>`).join("")}</div>
           <div class="weeks" data-month="${k}"></div>
         </div>
       </section>
@@ -893,6 +837,7 @@ function renderAllMonths(){
         const d = addDays(ws, c);
         const iso = toISODate(d);
         const inMonth = d.getMonth() === cur.getMonth();
+        const isWeekend = (d.getDay() === 0 || d.getDay() === 6);
 
         const singles = monthSingles.filter(e=> e.date === iso);
 
@@ -915,12 +860,10 @@ function renderAllMonths(){
           ` : "");
 
         const isToday = (iso === VISIT_TODAY_ISO);
-
-        // 날짜 클릭 → day view
         const clickable = inRangeDate(iso) ? "" : " style='cursor:default; pointer-events:none; opacity:.55;'";
 
         cellsHtml += `
-          <div class="cell ${inMonth ? "" : "muted"} ${isToday ? "today" : ""}" data-iso="${iso}" ${clickable}>
+          <div class="cell ${inMonth ? "" : "muted"} ${isToday ? "today" : ""} ${isWeekend ? "weekend" : ""}" data-iso="${iso}" ${clickable}>
             <div class="cellTop"><span class="dayNum">${d.getDate()}</span><span></span></div>
             <div class="cellList">${items}</div>
           </div>
@@ -933,7 +876,6 @@ function renderAllMonths(){
     weeksEl.innerHTML = weeksHtml.join("");
   });
 
-  // bind day click
   document.querySelectorAll(".cell[data-iso]").forEach(cell=>{
     cell.addEventListener("click", ()=>{
       const iso = cell.getAttribute("data-iso");
@@ -943,7 +885,6 @@ function renderAllMonths(){
   });
 }
 
-/* Scroll + observer */
 function scrollToMonth(k){
   const el = document.getElementById(`m-${k}`);
   if(!el) return;
@@ -967,7 +908,7 @@ const io = new IntersectionObserver((entries)=>{
     .filter(e=>e.isIntersecting)
     .sort((a,b)=>b.intersectionRatio - a.intersectionRatio)[0];
   if(!visible) return;
-  const id = visible.target.id; // m-YYYY-MM
+  const id = visible.target.id;
   const k = id.replace("m-","");
   state.activeMonth = k;
   const monthSelect = document.getElementById("monthSelect");
@@ -978,9 +919,6 @@ function observeMonths(){
   document.querySelectorAll('.monthCard').forEach(el=>io.observe(el));
 }
 
-/* =========================
-   2) 리스트 버튼: 검색어가 남아있어도 "전체" 출력
-   ========================= */
 const modalOverlay = document.getElementById("modalOverlay");
 const modalList = document.getElementById("modalList");
 const modalTitle = document.getElementById("modalTitle");
@@ -1054,7 +992,6 @@ function closeModal(){
 }
 
 document.getElementById("openListBtn").addEventListener("click", ()=>{
-  // ✅ 검색어가 남아있어도 전체 리스트
   const items = expandToListItems(EVENTS);
   openModalWithList(items, "일정 리스트(전체)", "검색창 내용과 무관하게 전체 일정이 날짜 순으로 표시됩니다.");
 });
@@ -1065,18 +1002,11 @@ document.getElementById("modalScrollTop").addEventListener("click", ()=>{
   document.querySelector(".modalBody").scrollTo({top:0, behavior:"smooth"});
 });
 
-/* =========================
-   검색창: 입력하면 검색 결과를 리스트(팝업)로 표시
-   - 달력도 동시에 필터됨
-   ========================= */
 let searchDebounce = null;
 document.getElementById("globalSearch").addEventListener("input", ()=>{
   clearTimeout(searchDebounce);
   searchDebounce = setTimeout(()=>{
-    if(state.mode !== "month") {
-      // day mode일 때도 검색은 가능하지만, 달력 필터는 month mode에서만 의미가 큼
-      // 일단 결과 팝업만 띄움
-    } else {
+    if(state.mode === "month") {
       renderAllMonths();
       observeMonths();
     }
@@ -1087,18 +1017,13 @@ document.getElementById("globalSearch").addEventListener("input", ()=>{
       return;
     }
 
-    const filtered = getFilteredEventsForCalendar(); // 검색어 반영
+    const filtered = getFilteredEventsForCalendar();
     const items = expandToListItems(filtered);
 
     openModalWithList(items, `검색 결과: "${q}"`, "2026.03.01 ~ 2027.02.19 범위에서 검색한 결과입니다.");
   }, 150);
 });
 
-/* =========================
-   3) Day view: 클릭한 날부터 1일 단위로 표시
-   - 좌측 상단 YYYY.MM.DD
-   - month navigation 대신 "돌아가기" 버튼
-   ========================= */
 function eventsOnDay(iso){
   const singles = EVENTS.filter(e=> !isRangeEvent(e) && e.date === iso);
   const ranges = EVENTS.filter(e=> isRangeEvent(e) && rangeCoversDate(e, iso));
@@ -1112,7 +1037,6 @@ function openDayViewFrom(iso){
   state.dayStartISO = clampedISO;
   setMode("day");
   renderDayView();
-  // day view는 항상 상단으로
   window.scrollTo({top:0, behavior:"smooth"});
 }
 
@@ -1120,8 +1044,6 @@ function renderDayView(){
   const start = parseISO(state.dayStartISO);
   const end = parseISO(RANGE_END);
 
-  // 너무 길어질 수 있어도 "요구사항"대로 클릭한 날부터 끝까지 일 단위 표시
-  // 성능 위해 날짜 블록을 생성하되, 각 날짜에 일정 없으면 접어둠(없으면 표시 안함)
   const blocks = [];
   let cur = new Date(start);
 
@@ -1129,11 +1051,9 @@ function renderDayView(){
     const iso = toISODate(cur);
     const { singles, ranges } = eventsOnDay(iso);
 
-    // 일정이 없는 날은 생략 (가독/성능)
     if(singles.length || ranges.length){
       const rows = [];
 
-      // range events 먼저
       for(const r of ranges){
         rows.push(`
           <div class="dayRow">
@@ -1144,7 +1064,6 @@ function renderDayView(){
           </div>
         `);
       }
-      // single events
       for(const s of singles){
         rows.push(`
           <div class="dayRow">
@@ -1183,7 +1102,6 @@ function renderDayView(){
     </div>
   `;
 
-  // month jump buttons
   dayRoot.querySelectorAll("[data-jump-month]").forEach(btn=>{
     btn.addEventListener("click", ()=>{
       const k = btn.getAttribute("data-jump-month");
@@ -1201,7 +1119,6 @@ function setMode(mode){
     renderLeftControls();
     renderAllMonths();
     observeMonths();
-    // 유지: 현재 activeMonth로 스크롤
     scrollToMonth(state.activeMonth);
   } else {
     monthsRoot.style.display = "none";
@@ -1210,16 +1127,9 @@ function setMode(mode){
   }
 }
 
-/* =========================
-   Print
-   ========================= */
 document.getElementById("printBtn").addEventListener("click", ()=>window.print());
 
-/* =========================
-   Init
-   ========================= */
 function init(){
-  // 시작은 month mode
   renderLeftControls();
   renderAllMonths();
   observeMonths();
